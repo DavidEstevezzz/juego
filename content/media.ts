@@ -45,6 +45,21 @@ export const media = {
       'Un pueblo costero abandonado bajo una tormenta de nieve.',
       [0.5, 0.5],
     ),
+    corridor: image(
+      'ship-corridor',
+      'In-game capture of a survivor moving through a dark ship corridor.',
+      [0.45, 0.52],
+    ),
+    frozenDeck: image(
+      'frozen-deck',
+      'In-game capture of a survivor crossing an exposed frozen deck.',
+      [0.43, 0.52],
+    ),
+    atrium: image(
+      'ship-atrium',
+      'In-game capture of a survivor entering the ship’s towering atrium.',
+      [0.46, 0.5],
+    ),
     draga: image(
       'draga-profile',
       'Primer plano de Draga iluminada por una luz azul y fría.',

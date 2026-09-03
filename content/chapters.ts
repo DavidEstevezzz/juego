@@ -29,10 +29,10 @@ export const chapters: readonly ExperienceChapter[] = [
   {
     id: 'gameplay',
     index: '03',
-    navLabel: 'Promesa',
-    title: 'La promesa jugable',
+    navLabel: 'Gameplay',
+    title: 'The gameplay promise',
     summary:
-      'La fantasía del jugador, las mecánicas esenciales y el ritmo de juego.',
+      'The player fantasy, its essential pillars and the rhythm of play.',
   },
   {
     id: 'draga',
@@ -118,6 +118,47 @@ export const worldChapterContent = {
       index: '03',
       label: 'Localización',
       text: 'Driftwood se sostiene sobre madera, hielo y restos varados por la marea.',
+    },
+  ],
+} as const;
+
+/**
+ * Replaceable copy for chapter 03. The three pillars are approved concepts;
+ * the supporting lines stay deliberately qualitative and avoid unconfirmed
+ * mechanics, systems or production claims.
+ */
+export const gameplayChapterContent = {
+  deckLabel: 'Deck 03',
+  category: 'Gameplay',
+  heading: 'The gameplay promise',
+  evidenceLabel: 'In-game captures · Original UI visible',
+  pillars: [
+    {
+      id: 'explore',
+      index: '01',
+      title: 'Explore',
+      directive: 'Read the space',
+      description:
+        'Enter hostile spaces, read their shape and uncover what the darkness keeps out of sight.',
+      media: 'corridor',
+    },
+    {
+      id: 'endure',
+      index: '02',
+      title: 'Endure',
+      directive: 'Withstand the pressure',
+      description:
+        'Cold, darkness and limited visibility turn every step forward into sustained pressure.',
+      media: 'frozenDeck',
+    },
+    {
+      id: 'confront',
+      index: '03',
+      title: 'Confront',
+      directive: 'Face the threat',
+      description:
+        'When distance collapses, the experience shifts from observation to direct confrontation.',
+      media: 'atrium',
     },
   ],
 } as const;

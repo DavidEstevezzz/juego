@@ -1,10 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { AdaptiveDpr, PerformanceMonitor } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import { subscribeScrollMetrics } from '@/lib/experience/scroll-metrics';
 import { useExperienceStore } from '@/lib/experience/store';
+
+/** Espera mínima entre degradaciones para no saltarse un escalón por un bache. */
+const DECLINE_COOLDOWN_MS = 4000;
 
 /**
  * Escena persistente de la experiencia.
@@ -17,6 +20,20 @@ import { useExperienceStore } from '@/lib/experience/store';
 export default function ExperienceScene() {
   const documentVisible = useExperienceStore((state) => state.documentVisible);
   const graphicsTier = useExperienceStore((state) => state.graphicsTier);
+  const lastDeclineRef = useRef(0);
+
+  /**
+   * Cada caída sostenida baja un escalón: A → B → C. En C la capa WebGL se
+   * desmonta (lo decide `ExperienceCanvas`) y solo queda el DOM. La espera
+   * evita que dos avisos seguidos hagan colapsar la experiencia de A a C por
+   * un bache puntual, y el tier nunca vuelve a subir en la misma sesión.
+   */
+  const handleDecline = useCallback(() => {
+    const now = performance.now();
+    if (now - lastDeclineRef.current < DECLINE_COOLDOWN_MS) return;
+    lastDeclineRef.current = now;
+    useExperienceStore.getState().degradeGraphicsTier();
+  }, []);
 
   return (
     <Canvas
@@ -35,11 +52,7 @@ export default function ExperienceScene() {
       // scroll, así que R3F no necesita su propio listener de scroll.
       resize={{ scroll: false }}
     >
-      <PerformanceMonitor
-        onDecline={() =>
-          useExperienceStore.getState().downgradeGraphicsTier('b')
-        }
-      >
+      <PerformanceMonitor onDecline={handleDecline}>
         <AdaptiveDpr pixelated />
         <SceneDriver />
       </PerformanceMonitor>

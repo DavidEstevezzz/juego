@@ -12,9 +12,14 @@ import { isDocumentVisible, subscribeVisibility } from './visibility';
  *
  * El bucle solo corre mientras hay movimiento y la pestaña está visible; al
  * quedarse quieto se detiene por completo en vez de rondar a 60 fps.
+ *
+ * El mismo `resize` y el mismo `ResizeObserver` alimentan `subscribeLayoutChange`,
+ * la señal centralizada y debounced que usa el runtime para refrescar
+ * ScrollTrigger. Ninguna sección debe observar el viewport por su cuenta.
  */
 
 type Listener = (metrics: ScrollMetrics) => void;
+type LayoutListener = () => void;
 
 /** Velocidad considerada máxima, en píxeles por milisegundo (~2400 px/s). */
 const MAX_SPEED = 2.4;
@@ -24,8 +29,11 @@ const SMOOTHING = 0.18;
 const IDLE_MS = 240;
 /** Desplazamiento mínimo, en píxeles, para considerar un cambio de dirección. */
 const DIRECTION_THRESHOLD = 0.5;
+/** Espera tras el último cambio de medidas antes de avisar del nuevo layout. */
+const LAYOUT_DEBOUNCE_MS = 160;
 
 const listeners = new Set<Listener>();
+const layoutListeners = new Set<LayoutListener>();
 
 let started = false;
 let rafId: number | null = null;
@@ -33,6 +41,9 @@ let resizeObserver: ResizeObserver | null = null;
 let unsubscribeVisibility: (() => void) | null = null;
 
 let maxScroll = 0;
+let viewportWidth = 0;
+let viewportHeight = 0;
+let layoutTimeout: number | null = null;
 let lastY = 0;
 let lastTime = 0;
 let lastScrollTime = 0;
@@ -43,12 +54,42 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-/** Recalcula la altura desplazable. Se cachea para no forzar reflow por frame. */
+/**
+ * Recalcula la altura desplazable y el viewport. Se cachea para no forzar
+ * reflow en cada frame y, si algo cambió de verdad, agenda el aviso de layout.
+ */
 function measure() {
-  maxScroll = Math.max(
+  const nextMaxScroll = Math.max(
     document.documentElement.scrollHeight - window.innerHeight,
     0,
   );
+  const nextWidth = window.innerWidth;
+  const nextHeight = window.innerHeight;
+
+  const changed =
+    nextMaxScroll !== maxScroll ||
+    nextWidth !== viewportWidth ||
+    nextHeight !== viewportHeight;
+
+  maxScroll = nextMaxScroll;
+  viewportWidth = nextWidth;
+  viewportHeight = nextHeight;
+
+  if (changed) scheduleLayoutChange();
+}
+
+/**
+ * Agrupa ráfagas de cambios (arrastrar el borde de la ventana, girar el
+ * dispositivo, cargar fuentes o medios) en un único aviso.
+ */
+function scheduleLayoutChange() {
+  if (layoutListeners.size === 0) return;
+  if (layoutTimeout !== null) window.clearTimeout(layoutTimeout);
+
+  layoutTimeout = window.setTimeout(() => {
+    layoutTimeout = null;
+    for (const listener of layoutListeners) listener();
+  }, LAYOUT_DEBOUNCE_MS);
 }
 
 function publish() {
@@ -157,6 +198,11 @@ function stop() {
     window.cancelAnimationFrame(rafId);
     rafId = null;
   }
+
+  if (layoutTimeout !== null) {
+    window.clearTimeout(layoutTimeout);
+    layoutTimeout = null;
+  }
 }
 
 /**
@@ -176,6 +222,31 @@ export function subscribeScrollMetrics(listener: Listener): () => void {
     if (listeners.size === 0) stop();
   };
 }
+
+/**
+ * Suscribe un consumidor a los cambios de medidas del documento o del viewport.
+ *
+ * Reutiliza los listeners del driver, así que no añade ninguno: es el punto
+ * único desde el que se refresca ScrollTrigger.
+ */
+export function subscribeLayoutChange(listener: LayoutListener): () => void {
+  if (typeof window === 'undefined') return () => {};
+
+  layoutListeners.add(listener);
+  const stopMetrics = subscribeScrollMetrics(noopMetrics);
+
+  return () => {
+    layoutListeners.delete(listener);
+    if (layoutListeners.size === 0 && layoutTimeout !== null) {
+      window.clearTimeout(layoutTimeout);
+      layoutTimeout = null;
+    }
+    stopMetrics();
+  };
+}
+
+/** Suscriptor vacío: mantiene vivo el driver mientras alguien observe el layout. */
+function noopMetrics() {}
 
 /** Lectura no reactiva de las métricas actuales. */
 export function getScrollMetrics(): Readonly<ScrollMetrics> {

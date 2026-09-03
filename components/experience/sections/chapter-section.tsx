@@ -30,13 +30,18 @@ export function ChapterSection({
       data-chapter={chapter.id}
       aria-labelledby={titleId}
       className={cn(
-        'relative border-t border-[var(--border-subtle)] px-5 py-20 sm:px-10 sm:py-24 lg:px-16 lg:py-32',
+        'relative border-t border-[color:var(--border-subtle)] px-5 py-20 sm:px-10 sm:py-24 lg:px-16 lg:py-32',
         className,
       )}
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-        <p className="font-system text-[0.7rem] uppercase tracking-[0.24em] text-brass">
-          <span aria-hidden="true">{chapter.index} / </span>
+        {/* Marca roja de dirección; la numeración se queda en latón. */}
+        <div className="signal-rule" aria-hidden="true" />
+
+        <p className="font-system text-[0.7rem] uppercase tracking-[0.24em] text-steel">
+          <span aria-hidden="true" className="text-brass">
+            {chapter.index} /{' '}
+          </span>
           {chapter.navLabel}
         </p>
 

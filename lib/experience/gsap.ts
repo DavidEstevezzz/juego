@@ -21,8 +21,10 @@ export function registerGsap(): typeof gsap {
 
   gsap.registerPlugin(ScrollTrigger);
   ScrollTrigger.config({
-    // El scroll nativo es la única fuente de verdad mientras no haya smooth
-    // scrolling; `resize` y `visibilitychange` ya los gestionamos nosotros.
+    // `resize` sale de la lista de GSAP a propósito: el refresco lo dispara el
+    // runtime desde `subscribeLayoutChange`, que además de redimensionar la
+    // ventana cubre los cambios de altura del documento (fuentes, medios,
+    // orientación) y llega agrupado. Ver `use-experience-runtime.ts`.
     autoRefreshEvents: 'DOMContentLoaded,load,refreshInit',
   });
   registered = true;

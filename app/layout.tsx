@@ -30,6 +30,9 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
   ),
   title: 'Black Tides: Draga’s Wake — Presentación interactiva',
+  // Declarado explícitamente: sin esto el navegador sondea `/favicon.ico` y
+  // devuelve un 404, ya que solo existe la versión SVG.
+  icons: { icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }] },
   description:
     'Presentación web cinematográfica del universo, la propuesta jugable y la visión de producción de Black Tides: Draga’s Wake.',
   openGraph: {
@@ -59,12 +62,16 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es">
-      <body
-        className={`${cinzel.variable} ${plexSans.variable} ${shareTechMono.variable}`}
-      >
-        {children}
-      </body>
+    // Las variables de fuente van en `<html>`, no en `<body>`: los tokens
+    // `--font-display/body/system` se declaran en `:root` y `var()` dentro de
+    // una custom property se resuelve en el elemento que la declara. Si las
+    // clases vivieran en `<body>`, `:root` no vería `--font-cinzel` y todos los
+    // tokens tipográficos caerían al fallback del sistema.
+    <html
+      lang="es"
+      className={`${cinzel.variable} ${plexSans.variable} ${shareTechMono.variable}`}
+    >
+      <body>{children}</body>
     </html>
   );
 }

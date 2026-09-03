@@ -7,6 +7,9 @@ import { useExperienceStore } from '@/lib/experience/store';
 /**
  * Índice de cubierta: navegación accesible por capítulos.
  *
+ * El estado activo usa `scarlet`; la numeración se queda en latón como detalle
+ * naval secundario.
+ *
  * Son anchors nativos, así que funcionan sin JavaScript y respetan el
  * historial. En móvil solo se muestra el número de cubierta (el nombre queda
  * para lectores de pantalla) para que la barra quepa en una sola línea y no
@@ -19,7 +22,7 @@ export function ChapterNavigation() {
   return (
     <nav
       aria-label={siteContent.navLabel}
-      className="sticky top-0 z-30 h-[var(--chapter-bar-height)] border-b border-[var(--border-subtle)] bg-[var(--surface-glass)] backdrop-blur-[2px]"
+      className="sticky top-0 z-30 h-[var(--chapter-bar-height)] border-b border-[color:var(--border-subtle)] bg-[var(--surface-glass)] backdrop-blur-[2px]"
     >
       <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-10 lg:px-16">
         <a
@@ -39,10 +42,17 @@ export function ChapterNavigation() {
                   href={`#${chapter.id}`}
                   aria-current={isActive ? 'true' : undefined}
                   data-active={isActive || undefined}
-                  className="font-system flex items-center gap-2 border border-transparent px-1.5 py-1 text-[0.65rem] uppercase tracking-[0.16em] text-steel transition-colors hover:text-foreground focus-visible:border-brass data-[active]:text-brass sm:px-2"
+                  className="font-system group flex items-center gap-2 border border-transparent px-1.5 py-1 text-[0.65rem] uppercase tracking-[0.16em] text-steel transition-colors hover:text-foreground focus-visible:border-[color:var(--border-scarlet)] data-[active]:text-scarlet sm:px-2"
                 >
-                  <span aria-hidden="true">{chapter.index}</span>
-                  <span className="sr-only xl:not-sr-only">
+                  {/* La numeración se mantiene en latón como detalle naval;
+                      el estado activo pasa a `scarlet`. */}
+                  <span
+                    aria-hidden="true"
+                    className="text-brass transition-colors group-data-[active]:text-scarlet"
+                  >
+                    {chapter.index}
+                  </span>
+                  <span className="sr-only whitespace-nowrap xl:not-sr-only">
                     {chapter.navLabel}
                   </span>
                 </a>

@@ -6,7 +6,11 @@ import {
   prefersReducedMotion,
   subscribeReducedMotion,
 } from './motion-preferences';
-import { subscribeScrollMetrics } from './scroll-metrics';
+import { refreshScrollTriggers } from './gsap';
+import {
+  subscribeLayoutChange,
+  subscribeScrollMetrics,
+} from './scroll-metrics';
 import { useExperienceStore } from './store';
 import { isDocumentVisible, subscribeVisibility } from './visibility';
 
@@ -42,5 +46,25 @@ export function useExperienceRuntime() {
       useExperienceStore.getState();
     setWebglAvailable(detectWebglSupport());
     setGraphicsTier(detectGraphicsTier());
+  }, []);
+
+  // Punto único de refresco de ScrollTrigger. `subscribeLayoutChange` reutiliza
+  // el `resize` y el `ResizeObserver` del driver de scroll, de modo que
+  // redimensionar, girar el dispositivo o cargar medios que cambien la altura
+  // recalculan las posiciones sin que ninguna sección observe nada por su cuenta.
+  useEffect(() => subscribeLayoutChange(refreshScrollTriggers), []);
+
+  // Las fuentes pueden cambiar las medidas sin alterar la altura del documento.
+  useEffect(() => {
+    if (!('fonts' in document)) return;
+
+    let cancelled = false;
+    void document.fonts.ready.then(() => {
+      if (!cancelled) refreshScrollTriggers();
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 }

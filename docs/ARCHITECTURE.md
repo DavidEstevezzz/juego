@@ -41,7 +41,10 @@ content/
    Quien necesite progreso se suscribe a `subscribeScrollMetrics` o crea un
    ScrollTrigger a través de `useExperienceTimeline`.
 2. **Un solo registro de GSAP.** `registerGsap()` es idempotente y es el único
-   sitio donde se llama a `gsap.registerPlugin`.
+   sitio donde se llama a `gsap.registerPlugin`. `resize` sale de
+   `autoRefreshEvents` porque el refresco lo dispara el runtime desde
+   `subscribeLayoutChange` (debounced, reutilizando los listeners del driver),
+   que además cubre los cambios de altura del documento y la carga de fuentes.
 3. **Timelines con cleanup.** Toda timeline vive dentro de un `gsap.context`
    acotado a un elemento y se revierte al desmontar.
 4. **Estado mínimo.** El store comparte `chapter`, `progress`, `direction`,
@@ -51,9 +54,18 @@ content/
 5. **El canvas es opcional.** Es `fixed`, decorativo y `aria-hidden`; el DOM es
    completo y legible si no llega a montarse. No se monta sin WebGL, en tier C,
    con movimiento reducido ni antes de que el hilo principal esté libre.
+   `PerformanceMonitor` degrada un escalón por caída sostenida (A → B → C); al
+   llegar a C la capa WebGL se desmonta y el tier no vuelve a subir en toda la
+   sesión.
 6. **Pausa por visibilidad.** Al ocultar la pestaña el canvas pasa a
    `frameloop="never"` y el driver de scroll cancela su `requestAnimationFrame`.
-7. **Sin user-agent sniffing.** El tier se deduce de soporte WebGL, `saveData`,
+7. **Los tokens visuales mandan.** La jerarquía negro-rojo de
+   `docs/VISUAL-DIRECTION.md` vive en `app/globals.css`: negro como masa
+   dominante, `scarlet` para estado activo, CTA y dirección, `blood` para
+   profundidad e infección, `ember` solo para luz intensa y latón como detalle
+   naval. La regla global de `border-color` va en `@layer base` para que las
+   utilidades `border-*` puedan ganarle.
+8. **Sin user-agent sniffing.** El tier se deduce de soporte WebGL, `saveData`,
    `prefers-reduced-data`, núcleos, memoria y tipo de puntero.
 
 ## Estado de las secciones

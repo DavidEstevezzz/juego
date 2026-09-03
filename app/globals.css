@@ -13,54 +13,74 @@
   --color-muted: var(--muted);
   --color-border: var(--border);
 
-  --color-void: var(--color-void-raw);
-  --color-charcoal: var(--color-charcoal-raw);
-  --color-hull: var(--color-hull-raw);
-  --color-ivory: var(--color-ivory-raw);
-  --color-steel: var(--color-steel-raw);
-  --color-brass: var(--color-brass-raw);
-  --color-blood: var(--color-blood-raw);
-  --color-oxidation: var(--color-oxidation-raw);
-  --color-rust: var(--color-rust-raw);
-  --color-frost: var(--color-frost-raw);
+  --color-void: var(--void);
+  --color-charcoal: var(--charcoal);
+  --color-hull: var(--hull);
+  --color-ivory: var(--ivory);
+  --color-steel: var(--steel);
+  --color-blood: var(--blood);
+  --color-scarlet: var(--scarlet);
+  --color-ember: var(--ember);
+  --color-brass: var(--brass);
+  --color-oxidation: var(--oxidation);
+  --color-rust: var(--rust);
+  --color-frost: var(--frost);
 }
 
-/* Paleta y tipografía de docs/VISUAL-DIRECTION.md. */
+/*
+ * Paleta y tipografía de docs/VISUAL-DIRECTION.md.
+ * Jerarquía negro-rojo: el negro conserva la mayor masa visual, `scarlet` es el
+ * acento de interfaz (estado activo, CTA y dirección), `blood` aporta
+ * profundidad e infección y `ember` se reserva para luz intensa. El latón queda
+ * como detalle naval secundario: numeración, placas y marcas auxiliares.
+ */
 :root {
-  --color-void-raw: #050a07;
-  --color-charcoal-raw: #080807;
-  --color-hull-raw: #0d1613;
-  --color-ivory-raw: #ede7d3;
-  --color-steel-raw: #9eaeac;
-  --color-brass-raw: #b89840;
-  --color-blood-raw: #7a1515;
-  --color-oxidation-raw: #17322c;
-  --color-rust-raw: #6c3828;
-  --color-frost-raw: #c6d2ce;
+  --void: #050a07;
+  --charcoal: #080807;
+  --hull: #0d1613;
+  --ivory: #ede7d3;
+  --steel: #9eaeac;
+  --blood: #7a1515;
+  --scarlet: #a82024;
+  --ember: #d24732;
+  --brass: #b89840;
+  --oxidation: #17322c;
+  --rust: #6c3828;
+  --frost: #c6d2ce;
 
   --surface-glass: rgb(5 10 7 / 82%);
   --border-subtle: rgb(237 231 211 / 14%);
-  --border-brass: rgb(184 152 64 / 42%);
+  --border-scarlet: rgb(168 32 36 / 58%);
+  --border-brass: rgb(184 152 64 / 28%);
+  --glow-red: 0 0 64px rgb(168 32 36 / 24%);
   --shadow-deep: 0 32px 90px rgb(0 0 0 / 58%);
 
   --font-display: var(--font-cinzel), Georgia, serif;
   --font-body: var(--font-plex-sans), Arial, sans-serif;
   --font-system: var(--font-share-tech-mono), ui-monospace, monospace;
 
-  --background: var(--color-void-raw);
-  --foreground: var(--color-ivory-raw);
-  --accent: var(--color-brass-raw);
-  --muted: var(--color-steel-raw);
+  --background: var(--void);
+  --foreground: var(--ivory);
+  --accent: var(--scarlet);
+  --muted: var(--steel);
   --border: var(--border-subtle);
+  /* Esquinas casi rectas: máximo 4 px según VISUAL-DIRECTION. */
   --radius: 0.25rem;
 
   /* Altura de la barra de capítulos; evita saltos al fijar el encabezado. */
   --chapter-bar-height: 3.25rem;
 }
 
-* {
-  box-sizing: border-box;
-  border-color: var(--border);
+/*
+ * En `@layer base` a propósito: una regla sin capa vence a `@layer utilities`
+ * en la cascada y anularía cualquier utilidad `border-*` (incluidas
+ * `border-scarlet` y `border-brass`).
+ */
+@layer base {
+  * {
+    box-sizing: border-box;
+    border-color: var(--border);
+  }
 }
 
 /*
@@ -86,7 +106,7 @@ body {
 
 ::selection {
   background: var(--accent);
-  color: var(--background);
+  color: var(--foreground);
 }
 
 .font-display {
@@ -107,8 +127,17 @@ body {
 
 .stage-glow {
   background:
-    radial-gradient(circle at 50% 45%, rgb(184 152 64 / 12%), transparent 18%),
-    radial-gradient(circle at 50% 45%, rgb(198 210 206 / 6%), transparent 42%);
+    radial-gradient(circle at 50% 45%, rgb(168 32 36 / 24%), transparent 18%),
+    radial-gradient(circle at 50% 45%, rgb(210 71 50 / 9%), transparent 36%),
+    radial-gradient(circle at 50% 45%, rgb(237 231 211 / 6%), transparent 48%);
+}
+
+/* Línea roja de estado y dirección; detalle estructural, nunca texto pequeño. */
+.signal-rule {
+  width: 2.5rem;
+  height: 2px;
+  background: var(--scarlet);
+  box-shadow: var(--glow-red);
 }
 
 /*

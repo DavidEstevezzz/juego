@@ -56,6 +56,9 @@ Usa:
 Dirección:
 - Full viewport oscuro y cinematográfico.
 - Título BLACK TIDES dominante y DRAGA'S WAKE como subtítulo editorial.
+- Reproduce la jerarquía de la portada: negro como masa principal, BLACK TIDES
+  o su acento estructural en rojo y marfil para el contraste de lectura. El
+  rojo debe sentirse importante desde el primer viewport, no cubrirlo entero.
 - Una línea breve de propuesta jugable; no inventes lore no aprobado.
 - CTA principal “Watch teaser” y secundario “View on Steam”.
 - Composición inspirada en cine de horror marítimo, no en interfaz sci-fi.
@@ -67,6 +70,8 @@ Movimiento:
 - Parallax de puntero limitado a 12 px; desactivado en touch y reduced motion.
 - El primer 20 % del scroll reduce luz, desplaza el título y prepara una
   transición descendente. No hagas un simple fade-out global.
+- CTA y estado activo usan `scarlet`; el latón queda como detalle naval
+  secundario.
 - El vídeo se pausa cuando sale del viewport o la pestaña pierde visibilidad.
 
 Modal de trailer:
@@ -212,6 +217,8 @@ Técnica:
 - WebGL mezcla texturas con ruido orgánico, erosión de bordes y desplazamiento
   máximo de 10–14 px visuales.
 - La paleta transita gradualmente de steel/oxidation a ritual red.
+- El capítulo amplía una presencia roja que ya existía desde el hero: no debe
+  parecer que la web cambia repentinamente a una identidad diferente.
 - Un campo de partículas o filamentos reacciona a la proximidad del puntero,
   pero nunca bloquea enlaces ni captura input.
 - La criatura final se revela por regiones, sin flashes ni jumpscare.
@@ -264,6 +271,8 @@ Implementa el cierre de la experiencia y termina la navegación global.
 Cierre:
 - Oscurece progresivamente la infección hasta recuperar silencio visual.
 - Título final, CTA a Steam y contacto con Strange Creature Factory.
+- El CTA principal recupera `scarlet` sobre negro; el latón solo acompaña en
+  numeración o detalles secundarios.
 - Créditos, redes, política de privacidad y controles de accesibilidad.
 - No inventes direcciones, premios, fechas ni socios.
 
@@ -310,4 +319,3 @@ Entrega un informe breve de problemas encontrados, correcciones realizadas y
 límites que requieran nuevos assets o decisiones del equipo. Build y lint deben
 pasar al finalizar.
 ```
-

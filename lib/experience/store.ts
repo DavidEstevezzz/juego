@@ -38,18 +38,29 @@ type ExperienceState = {
   documentVisible: boolean;
   /** El navegador pudo crear un contexto WebGL. */
   webglAvailable: boolean;
+  /** El tier ya se degradó en esta sesión; la detección deja de aplicarse. */
+  graphicsTierDegraded: boolean;
 
   setChapter: (chapter: ChapterId) => void;
   setScrollMetrics: (metrics: ScrollMetrics) => void;
+  /** Fija el tier detectado al arrancar. Se ignora si ya hubo degradación. */
   setGraphicsTier: (tier: GraphicsTier) => void;
-  /** Baja el tier sin subirlo nunca; lo usa la monitorización de rendimiento. */
-  downgradeGraphicsTier: (tier: GraphicsTier) => void;
+  /**
+   * Baja un escalón: A → B → C. Nunca sube y en C ya no hace nada, así que el
+   * tier no puede recuperarse automáticamente durante la sesión.
+   */
+  degradeGraphicsTier: () => void;
   setReducedMotion: (reducedMotion: boolean) => void;
   setDocumentVisible: (documentVisible: boolean) => void;
   setWebglAvailable: (webglAvailable: boolean) => void;
 };
 
-const TIER_ORDER: Record<GraphicsTier, number> = { a: 0, b: 1, c: 2 };
+/** Escalones de degradación. `c` es terminal. */
+const NEXT_TIER: Record<GraphicsTier, GraphicsTier | null> = {
+  a: 'b',
+  b: 'c',
+  c: null,
+};
 
 /** Umbral para no notificar cambios imperceptibles de progreso o velocidad. */
 const EPSILON = 0.0005;
@@ -64,6 +75,7 @@ export const useExperienceStore = create<ExperienceState>((set, get) => ({
   reducedMotion: false,
   documentVisible: true,
   webglAvailable: false,
+  graphicsTierDegraded: false,
 
   setChapter: (chapter) => {
     if (get().chapter === chapter) return;
@@ -83,14 +95,17 @@ export const useExperienceStore = create<ExperienceState>((set, get) => ({
   },
 
   setGraphicsTier: (graphicsTier) => {
-    if (get().graphicsTier === graphicsTier) return;
+    const state = get();
+    // Una degradación por rendimiento gana siempre a la detección inicial.
+    if (state.graphicsTierDegraded) return;
+    if (state.graphicsTier === graphicsTier) return;
     set({ graphicsTier });
   },
 
-  downgradeGraphicsTier: (tier) => {
-    const current = get().graphicsTier;
-    if (TIER_ORDER[tier] <= TIER_ORDER[current]) return;
-    set({ graphicsTier: tier });
+  degradeGraphicsTier: () => {
+    const next = NEXT_TIER[get().graphicsTier];
+    if (!next) return;
+    set({ graphicsTier: next, graphicsTierDegraded: true });
   },
 
   setReducedMotion: (reducedMotion) => {

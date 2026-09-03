@@ -15,7 +15,7 @@ Fuentes visuales de referencia:
 
 1. Oscuridad con detalle: fondos casi negros, pero con profundidad, humedad y textura.
 2. Periodo sin nostalgia: 1900 alternativo, hierro remachado y maquinaria naval; evitar el sepia decorativo.
-3. Horror contenido: el rojo y la carne aparecen como interrupciones, no como color dominante.
+3. Dualidad negro-rojo: el negro construye el mundo y el rojo le da identidad, tensión y dirección. El rojo tiene presencia continua, pero nunca ocupa más masa que la oscuridad.
 4. Tipografía editorial: el título tiene solemnidad clásica; la información técnica recuerda a placas, registros y señales del barco.
 5. Imágenes protagonistas: el diseño enmarca el material del juego, no compite con él.
 
@@ -30,20 +30,23 @@ Los seis primeros colores proceden de la identidad actual del estudio y se convi
 | `hull` | `#0D1613` | Paneles, navegación y superficies elevadas |
 | `ivory` | `#EDE7D3` | Texto principal, titulares y marcas sobre fondo oscuro |
 | `steel` | `#9EAEAC` | Texto secundario, datos y acero frío |
-| `brass` | `#B89840` | CTA principal, líneas, foco y estado activo |
-| `blood` | `#7A1515` | Ritual, peligro, daño y transiciones puntuales |
+| `blood` | `#7A1515` | Fondos rojos profundos, sangre, ritual e infección |
+| `scarlet` | `#A82024` | Títulos, CTA principal, navegación activa y transiciones |
+| `ember` | `#D24732` | Luz roja intensa y momentos de máxima tensión |
+| `brass` | `#B89840` | Detalle naval, numeración, líneas secundarias y metal |
 | `oxidation` | `#17322C` | Veladuras verdes, agua, corrosión y profundidad |
 | `rust` | `#6C3828` | Texturas metálicas y acentos secundarios |
 | `frost` | `#C6D2CE` | Bruma, hielo y destellos fríos muy limitados |
 
 ### Proporción recomendada
 
-- 70% `void`, `charcoal` y `hull`.
-- 20% `ivory` y `steel`.
-- 7% `brass`.
-- 3% `blood`, `rust` y efectos atmosféricos.
+- 55% `void`, `charcoal` y `hull`.
+- 18% `blood`, `scarlet` y apariciones muy localizadas de `ember`.
+- 17% `ivory` y `steel`.
+- 7% `oxidation`, `frost` y luz fría procedente de las imágenes.
+- 3% `brass` y `rust`.
 
-El rojo no debe usarse para texto pequeño sobre negro. Funciona como fondo, destello, máscara o detalle acompañado de marfil. El latón es el color de interacción normal; el rojo queda reservado para peligro y horror.
+El negro siempre conserva la mayor masa visual. El rojo puede ocupar títulos, CTA, líneas activas, máscaras, fondos parciales y transiciones, pero no debe usarse para párrafos pequeños sobre negro. El latón pasa a ser un material secundario: aporta época y carácter naval sin competir con la firma negro-rojo de la portada.
 
 ### Tokens CSS propuestos
 
@@ -54,15 +57,19 @@ El rojo no debe usarse para texto pequeño sobre negro. Funciona como fondo, des
   --color-hull: #0d1613;
   --color-ivory: #ede7d3;
   --color-steel: #9eaeac;
-  --color-brass: #b89840;
   --color-blood: #7a1515;
+  --color-scarlet: #a82024;
+  --color-ember: #d24732;
+  --color-brass: #b89840;
   --color-oxidation: #17322c;
   --color-rust: #6c3828;
   --color-frost: #c6d2ce;
 
   --surface-glass: rgb(5 10 7 / 82%);
   --border-subtle: rgb(237 231 211 / 14%);
-  --border-brass: rgb(184 152 64 / 42%);
+  --border-scarlet: rgb(168 32 36 / 58%);
+  --border-brass: rgb(184 152 64 / 28%);
+  --glow-red: 0 0 64px rgb(168 32 36 / 24%);
   --shadow-deep: 0 32px 90px rgb(0 0 0 / 58%);
 }
 ```
@@ -118,7 +125,7 @@ El logotipo oficial de **Black Tides** debe tratarse como un activo gráfico y n
 - Secciones amplias, de una a dos alturas de viewport, en lugar de tarjetas pequeñas.
 - Asimetría controlada: personajes cortados por el encuadre, textos que entran desde los márgenes y masas de oscuridad deliberadas.
 - Bordes de 1 px, esquinas rectas o con un radio máximo de 2–4 px.
-- Líneas de latón, placas numeradas y marcas de calibración como detalles funcionales.
+- Líneas rojas para estado y dirección; latón, placas numeradas y marcas de calibración como detalles materiales.
 - El espacio vacío debe sentirse como oscuridad del barco, no como aire limpio de una landing corporativa.
 
 ## Materiales y textura
@@ -147,7 +154,7 @@ Evitar engranajes decorativos, marcos barrocos, pergaminos, tentáculos genéric
 - Máscaras de luz que revelan contenido, en vez de simples fades corporativos.
 - Parallax leve y cámara pesada; nada debe sentirse elástico o flotante.
 - Microinteracciones entre 180 y 300 ms; entradas narrativas entre 700 y 1400 ms.
-- El rojo puede aparecer en flashes muy breves, pero nunca de forma continua.
+- El rojo puede permanecer de forma continua en elementos estructurales pequeños. Su superficie e intensidad aumentan al acercarse a la infección.
 - Respetar `prefers-reduced-motion` y ofrecer una versión estática completa.
 
 ## Sonido
@@ -159,15 +166,16 @@ El sonido es opcional y solo se activa después de una acción explícita. La ca
 ### CTA principal
 
 - Fondo transparente o `hull`.
-- Borde de latón al 40–60%.
+- Borde `scarlet` o fondo negro con línea roja.
 - Texto Share Tech Mono en mayúsculas.
-- Hover: relleno `brass`, texto `void`, pequeño desplazamiento de una línea o indicador.
+- Hover: relleno `scarlet`, texto `ivory`, pequeño desplazamiento de una línea o indicador.
+- El latón se reserva para el CTA secundario o detalles mecánicos.
 
 ### Navegación
 
 - Fija o contextual, mínima.
 - Número de capítulo + nombre corto.
-- Estado activo en latón.
+- Estado activo en `scarlet`; latón para numeración o marcas auxiliares.
 - El logotipo del juego siempre tiene prioridad sobre el del estudio.
 
 ### Panel informativo
@@ -178,11 +186,11 @@ El sonido es opcional y solo se activa después de una acción explícita. La ca
 
 ## Cambios respecto a la maqueta actual
 
-1. Sustituir el verde ácido `#C7FF4A` por el latón `#B89840` como acento principal.
+1. Sustituir el verde ácido `#C7FF4A` por `scarlet` `#A82024` como acento principal y conservar el latón como detalle secundario.
 2. Cambiar el grid digital limpio por una estructura naval más irregular y tenue.
 3. Introducir Cinzel en titulares y Share Tech Mono en etiquetas.
 4. Mantener el negro, pero desplazarlo hacia el verde profundo `#050A07`.
-5. Reservar `#7A1515` para el horror ritual y transiciones dramáticas.
+5. Construir una relación constante entre negro y rojo: `#7A1515` para profundidad e infección, `#A82024` para interfaz y títulos, y `#D24732` solo para luz intensa.
 6. Eliminar el aspecto de prototipo tecnológico cuando se integren las primeras imágenes oficiales.
 
 ## Material prioritario que falta

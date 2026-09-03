@@ -66,6 +66,11 @@ La experiencia alterna tres estados:
 3. **Amenaza:** distorsión, materia orgánica y sonido opcional aumentan sin
    perjudicar la lectura.
 
+La portada establece la relación cromática general: negro como masa dominante,
+rojo como segundo color reconocible y marfil como contraste tipográfico. El
+rojo está presente desde el hero, pero gana superficie e intensidad durante el
+descenso hasta la infección.
+
 No habrá animaciones decorativas aisladas. Cada movimiento debe cumplir al
 menos una función: revelar, orientar, crear tensión, explicar una mecánica o
 conectar dos capítulos.
@@ -135,7 +140,8 @@ Objetivo: demostrar que el horror tiene relaciones y consecuencias.
 Objetivo: realizar el gran giro visual de la página.
 
 - `Growth`, `Blubber Room` y `Vessel` forman una secuencia, no una galería.
-- El color pasa gradualmente del azul/verde al ritual red y carne.
+- El negro-rojo presente desde el inicio se desplaza hacia tonos `blood` y
+  `ember`, reduciendo progresivamente la luz fría.
 - Un shader de distorsión de baja amplitud reacciona a scroll y proximidad.
 - La criatura se revela por partes; nunca mediante un susto o flash agresivo.
 
@@ -286,4 +292,3 @@ siguiente debe cumplir:
 5. pausa de recursos fuera de viewport;
 6. build y lint correctos;
 7. ninguna regresión en secciones anteriores.
-

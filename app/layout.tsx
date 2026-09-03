@@ -29,22 +29,22 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
   ),
-  title: 'Black Tides: Draga’s Wake — Presentación interactiva',
+  title: 'Black Tides: Draga’s Wake — Interactive presentation',
   // Declarado explícitamente: sin esto el navegador sondea `/favicon.ico` y
   // devuelve un 404, ya que solo existe la versión SVG.
   icons: { icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }] },
   description:
-    'Presentación web cinematográfica del universo, la propuesta jugable y la visión de producción de Black Tides: Draga’s Wake.',
+    'A cinematic web presentation of the world, gameplay promise and production vision behind Black Tides: Draga’s Wake.',
   openGraph: {
     title: 'Black Tides: Draga’s Wake',
     description:
-      'Presentación web interactiva del universo, la experiencia y la visión de Black Tides: Draga’s Wake.',
+      'An interactive web presentation of the world, experience and vision behind Black Tides: Draga’s Wake.',
     images: [
       {
         url: '/og.png',
         width: 1200,
         height: 630,
-        alt: 'Black Tides: Draga’s Wake — Presentación interactiva',
+        alt: 'Black Tides: Draga’s Wake — Interactive presentation',
       },
     ],
     type: 'website',
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Black Tides: Draga’s Wake',
     description:
-      'Presentación web interactiva del universo, la experiencia y la visión de Black Tides: Draga’s Wake.',
+      'An interactive web presentation of the world, experience and vision behind Black Tides: Draga’s Wake.',
     images: ['/og.png'],
   },
 };
@@ -68,7 +68,7 @@ export default function RootLayout({
     // clases vivieran en `<body>`, `:root` no vería `--font-cinzel` y todos los
     // tokens tipográficos caerían al fallback del sistema.
     <html
-      lang="es"
+      lang="en"
       className={`${cinzel.variable} ${plexSans.variable} ${shareTechMono.variable}`}
     >
       <body>{children}</body>

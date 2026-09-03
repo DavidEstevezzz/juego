@@ -99,7 +99,10 @@ El logotipo oficial de **Black Tides** debe tratarse como un activo gráfico y n
 - Peso: 400.
 - Uso: numeración de cubierta, coordenadas, capítulos, navegación, estados y metadatos.
 - Siempre en mayúsculas para etiquetas cortas.
-- Tracking entre `0.12em` y `0.24em`.
+- Tamaño mínimo habitual de `0.75rem`; usar `0.8–0.85rem` en navegación,
+  acciones y etiquetas que deban leerse rápidamente.
+- Tracking entre `0.12em` y `0.22em`; reducirlo ligeramente cuando el texto sea
+  largo para no perder legibilidad.
 - Nunca emplearla para cuerpos de texto largos.
 
 ```css
@@ -117,7 +120,7 @@ El logotipo oficial de **Black Tides** debe tratarse como un activo gráfico y n
 | Titular secundario | `clamp(1.75rem, 3vw, 3.25rem)`  | Cinzel 600          |
 | Entradilla         | `clamp(1.15rem, 1.6vw, 1.5rem)` | IBM Plex Sans 400   |
 | Cuerpo             | `1rem–1.125rem`                 | IBM Plex Sans 400   |
-| Etiqueta           | `0.68rem–0.78rem`               | Share Tech Mono 400 |
+| Etiqueta           | `0.75rem–0.85rem`               | Share Tech Mono 400 |
 
 ## Composición
 

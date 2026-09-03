@@ -177,9 +177,9 @@ export function WorldSection() {
         </div>
 
         <div data-world-lockup className="world-lockup">
-          <p className="world-kicker">El mundo</p>
+          <p className="world-kicker">The world</p>
           <h2 id="world-title" className="world-title">
-            <span className="sr-only">El mundo: </span>
+            <span className="sr-only">The world: </span>
             Driftwood
           </h2>
         </div>

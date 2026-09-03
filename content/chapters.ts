@@ -16,15 +16,15 @@ export const chapters: readonly ExperienceChapter[] = [
     navLabel: 'The Wake',
     title: 'The Wake',
     summary:
-      'Presentar título, tono y primera decisión del visitante sin competir con el título.',
+      'Introduce the title, tone and first visitor decision without competing with the key art.',
   },
   {
     id: 'world',
     index: '02',
     navLabel: 'Driftwood',
-    title: 'El mundo: Driftwood',
+    title: 'The world: Driftwood',
     summary:
-      'El tono, las reglas del mundo y la premisa que hacen reconocible al proyecto.',
+      'The tone, world rules and premise that give the project its identity.',
   },
   {
     id: 'gameplay',
@@ -39,39 +39,38 @@ export const chapters: readonly ExperienceChapter[] = [
     index: '04',
     navLabel: 'Draga',
     title: 'Draga',
-    summary:
-      'Convertir a la protagonista en el centro emocional de la experiencia.',
+    summary: 'Place the protagonist at the emotional center of the experience.',
   },
   {
     id: 'crew',
     index: '05',
-    navLabel: 'Tripulación',
-    title: 'Ecos humanos',
+    navLabel: 'Crew',
+    title: 'Human echoes',
     summary:
-      'Modelos, facciones y figuras clave presentados como piezas interactivas.',
+      'Models, factions and key figures presented as interactive narrative pieces.',
   },
   {
     id: 'infection',
     index: '06',
-    navLabel: 'Infección',
-    title: 'La infección',
+    navLabel: 'Infection',
+    title: 'The infection',
     summary:
-      'Realizar el gran giro visual de la página como una secuencia, no como una galería.',
+      'Deliver the site’s major visual turn as a continuous sequence, not a gallery.',
   },
   {
     id: 'production',
     index: '07',
-    navLabel: 'Producción',
-    title: 'Evidencia de producción',
+    navLabel: 'Production',
+    title: 'Production evidence',
     summary:
-      'Equipo, hoja de ruta, oportunidad y una vía directa para continuar la conversación.',
+      'Team, roadmap, opportunity and a direct path to continue the conversation.',
   },
   {
     id: 'signal',
     index: '08',
-    navLabel: 'Señal',
-    title: 'Señal final',
-    summary: 'Cerrar con una imagen memorable y una acción clara.',
+    navLabel: 'Signal',
+    title: 'Final signal',
+    summary: 'Close with a memorable image and one clear action.',
   },
 ] as const;
 
@@ -100,24 +99,24 @@ export const chapterMap = Object.fromEntries(
  * datos de producción. Se sustituye cuando el equipo apruebe el texto.
  */
 export const worldChapterContent = {
-  deckLabel: 'Cubierta 02',
+  deckLabel: 'Deck 02',
   premise:
-    'Un asentamiento helado al borde del mapa. La tormenta borra las rutas, el rastro y cualquier promesa de regreso.',
+    'A frozen settlement at the edge of the map. The storm erases every route, every trail and any promise of return.',
   observations: [
     {
       index: '01',
-      label: 'Aislamiento',
-      text: 'No hay ruta de vuelta a la vista. Lo único que continúa es el camino hacia el interior.',
+      label: 'Isolation',
+      text: 'No route back remains in sight. The only path still open leads further inland.',
     },
     {
       index: '02',
-      label: 'Clima',
-      text: 'El viento no decora el paisaje: lo oculta, lo transforma y decide cuánto puedes ver.',
+      label: 'Weather',
+      text: 'The wind does not decorate the landscape: it conceals it, reshapes it and decides how far you can see.',
     },
     {
       index: '03',
-      label: 'Localización',
-      text: 'Driftwood se sostiene sobre madera, hielo y restos varados por la marea.',
+      label: 'Location',
+      text: 'Driftwood stands on timber, ice and wreckage stranded by the tide.',
     },
   ],
 } as const;

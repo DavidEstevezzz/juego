@@ -168,7 +168,7 @@ export function HeroSection() {
 
           <p
             data-hero-deck
-            className="font-system mb-6 text-[0.68rem] uppercase tracking-[0.28em] text-brass"
+            className="font-system mb-6 text-[var(--font-system-label)] uppercase tracking-[0.24em] text-brass"
           >
             {hero.deckLabel}
           </p>
@@ -197,10 +197,10 @@ export function HeroSection() {
 
           <p
             data-hero-genre
-            className="font-system mb-8 flex max-w-[46rem] flex-wrap items-center gap-x-3 gap-y-2 text-[0.7rem] uppercase tracking-[0.2em] text-steel"
+            className="font-system mb-8 flex max-w-[46rem] flex-wrap items-center gap-x-3 gap-y-2 text-[var(--font-system-label)] uppercase tracking-[0.18em] text-steel"
           >
             {hero.genre}
-            <span className="border border-[color:var(--border-brass)] px-2 py-1 text-[0.6rem] tracking-[0.16em] text-brass">
+            <span className="border border-[color:var(--border-brass)] px-2 py-1 text-[var(--font-system-compact)] tracking-[0.14em] text-brass">
               {hero.genreStatus}
             </span>
           </p>
@@ -213,7 +213,7 @@ export function HeroSection() {
               href={hero.steamUrl}
               target="_blank"
               rel="noreferrer noopener"
-              className="font-system inline-flex min-h-12 items-center gap-3 border border-[color:var(--border-brass)] px-6 text-[0.72rem] uppercase tracking-[0.2em] text-steel transition-colors duration-200 hover:border-brass hover:text-foreground focus-ring"
+              className="font-system inline-flex min-h-12 items-center gap-3 border border-[color:var(--border-brass)] px-6 text-[var(--font-system-action)] uppercase tracking-[0.18em] text-steel transition-colors duration-200 hover:border-brass hover:text-foreground focus-ring"
             >
               {hero.ctaSecondary}
               <MoveUpRight aria-hidden="true" className="h-4 w-4" />
@@ -223,7 +223,7 @@ export function HeroSection() {
 
         <div
           data-hero-meta
-          className="font-system mt-10 flex items-end justify-between gap-4 border-t border-[color:var(--border-subtle)] pt-4 text-[0.62rem] uppercase tracking-[0.2em] text-steel"
+          className="font-system mt-10 flex items-end justify-between gap-4 border-t border-[color:var(--border-subtle)] pt-4 text-[var(--font-system-compact)] uppercase tracking-[0.18em] text-steel"
         >
           <span>
             <span className="text-brass">{chapter.index}</span> —{' '}

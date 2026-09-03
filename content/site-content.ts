@@ -1,9 +1,9 @@
 export const siteContent = {
   projectLabel: 'Black Tides: Draga’s Wake',
-  skipLinkLabel: 'Saltar al contenido principal',
-  navLabel: 'Capítulos de la experiencia',
+  skipLinkLabel: 'Skip to main content',
+  navLabel: 'Experience chapters',
   /** Etiqueta mostrada en los contenedores todavía sin dirección visual. */
-  scaffoldLabel: 'Contenedor provisional',
+  scaffoldLabel: 'Section in development',
 
   /**
    * Copy del hero.
@@ -14,23 +14,23 @@ export const siteContent = {
    * junto a `genreStatus` hasta que el equipo apruebe el copy definitivo.
    */
   hero: {
-    deckLabel: 'Cubierta 01',
+    deckLabel: 'Deck 01',
     titlePrimary: 'Black Tides',
     titleSecondary: 'Draga’s Wake',
-    genre: 'Horror marítimo de supervivencia',
-    genreStatus: 'Copy provisional',
-    ctaPrimary: 'Ver teaser',
-    ctaSecondary: 'Ver en Steam',
+    genre: 'Maritime survival horror',
+    genreStatus: 'Provisional copy',
+    ctaPrimary: 'Watch teaser',
+    ctaSecondary: 'View on Steam',
     steamUrl:
       'https://store.steampowered.com/app/4810650/Black_Tides_Dragas_Wake/',
-    scrollHint: 'Descender',
+    scrollHint: 'Descend',
     posterAlt:
-      'Una figura solitaria avanza hacia una luz roja entre restos orgánicos suspendidos en la penumbra.',
-    trailerTitle: 'Teaser de Black Tides: Draga’s Wake',
+      'A solitary figure walks toward a red light through organic remains suspended in darkness.',
+    trailerTitle: 'Black Tides: Draga’s Wake teaser',
     trailerDescription:
-      'Vídeo del teaser con controles nativos. El sonido empieza silenciado y solo se activa si lo pides.',
-    soundOn: 'Activar sonido',
-    soundOff: 'Silenciar',
-    closeTrailer: 'Cerrar teaser',
+      'Teaser video with native controls. Sound starts muted and only plays after your action.',
+    soundOn: 'Enable sound',
+    soundOff: 'Mute sound',
+    closeTrailer: 'Close teaser',
   },
 } as const;

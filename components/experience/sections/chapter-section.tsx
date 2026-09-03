@@ -38,7 +38,7 @@ export function ChapterSection({
         {/* Marca roja de dirección; la numeración se queda en latón. */}
         <div className="signal-rule" aria-hidden="true" />
 
-        <p className="font-system text-[0.7rem] uppercase tracking-[0.24em] text-steel">
+        <p className="font-system text-[var(--font-system-label)] uppercase tracking-[0.2em] text-steel">
           <span aria-hidden="true" className="text-brass">
             {chapter.index} /{' '}
           </span>
@@ -57,7 +57,7 @@ export function ChapterSection({
             <p className="max-w-[60ch] text-base leading-[1.65] text-steel sm:text-lg">
               {chapter.summary}
             </p>
-            <p className="font-system text-[0.68rem] uppercase tracking-[0.2em] text-steel/60">
+            <p className="font-system text-[var(--font-system-compact)] uppercase tracking-[0.18em] text-steel/70">
               {siteContent.scaffoldLabel}
             </p>
           </>

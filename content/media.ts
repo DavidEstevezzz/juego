@@ -37,12 +37,12 @@ export const media = {
   images: {
     world: image(
       'driftwood-outskirts',
-      'Draga avanza por un asentamiento helado azotado por el viento.',
+      'Draga moves through a frozen settlement battered by the wind.',
       [0.52, 0.48],
     ),
     village: image(
       'frozen-village',
-      'Un pueblo costero abandonado bajo una tormenta de nieve.',
+      'An abandoned coastal village beneath a snowstorm.',
       [0.5, 0.5],
     ),
     corridor: image(
@@ -62,27 +62,24 @@ export const media = {
     ),
     draga: image(
       'draga-profile',
-      'Primer plano de Draga iluminada por una luz azul y fría.',
+      'Close portrait of Draga under cold blue light.',
     ),
     izzy: image(
       'izzy-protagonist',
-      'Izzy observa una escena ritual iluminada por velas.',
+      'Izzy watches a ritual scene lit by candles.',
     ),
     growth: image(
       'organic-growth',
-      'Draga contempla una inmensa masa orgánica dentro del barco.',
+      'Draga faces an immense organic mass inside the ship.',
     ),
     blubberRoom: image(
       'blubber-room',
-      'Una estancia del barco invadida por tejido orgánico rojo.',
+      'A ship compartment overtaken by red organic tissue.',
     ),
     vessel: image(
       'vessel-creature',
-      'Una criatura de carne pálida observa con numerosos ojos azules.',
+      'A pale-fleshed creature watches through numerous blue eyes.',
     ),
-    dialogue: image(
-      'bill-dialogue',
-      'Dos personajes conversan en la penumbra.',
-    ),
+    dialogue: image('bill-dialogue', 'Two characters speak in the shadows.'),
   },
 } as const;

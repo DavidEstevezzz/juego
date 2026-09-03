@@ -1,5 +1,5 @@
-import { LandingExperience } from '@/components/experience/landing-experience';
+import { ExperienceShell } from '@/components/experience/experience-shell';
 
 export default function Home() {
-  return <LandingExperience />;
+  return <ExperienceShell />;
 }

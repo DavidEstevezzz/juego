@@ -40,3 +40,6 @@ next-env.d.ts
 # Local source media. Optimized derivatives live in public/assets/media.
 /source-assets/**
 !/source-assets/README.md
+
+# typescript incremental build
+*.tsbuildinfo

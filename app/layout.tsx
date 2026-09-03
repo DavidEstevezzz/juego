@@ -1,33 +1,70 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Cinzel, IBM_Plex_Sans, Share_Tech_Mono } from 'next/font/google';
 import './globals.css';
 
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
-const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
+// Tipografías definidas en docs/VISUAL-DIRECTION.md. `next/font` las
+// autoaloja y reserva métricas, de modo que no hay salto al cargarlas.
+const cinzel = Cinzel({
+  variable: '--font-cinzel',
+  subsets: ['latin'],
+  weight: ['400', '600'],
+  display: 'swap',
+});
+
+const plexSans = IBM_Plex_Sans({
+  variable: '--font-plex-sans',
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  display: 'swap',
+});
+
+const shareTechMono = Share_Tech_Mono({
+  variable: '--font-share-tech-mono',
+  subsets: ['latin'],
+  weight: '400',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
-  title: 'Proyecto de videojuego — Presentación interactiva',
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+  ),
+  title: 'Black Tides: Draga’s Wake — Presentación interactiva',
   description:
-    'Base de la experiencia web cinematográfica para presentar el universo, la propuesta y la visión del videojuego.',
+    'Presentación web cinematográfica del universo, la propuesta jugable y la visión de producción de Black Tides: Draga’s Wake.',
   openGraph: {
-    title: 'Proyecto de videojuego',
-    description: 'Presentación web interactiva del universo, la experiencia y la visión del videojuego.',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Proyecto de videojuego — Presentación interactiva' }],
+    title: 'Black Tides: Draga’s Wake',
+    description:
+      'Presentación web interactiva del universo, la experiencia y la visión de Black Tides: Draga’s Wake.',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Black Tides: Draga’s Wake — Presentación interactiva',
+      },
+    ],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Proyecto de videojuego',
-    description: 'Presentación web interactiva del universo, la experiencia y la visión del videojuego.',
+    title: 'Black Tides: Draga’s Wake',
+    description:
+      'Presentación web interactiva del universo, la experiencia y la visión de Black Tides: Draga’s Wake.',
     images: ['/og.png'],
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <body
+        className={`${cinzel.variable} ${plexSans.variable} ${shareTechMono.variable}`}
+      >
+        {children}
+      </body>
     </html>
   );
 }

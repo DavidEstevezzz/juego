@@ -3,53 +3,137 @@
 @import 'shadcn/tailwind.css';
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
+  --font-mono: var(--font-system);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-muted: var(--muted);
   --color-border: var(--border);
+
+  --color-void: var(--color-void-raw);
+  --color-charcoal: var(--color-charcoal-raw);
+  --color-hull: var(--color-hull-raw);
+  --color-ivory: var(--color-ivory-raw);
+  --color-steel: var(--color-steel-raw);
+  --color-brass: var(--color-brass-raw);
+  --color-blood: var(--color-blood-raw);
+  --color-oxidation: var(--color-oxidation-raw);
+  --color-rust: var(--color-rust-raw);
+  --color-frost: var(--color-frost-raw);
 }
 
+/* Paleta y tipografía de docs/VISUAL-DIRECTION.md. */
 :root {
-  --background: #070908;
-  --foreground: #f2f0e9;
-  --accent: #c7ff4a;
-  --muted: #9ca398;
-  --border: rgb(242 240 233 / 14%);
-  --radius: 0.35rem;
+  --color-void-raw: #050a07;
+  --color-charcoal-raw: #080807;
+  --color-hull-raw: #0d1613;
+  --color-ivory-raw: #ede7d3;
+  --color-steel-raw: #9eaeac;
+  --color-brass-raw: #b89840;
+  --color-blood-raw: #7a1515;
+  --color-oxidation-raw: #17322c;
+  --color-rust-raw: #6c3828;
+  --color-frost-raw: #c6d2ce;
+
+  --surface-glass: rgb(5 10 7 / 82%);
+  --border-subtle: rgb(237 231 211 / 14%);
+  --border-brass: rgb(184 152 64 / 42%);
+  --shadow-deep: 0 32px 90px rgb(0 0 0 / 58%);
+
+  --font-display: var(--font-cinzel), Georgia, serif;
+  --font-body: var(--font-plex-sans), Arial, sans-serif;
+  --font-system: var(--font-share-tech-mono), ui-monospace, monospace;
+
+  --background: var(--color-void-raw);
+  --foreground: var(--color-ivory-raw);
+  --accent: var(--color-brass-raw);
+  --muted: var(--color-steel-raw);
+  --border: var(--border-subtle);
+  --radius: 0.25rem;
+
+  /* Altura de la barra de capítulos; evita saltos al fijar el encabezado. */
+  --chapter-bar-height: 3.25rem;
 }
 
-* { box-sizing: border-box; border-color: var(--border); }
-html { scroll-behavior: smooth; background: var(--background); }
+* {
+  box-sizing: border-box;
+  border-color: var(--border);
+}
+
+/*
+ * `scroll-behavior: smooth` se deja en `auto` a propósito: ScrollTrigger y el
+ * futuro smooth scrolling no deben competir con el desplazamiento nativo.
+ */
+html {
+  scroll-behavior: auto;
+  background: var(--background);
+  /* `clip` evita scroll horizontal sin crear un contenedor de scroll nuevo. */
+  overflow-x: clip;
+  scroll-padding-top: calc(var(--chapter-bar-height) + 1rem);
+}
+
 body {
   margin: 0;
+  overflow-x: clip;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
 }
-::selection { background: var(--accent); color: var(--background); }
+
+::selection {
+  background: var(--accent);
+  color: var(--background);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-system {
+  font-family: var(--font-system);
+}
 
 .experience-grid {
   background-image:
-    linear-gradient(rgb(255 255 255 / 4%) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 255 255 / 4%) 1px, transparent 1px);
+    linear-gradient(rgb(237 231 211 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(237 231 211 / 3%) 1px, transparent 1px);
   background-size: 72px 72px;
   mask-image: linear-gradient(to bottom, black 40%, transparent 95%);
 }
 
 .stage-glow {
   background:
-    radial-gradient(circle at 50% 45%, rgb(199 255 74 / 18%), transparent 18%),
-    radial-gradient(circle at 50% 45%, rgb(255 255 255 / 8%), transparent 42%);
+    radial-gradient(circle at 50% 45%, rgb(184 152 64 / 12%), transparent 18%),
+    radial-gradient(circle at 50% 45%, rgb(198 210 206 / 6%), transparent 42%);
+}
+
+/*
+ * Capa WebGL persistente. Es `fixed` y se pinta detrás del documento, así que
+ * montarla o desmontarla nunca provoca cambios de layout (CLS).
+ */
+.experience-canvas-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  contain: strict;
+}
+
+.experience-canvas-layer canvas {
+  display: block;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

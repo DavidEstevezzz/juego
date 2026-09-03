@@ -1,6 +1,8 @@
-# Web de presentación del videojuego
+# Black Tides: Draga's Wake — presentación web
 
-Base técnica para una landing cinematográfica dirigida a socios e inversores. Es una web React; Three.js se reserva para escenas visuales concretas y no convierte el proyecto en un videojuego.
+Base técnica para una landing cinematográfica por capítulos dirigida a socios e
+inversores. Es una web React; Three.js se reserva para escenas visuales
+concretas y no convierte el proyecto en un videojuego.
 
 ## Arranque local
 
@@ -16,12 +18,13 @@ npm run build
 npm run lint
 ```
 
-## Próximas fases
+## Estado
 
-1. Recibir identidad visual, textos y material aprobado del equipo.
-2. Definir el guion y el orden definitivo de capítulos.
-3. Construir el primer capítulo con recursos reales.
-4. Añadir escenas 3D y vídeo de manera diferida.
-5. Incorporar contacto y analítica cuando el contenido esté validado.
+El núcleo de la experiencia (capítulos, canvas persistente y diferido, métricas
+de scroll únicas, integración central de GSAP, tiers gráficos, visibilidad de
+pestaña y movimiento reducido) está implementado. Cada capítulo se desarrolla
+después con su propio prompt de `docs/PROMPTS-BY-SECTION.md`.
 
-La estructura detallada está en `docs/ARCHITECTURE.md`, la petición de materiales en `docs/ASSET-HANDOFF.md` y el sistema visual en `docs/VISUAL-DIRECTION.md`.
+La estructura detallada está en `docs/ARCHITECTURE.md`, el guion en
+`docs/EXPERIENCE-BLUEPRINT.md`, la petición de materiales en
+`docs/ASSET-HANDOFF.md` y el sistema visual en `docs/VISUAL-DIRECTION.md`.

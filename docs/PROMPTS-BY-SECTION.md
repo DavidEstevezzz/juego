@@ -128,22 +128,27 @@ Implementa únicamente la sección de promesa jugable. No añadas estadísticas 
 mecánicas no confirmadas.
 
 Estructura:
-- Una escena fijada en escritorio con tres estados editoriales.
+- Una sección de altura natural con tres aperturas editoriales contiguas. No
+  uses pinning, scrubbing ni una distancia artificial de scroll.
 - Cada estado representa un pilar aprobado: Explore, Endure y Confront
   (mantén los textos en un archivo de contenido para poder sustituirlos).
 - Usa ship-corridor, ship-atrium y frozen-deck como medios temporales.
 - Las capturas con HUD deben mostrarse como evidencia de gameplay, no como key
   art, y su recorte no debe ocultar información relevante.
 
-Movimiento:
-- El progreso de scroll cambia foco, escala y luz entre estados.
-- El estado activo tiene una transición clara también sin hover.
-- Indicador 01/03 accesible y sincronizado con aria-current.
-- En móvil sustituye el pinning por capítulos verticales con snap opcional solo
-  si no perjudica la navegación.
+Interacción:
+- Explore empieza expandido. Hover, foco o toque expanden otro pilar y el estado
+  elegido persiste al retirar el cursor.
+- La transición combina anchura, máscara, encuadre, luz y una señal escarlata;
+  no uses WebGL ni reconstruyas el HUD.
+- GSAP se limita a una entrada breve al alcanzar la sección, sin progreso
+  ligado al scroll.
+- Cada panel es un control nativo con estado accesible y foco visible.
+- En móvil usa un acordeón vertical, sin carrusel ni scroll horizontal.
 
 Calidad:
-- No animes propiedades que fuercen layout cuando transform/opacity sirvan.
+- Mantén fija la altura del escenario en escritorio para evitar CLS al cambiar
+  de pilar.
 - No uses filtros blur grandes sobre elementos de pantalla completa.
 - El contenido se puede recorrer por teclado y con lector de pantalla.
 - Reduced motion presenta los tres pilares como bloques editoriales estáticos.

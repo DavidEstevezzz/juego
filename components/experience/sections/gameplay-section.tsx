@@ -1,19 +1,19 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from 'react';
 import { chapterMap, gameplayChapterContent } from '@/content/chapters';
 import { media } from '@/content/media';
-import {
-  clearChapterProgress,
-  setChapterProgress,
-} from '@/lib/experience/chapter-progress';
 import { useExperienceTimeline } from '@/lib/experience/gsap';
-import { useExperienceStore } from '@/lib/experience/store';
 import type { ResponsiveImage } from '@/types/experience';
 
 const chapter = chapterMap.gameplay;
 const content = gameplayChapterContent;
-const stateScrollPoints = [0.17, 0.52, 0.82] as const;
 
 const gameplayMedia = {
   corridor: { image: media.images.corridor, width: 1920, height: 1049 },
@@ -21,209 +21,133 @@ const gameplayMedia = {
   atrium: { image: media.images.atrium, width: 1920, height: 1080 },
 } as const;
 
+type PointerPosition = { x: number; y: number };
+
 /**
  * Chapter 03 — The gameplay promise.
  *
- * Desktop behaves as one continuous observation window. Black bulkheads close
- * over each capture, the image swaps while fully covered, and the next state
- * opens without a crossfade. Mobile and reduced motion keep the same semantic
- * order as three static editorial chapters with the complete gameplay frame.
+ * Driftwood already owns the long, scroll-led sequence. Gameplay changes the
+ * interaction grammar: three apertures remain in the natural document flow and
+ * respond directly to pointer, focus and touch. The selected capture expands
+ * without cropping its HUD; GSAP is limited to one short entrance reveal.
  */
 export function GameplaySection() {
   const root = useRef<HTMLElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const pointerFrame = useRef<number | null>(null);
+  const pointerPosition = useRef<PointerPosition>({ x: 0, y: 0 });
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeIndexRef = useRef(0);
-  const reducedMotion = useExperienceStore((state) => state.reducedMotion);
 
-  const updateActiveIndex = useCallback((nextIndex: number) => {
-    if (activeIndexRef.current === nextIndex) return;
-    activeIndexRef.current = nextIndex;
-    setActiveIndex(nextIndex);
+  const activatePillar = useCallback((index: number) => {
+    setActiveIndex((current) => (current === index ? current : index));
   }, []);
 
-  useEffect(() => () => clearChapterProgress('gameplay'), []);
+  const renderPointerPosition = useCallback(() => {
+    pointerFrame.current = null;
+
+    const element = stage.current;
+    if (!element) return;
+
+    const rect = element.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    const normalizedX = Math.min(
+      Math.max((pointerPosition.current.x - rect.left) / rect.width, 0),
+      1,
+    );
+    const normalizedY = Math.min(
+      Math.max((pointerPosition.current.y - rect.top) / rect.height, 0),
+      1,
+    );
+
+    element.style.setProperty('--gameplay-pointer-x', `${normalizedX * 100}%`);
+    element.style.setProperty('--gameplay-pointer-y', `${normalizedY * 100}%`);
+    element.style.setProperty(
+      '--gameplay-shift-x',
+      `${(normalizedX - 0.5) * -10}px`,
+    );
+    element.style.setProperty(
+      '--gameplay-shift-y',
+      `${(normalizedY - 0.5) * -6}px`,
+    );
+  }, []);
+
+  const handlePointerMove = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (event.pointerType === 'touch') return;
+
+      pointerPosition.current = { x: event.clientX, y: event.clientY };
+      if (pointerFrame.current !== null) return;
+
+      pointerFrame.current = window.requestAnimationFrame(
+        renderPointerPosition,
+      );
+    },
+    [renderPointerPosition],
+  );
+
+  const resetPointerLight = useCallback(() => {
+    const element = stage.current;
+    if (!element) return;
+
+    element.style.setProperty('--gameplay-pointer-x', '50%');
+    element.style.setProperty('--gameplay-pointer-y', '42%');
+    element.style.setProperty('--gameplay-shift-x', '0px');
+    element.style.setProperty('--gameplay-shift-y', '0px');
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (pointerFrame.current !== null) {
+        window.cancelAnimationFrame(pointerFrame.current);
+      }
+    },
+    [],
+  );
 
   useExperienceTimeline(root, ({ gsap, ScrollTrigger, scope }) => {
-    const stage = scope.querySelector<HTMLElement>('[data-gameplay-stage]');
-    const heading = scope.querySelector<HTMLElement>('[data-gameplay-heading]');
-    const evidence = scope.querySelector<HTMLElement>(
-      '[data-gameplay-evidence]',
+    const intro = scope.querySelector<HTMLElement>('[data-gameplay-intro]');
+    const panels = Array.from(
+      scope.querySelectorAll<HTMLElement>('[data-gameplay-panel]'),
     );
-    const mediaLayers = Array.from(
-      scope.querySelectorAll<HTMLElement>('[data-gameplay-media]'),
-    );
-    const copies = Array.from(
-      scope.querySelectorAll<HTMLElement>('[data-gameplay-copy]'),
-    );
-    const titles = Array.from(
-      scope.querySelectorAll<HTMLElement>('[data-gameplay-title]'),
-    );
-    const bodies = Array.from(
-      scope.querySelectorAll<HTMLElement>('[data-gameplay-body]'),
-    );
-    const shutterTop = scope.querySelector<HTMLElement>(
-      '[data-gameplay-shutter="top"]',
-    );
-    const shutterBottom = scope.querySelector<HTMLElement>(
-      '[data-gameplay-shutter="bottom"]',
-    );
-    const seam = scope.querySelector<HTMLElement>('[data-gameplay-seam]');
-    const exitLeft = scope.querySelector<HTMLElement>(
-      '[data-gameplay-exit="left"]',
-    );
-    const exitRight = scope.querySelector<HTMLElement>(
-      '[data-gameplay-exit="right"]',
-    );
-    const exitSeam = scope.querySelector<HTMLElement>(
-      '[data-gameplay-exit-seam]',
-    );
-    ScrollTrigger.create({
-      trigger: scope,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: true,
-      onUpdate: (self) =>
-        setChapterProgress('gameplay', { coverage: self.progress }),
-    });
+    const footer = scope.querySelector<HTMLElement>('[data-gameplay-footer]');
 
-    gsap.set(mediaLayers, { opacity: 0, scale: 1.065 });
-    gsap.set(mediaLayers[0], { opacity: 1 });
-    gsap.set(copies, { opacity: 0 });
-    gsap.set(titles, { yPercent: 118 });
-    gsap.set(bodies, { opacity: 0, y: 16 });
-    gsap.set([heading, evidence], { opacity: 0, y: -10 });
-    gsap.set([shutterTop, shutterBottom], { yPercent: 0 });
-    gsap.set(seam, {
-      autoAlpha: 1,
-      scaleX: 0.08,
-      transformOrigin: 'center center',
+    gsap.set(intro, { opacity: 0, y: 22 });
+    gsap.set(panels, {
+      opacity: 0,
+      y: 28,
+      clipPath: 'inset(100% 0 0 0)',
     });
-    gsap.set(exitLeft, { xPercent: -100 });
-    gsap.set(exitRight, { xPercent: 100 });
-    gsap.set(exitSeam, {
-      autoAlpha: 0,
-      scaleY: 0.08,
-      transformOrigin: 'center center',
-    });
+    gsap.set(footer, { opacity: 0, y: 14 });
 
-    const timeline = gsap.timeline({
-      defaults: { ease: 'power3.inOut' },
-      scrollTrigger: {
-        trigger: scope,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 0.45,
-        onUpdate: (self) => {
-          const progress = self.progress;
-          const nextIndex = progress < 0.4 ? 0 : progress < 0.72 ? 1 : 2;
-          updateActiveIndex(nextIndex);
-          setChapterProgress('gameplay', { progress });
-          stage?.style.setProperty('--gameplay-progress', progress.toFixed(4));
-        },
-      },
-    });
-
-    timeline
-      // Entry — Driftwood collapses into a scarlet seam, then the ship opens.
-      .to(seam, { scaleX: 1, duration: 6, ease: 'power2.inOut' }, 0)
-      .to(shutterTop, { yPercent: -100, duration: 11 }, 4)
-      .to(shutterBottom, { yPercent: 100, duration: 11 }, 4)
-      .to(seam, { autoAlpha: 0, duration: 4, ease: 'power2.out' }, 11)
+    const entrance = gsap
+      .timeline({
+        paused: true,
+        defaults: { ease: 'power3.out' },
+      })
+      .to(intro, { opacity: 1, y: 0, duration: 0.8 })
       .to(
-        [heading, evidence],
+        panels,
         {
           opacity: 1,
           y: 0,
-          duration: 7,
-          stagger: 0.6,
+          clipPath: 'inset(0% 0 0 0)',
+          duration: 1.05,
+          stagger: 0.09,
         },
-        7,
+        0.14,
       )
+      .to(footer, { opacity: 1, y: 0, duration: 0.65 }, 0.55);
 
-      // Explore.
-      .set(copies[0], { opacity: 1 }, 9)
-      .to(titles[0], { yPercent: 0, duration: 8 }, 9)
-      .to(bodies[0], { opacity: 1, y: 0, duration: 6 }, 12)
-      .to(mediaLayers[0], { scale: 1.025, duration: 31, ease: 'none' }, 7)
-      .to(copies[0], { opacity: 0, y: -18, duration: 5 }, 30)
-
-      // First bulkhead closure and concealed swap to Endure.
-      .to(shutterTop, { yPercent: 0, duration: 7 }, 31)
-      .to(shutterBottom, { yPercent: 0, duration: 7 }, 31)
-      .to(seam, { autoAlpha: 1, scaleX: 1, duration: 3 }, 35)
-      .set(mediaLayers[0], { opacity: 0 }, 38)
-      .set(mediaLayers[1], { opacity: 1 }, 38)
-      .to(shutterTop, { yPercent: -100, duration: 9 }, 38)
-      .to(shutterBottom, { yPercent: 100, duration: 9 }, 38)
-      .to(seam, { autoAlpha: 0, duration: 4 }, 42)
-
-      // Endure.
-      .set(copies[1], { opacity: 1 }, 42)
-      .to(titles[1], { yPercent: 0, duration: 8 }, 42)
-      .to(bodies[1], { opacity: 1, y: 0, duration: 6 }, 45)
-      .to(mediaLayers[1], { scale: 1.025, duration: 29, ease: 'none' }, 38)
-      .to(copies[1], { opacity: 0, y: -18, duration: 5 }, 62)
-
-      // Second bulkhead closure and concealed swap to Confront.
-      .to(shutterTop, { yPercent: 0, duration: 7 }, 63)
-      .to(shutterBottom, { yPercent: 0, duration: 7 }, 63)
-      .to(seam, { autoAlpha: 1, scaleX: 1, duration: 3 }, 67)
-      .set(mediaLayers[1], { opacity: 0 }, 70)
-      .set(mediaLayers[2], { opacity: 1 }, 70)
-      .to(shutterTop, { yPercent: -100, duration: 9 }, 70)
-      .to(shutterBottom, { yPercent: 100, duration: 9 }, 70)
-      .to(seam, { autoAlpha: 0, duration: 4 }, 74)
-
-      // Confront.
-      .set(copies[2], { opacity: 1 }, 74)
-      .to(titles[2], { yPercent: 0, duration: 8 }, 74)
-      .to(bodies[2], { opacity: 1, y: 0, duration: 6 }, 77)
-      .to(mediaLayers[2], { scale: 1.02, duration: 27, ease: 'none' }, 70)
-      .to(copies[2], { opacity: 0, y: -18, duration: 5 }, 91)
-
-      // Exit — the horizontal observation window becomes a vertical cut.
-      .to(
-        [heading, evidence],
-        {
-          opacity: 0,
-          y: -8,
-          duration: 5,
-        },
-        93,
-      )
-      .to(exitLeft, { xPercent: 0, duration: 8, ease: 'power2.inOut' }, 92)
-      .to(exitRight, { xPercent: 0, duration: 8, ease: 'power2.inOut' }, 92)
-      .to(exitSeam, { autoAlpha: 1, scaleY: 1, duration: 5 }, 95);
+    ScrollTrigger.create({
+      trigger: scope,
+      start: 'top 78%',
+      once: true,
+      onEnter: () => entrance.play(),
+    });
   });
 
-  const jumpToPillar = useCallback(
-    (index: number) => {
-      const section = root.current;
-      const pillar = section?.querySelector<HTMLElement>(
-        `[data-gameplay-pillar="${index}"]`,
-      );
-      if (!section || !pillar) return;
-
-      updateActiveIndex(index);
-
-      if (
-        reducedMotion ||
-        window.innerWidth < 900 ||
-        window.innerHeight < 600
-      ) {
-        pillar.scrollIntoView({ block: 'start' });
-        return;
-      }
-
-      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-      const travel = Math.max(section.offsetHeight - window.innerHeight, 0);
-      window.scrollTo({
-        top: sectionTop + travel * stateScrollPoints[index],
-        behavior: 'auto',
-      });
-    },
-    [reducedMotion, updateActiveIndex],
-  );
+  const activePillar = content.pillars[activeIndex];
 
   return (
     <section
@@ -234,122 +158,114 @@ export function GameplaySection() {
       lang="en"
       className="gameplay-chapter relative border-t border-[color:var(--border-subtle)]"
     >
-      <div data-gameplay-stage className="gameplay-stage">
-        <ol className="gameplay-pillars">
-          {content.pillars.map((pillar, index) => {
-            const mediaEntry = gameplayMedia[pillar.media];
-            const titleId = `gameplay-${pillar.id}-title`;
-
-            return (
-              <li
-                key={pillar.id}
-                id={`gameplay-${pillar.id}`}
-                data-gameplay-pillar={index}
-                className="gameplay-pillar"
-                aria-labelledby={titleId}
-              >
-                <div
-                  data-gameplay-media
-                  data-gameplay-id={pillar.id}
-                  className="gameplay-pillar__media"
-                >
-                  <GameplayPicture {...mediaEntry} />
-                </div>
-
-                <article data-gameplay-copy className="gameplay-pillar__copy">
-                  <p className="gameplay-pillar__directive">
-                    <span aria-hidden="true">{pillar.index} / 03</span>
-                    {pillar.directive}
-                  </p>
-                  <div className="gameplay-pillar__title-mask">
-                    <h3
-                      id={titleId}
-                      data-gameplay-title
-                      className="gameplay-pillar__title"
-                    >
-                      {pillar.title}
-                    </h3>
-                  </div>
-                  <p
-                    data-gameplay-body
-                    className="gameplay-pillar__description"
-                  >
-                    {pillar.description}
-                  </p>
-                </article>
-              </li>
-            );
-          })}
-        </ol>
-
-        <div className="gameplay-veil" aria-hidden="true" />
-
-        <div
-          data-gameplay-shutter="top"
-          className="gameplay-shutter gameplay-shutter--top"
-          aria-hidden="true"
-        />
-        <div
-          data-gameplay-shutter="bottom"
-          className="gameplay-shutter gameplay-shutter--bottom"
-          aria-hidden="true"
-        />
-        <div data-gameplay-seam className="gameplay-seam" aria-hidden="true" />
-
-        <header data-gameplay-heading className="gameplay-heading">
-          <p>{content.deckLabel}</p>
-          <span aria-hidden="true" />
-          <div>
+      <div className="gameplay-lab">
+        <header data-gameplay-intro className="gameplay-lab__intro">
+          <div className="gameplay-lab__meta">
+            <p>{content.deckLabel}</p>
+            <span aria-hidden="true" />
             <p>{content.category}</p>
-            <h2 id="gameplay-title">{content.heading}</h2>
           </div>
+
+          <div className="gameplay-lab__lockup">
+            <h2 id="gameplay-title">{content.heading}</h2>
+            <p>{chapter.summary}</p>
+          </div>
+
+          <p className="gameplay-lab__evidence">{content.evidenceLabel}</p>
         </header>
 
-        <p data-gameplay-evidence className="gameplay-evidence">
-          {content.evidenceLabel}
-        </p>
-
-        <nav
-          data-gameplay-navigation
-          className="gameplay-state-nav"
-          aria-label="Gameplay pillars"
+        <div
+          ref={stage}
+          data-gameplay-stage
+          data-active-index={activeIndex}
+          className="gameplay-lab__stage"
+          onPointerMove={handlePointerMove}
+          onPointerLeave={resetPointerLight}
         >
-          {content.pillars.map((pillar, index) => (
-            <button
-              key={pillar.id}
-              type="button"
-              aria-label={`${pillar.title}, ${Number(pillar.index)} of ${content.pillars.length}`}
-              aria-current={activeIndex === index ? 'step' : undefined}
-              aria-controls={`gameplay-${pillar.id}`}
-              onClick={() => jumpToPillar(index)}
-              className="gameplay-state-nav__item focus-ring"
-            >
-              <span aria-hidden="true" className="gameplay-state-nav__rule" />
-              <span aria-hidden="true">{pillar.index} / 03</span>
-              <span className="gameplay-state-nav__label">{pillar.title}</span>
-            </button>
-          ))}
-        </nav>
+          <div className="gameplay-lab__pointer-light" aria-hidden="true" />
+          <div className="gameplay-lab__signal" aria-hidden="true">
+            <span />
+          </div>
 
-        <div className="gameplay-progress" aria-hidden="true">
-          <span />
+          <ol aria-label="Gameplay pillars" className="gameplay-lab__apertures">
+            {content.pillars.map((pillar, index) => {
+              const isActive = activeIndex === index;
+              const mediaEntry = gameplayMedia[pillar.media];
+              const titleId = `gameplay-${pillar.id}-title`;
+              const descriptionId = `gameplay-${pillar.id}-description`;
+
+              return (
+                <li
+                  key={pillar.id}
+                  data-gameplay-panel
+                  data-active={isActive || undefined}
+                  className="gameplay-aperture"
+                  onPointerEnter={(event) => {
+                    if (event.pointerType !== 'touch') activatePillar(index);
+                  }}
+                >
+                  <article
+                    id={`gameplay-${pillar.id}`}
+                    aria-labelledby={titleId}
+                    aria-describedby={descriptionId}
+                    className="gameplay-aperture__surface"
+                  >
+                    <div className="gameplay-aperture__media">
+                      <GameplayPicture {...mediaEntry} />
+                    </div>
+
+                    <div
+                      className="gameplay-aperture__atmosphere"
+                      aria-hidden="true"
+                    />
+                    <div
+                      className="gameplay-aperture__scan"
+                      aria-hidden="true"
+                    />
+
+                    <div className="gameplay-aperture__copy">
+                      <p className="gameplay-aperture__directive">
+                        <span aria-hidden="true">{pillar.index} / 03</span>
+                        {pillar.directive}
+                      </p>
+                      <h3 id={titleId}>{pillar.title}</h3>
+                      <p id={descriptionId}>{pillar.description}</p>
+                    </div>
+
+                    <div
+                      className="gameplay-aperture__closed-label"
+                      aria-hidden="true"
+                    >
+                      <span>{pillar.index}</span>
+                      <strong>{pillar.title}</strong>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="gameplay-aperture__trigger"
+                      aria-label={`Select ${pillar.title}`}
+                      aria-describedby={descriptionId}
+                      aria-pressed={isActive}
+                      onFocus={() => activatePillar(index)}
+                      onClick={() => activatePillar(index)}
+                    />
+                  </article>
+                </li>
+              );
+            })}
+          </ol>
         </div>
 
-        <div
-          data-gameplay-exit="left"
-          className="gameplay-exit gameplay-exit--left"
-          aria-hidden="true"
-        />
-        <div
-          data-gameplay-exit="right"
-          className="gameplay-exit gameplay-exit--right"
-          aria-hidden="true"
-        />
-        <div
-          data-gameplay-exit-seam
-          className="gameplay-exit-seam"
-          aria-hidden="true"
-        />
+        <footer data-gameplay-footer className="gameplay-lab__footer">
+          <div>
+            <p>{content.interactionLabel}</p>
+            <span>{content.inputLabel}</span>
+          </div>
+          <p aria-hidden="true">
+            <span>{activePillar.index} / 03</span>
+            {activePillar.title}
+          </p>
+        </footer>
       </div>
     </section>
   );
@@ -364,17 +280,19 @@ function GameplayPicture({
   width: number;
   height: number;
 }) {
+  const objectPosition = `${image.focal[0] * 100}% ${image.focal[1] * 100}%`;
+
   return (
     <picture>
       <source
         type="image/avif"
         srcSet={`${image.avif.small} 960w, ${image.avif.large} 1920w`}
-        sizes="(max-width: 767px) calc(100vw - 2.5rem), 100vw"
+        sizes="(max-width: 899px) calc(100vw - 2.5rem), 70vw"
       />
       <source
         type="image/webp"
         srcSet={`${image.webp.small} 960w, ${image.webp.large} 1920w`}
-        sizes="(max-width: 767px) calc(100vw - 2.5rem), 100vw"
+        sizes="(max-width: 899px) calc(100vw - 2.5rem), 70vw"
       />
       {/* oxlint-disable-next-line next/no-img-element */}
       <img
@@ -382,6 +300,7 @@ function GameplayPicture({
         alt={image.alt}
         width={width}
         height={height}
+        style={{ objectPosition }}
         loading="lazy"
         decoding="async"
       />

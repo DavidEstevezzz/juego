@@ -46,7 +46,8 @@ Conservamos de ambos:
 
 Subimos el listón con:
 
-- una escena visual continua que evoluciona durante todo el scroll;
+- una continuidad visual entre capítulos que alterna scroll narrativo,
+  interacción directa y composiciones contemplativas;
 - transiciones WebGL entre vídeo, imágenes y futuras piezas 3D;
 - animaciones controladas por progreso, velocidad y dirección del usuario;
 - composición editorial sobre una capa gráfica en tiempo real;
@@ -74,6 +75,12 @@ descenso hasta la infección.
 No habrá animaciones decorativas aisladas. Cada movimiento debe cumplir al
 menos una función: revelar, orientar, crear tensión, explicar una mecánica o
 conectar dos capítulos.
+
+La complejidad técnica no debe depender siempre de fijar contenido al scroll.
+La experiencia alterna capítulos guiados, capítulos manipulables y pausas
+editoriales. Solo Driftwood y la infección sostienen recorridos largos; el
+resto conserva el desplazamiento natural y obtiene profundidad mediante foco,
+puntero, máscaras, vídeo o composición.
 
 ## 4. Arquitectura narrativa
 
@@ -112,8 +119,10 @@ Objetivo: establecer aislamiento, clima y localización.
 Objetivo: explicar qué hace el jugador.
 
 - Tres pilares: explorar, sobrevivir y confrontar/descubrir.
-- Cada pilar activa un cambio visual dentro de una misma escena fijada.
-- El contenido se lee en DOM semántico; WebGL refuerza, nunca contiene, el texto.
+- Tres aperturas permanecen visibles dentro del flujo natural de la página.
+- Hover, foco o toque expanden un pilar sin interceptar ni prolongar el scroll.
+- El contenido se lee en DOM semántico; la complejidad vive en máscaras, luz y
+  cambios de encuadre, no en otra escena fijada.
 - Las capturas con HUD solo aparecen en contexto de gameplay.
 
 ### 04 — Draga

@@ -23,20 +23,20 @@ Fuentes visuales de referencia:
 
 Los seis primeros colores proceden de la identidad actual del estudio y se convierten en los tokens centrales de la nueva web.
 
-| Token | Valor | Uso |
-| --- | --- | --- |
-| `void` | `#050A07` | Fondo principal y negro de mar profundo |
-| `charcoal` | `#080807` | Fondos alternos y zonas completamente oscuras |
-| `hull` | `#0D1613` | Paneles, navegación y superficies elevadas |
-| `ivory` | `#EDE7D3` | Texto principal, titulares y marcas sobre fondo oscuro |
-| `steel` | `#9EAEAC` | Texto secundario, datos y acero frío |
-| `blood` | `#7A1515` | Fondos rojos profundos, sangre, ritual e infección |
-| `scarlet` | `#A82024` | Títulos, CTA principal, navegación activa y transiciones |
-| `ember` | `#D24732` | Luz roja intensa y momentos de máxima tensión |
-| `brass` | `#B89840` | Detalle naval, numeración, líneas secundarias y metal |
-| `oxidation` | `#17322C` | Veladuras verdes, agua, corrosión y profundidad |
-| `rust` | `#6C3828` | Texturas metálicas y acentos secundarios |
-| `frost` | `#C6D2CE` | Bruma, hielo y destellos fríos muy limitados |
+| Token       | Valor     | Uso                                                      |
+| ----------- | --------- | -------------------------------------------------------- |
+| `void`      | `#050A07` | Fondo principal y negro de mar profundo                  |
+| `charcoal`  | `#080807` | Fondos alternos y zonas completamente oscuras            |
+| `hull`      | `#0D1613` | Paneles, navegación y superficies elevadas               |
+| `ivory`     | `#EDE7D3` | Texto principal, titulares y marcas sobre fondo oscuro   |
+| `steel`     | `#9EAEAC` | Texto secundario, datos y acero frío                     |
+| `blood`     | `#7A1515` | Fondos rojos profundos, sangre, ritual e infección       |
+| `scarlet`   | `#A82024` | Títulos, CTA principal, navegación activa y transiciones |
+| `ember`     | `#D24732` | Luz roja intensa y momentos de máxima tensión            |
+| `brass`     | `#B89840` | Detalle naval, numeración, líneas secundarias y metal    |
+| `oxidation` | `#17322C` | Veladuras verdes, agua, corrosión y profundidad          |
+| `rust`      | `#6C3828` | Texturas metálicas y acentos secundarios                 |
+| `frost`     | `#C6D2CE` | Bruma, hielo y destellos fríos muy limitados             |
 
 ### Proporción recomendada
 
@@ -110,14 +110,14 @@ El logotipo oficial de **Black Tides** debe tratarse como un activo gráfico y n
 
 ## Jerarquía tipográfica
 
-| Rol | Tamaño orientativo | Familia |
-| --- | --- | --- |
-| Hero | `clamp(4rem, 10vw, 10rem)` | Cinzel 400 |
-| Título de capítulo | `clamp(2.75rem, 6vw, 6rem)` | Cinzel 400 |
-| Titular secundario | `clamp(1.75rem, 3vw, 3.25rem)` | Cinzel 600 |
-| Entradilla | `clamp(1.15rem, 1.6vw, 1.5rem)` | IBM Plex Sans 400 |
-| Cuerpo | `1rem–1.125rem` | IBM Plex Sans 400 |
-| Etiqueta | `0.68rem–0.78rem` | Share Tech Mono 400 |
+| Rol                | Tamaño orientativo              | Familia             |
+| ------------------ | ------------------------------- | ------------------- |
+| Hero               | `clamp(4rem, 10vw, 10rem)`      | Cinzel 400          |
+| Título de capítulo | `clamp(2.75rem, 6vw, 6rem)`     | Cinzel 400          |
+| Titular secundario | `clamp(1.75rem, 3vw, 3.25rem)`  | Cinzel 600          |
+| Entradilla         | `clamp(1.15rem, 1.6vw, 1.5rem)` | IBM Plex Sans 400   |
+| Cuerpo             | `1rem–1.125rem`                 | IBM Plex Sans 400   |
+| Etiqueta           | `0.68rem–0.78rem`               | Share Tech Mono 400 |
 
 ## Composición
 
@@ -156,6 +156,17 @@ Evitar engranajes decorativos, marcos barrocos, pergaminos, tentáculos genéric
 - Microinteracciones entre 180 y 300 ms; entradas narrativas entre 700 y 1400 ms.
 - El rojo puede permanecer de forma continua en elementos estructurales pequeños. Su superficie e intensidad aumentan al acercarse a la infección.
 - Respetar `prefers-reduced-motion` y ofrecer una versión estática completa.
+
+### Ritmo de interacción
+
+- Complejidad técnica no significa añadir scrubbing o pinning a cada capítulo.
+- Driftwood y la infección son los dos grandes recorridos guiados por scroll.
+- Gameplay e Izzy se manipulan directamente mediante puntero, foco o toque.
+- Draga y producción priorizan composición, lectura y pausa visual.
+- Hero y cierre usan movimiento breve para abrir y resolver la experiencia, no
+  para retener al visitante durante varios viewports.
+- Entre dos capítulos intensos debe existir al menos uno con desplazamiento
+  natural. La variedad de ritmo forma parte de la identidad visual.
 
 ## Sonido
 

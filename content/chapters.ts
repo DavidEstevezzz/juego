@@ -132,6 +132,8 @@ export const gameplayChapterContent = {
   category: 'Gameplay',
   heading: 'The gameplay promise',
   evidenceLabel: 'In-game captures · Original UI visible',
+  interactionLabel: 'Select a pillar',
+  inputLabel: 'Pointer · keyboard · touch',
   pillars: [
     {
       id: 'explore',

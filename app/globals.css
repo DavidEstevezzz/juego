@@ -593,635 +593,735 @@ body {
 /*
  * Chapter 03 — Gameplay pillars.
  *
- * Mobile is the default: three complete gameplay frames in document order.
- * Desktop turns the same DOM into one observation window whose bulkheads close
- * before every image swap. The HUD remains part of the evidence and is never
- * recreated or covered by interface chrome.
+ * Driftwood owns the long scroll-led sequence. Gameplay returns to the natural
+ * document flow and gives control back to the visitor: three industrial
+ * apertures expand through pointer, keyboard focus or touch. The active capture
+ * is always contained so the original HUD remains visible.
  */
 .gameplay-chapter {
-  background: var(--void);
-}
-
-.gameplay-stage {
   position: relative;
-  overflow: hidden;
-  padding: 4.5rem 1.25rem 5rem;
+  min-height: 100svh;
+  overflow: clip;
   background:
-    linear-gradient(180deg, rgb(13 22 19 / 72%), transparent 14rem), var(--void);
+    radial-gradient(68% 52% at 18% 34%, rgb(23 50 44 / 18%), transparent 72%),
+    linear-gradient(180deg, var(--void), var(--charcoal) 48%, var(--void));
 }
 
-.gameplay-heading {
+.gameplay-chapter::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 49.95%,
+      rgb(237 231 211 / 3%) 50%,
+      transparent 50.05%
+    ),
+    linear-gradient(180deg, rgb(168 32 36 / 5%), transparent 24rem);
+  content: '';
+}
+
+.gameplay-lab {
   position: relative;
-  z-index: 3;
+  width: min(100%, 120rem);
+  margin: 0 auto;
+  padding: clamp(6rem, 10vw, 11rem) clamp(1.25rem, 3.5vw, 4.5rem)
+    clamp(7rem, 11vw, 12rem);
+}
+
+.gameplay-lab__intro {
+  position: relative;
+  z-index: 2;
   display: grid;
-  grid-template-columns: auto minmax(2.5rem, 5rem) 1fr;
-  align-items: start;
-  gap: 0.75rem;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: end;
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+.gameplay-lab__meta {
+  grid-column: 1 / span 2;
+  align-self: start;
+  display: grid;
+  grid-template-columns: auto minmax(2rem, 1fr);
+  gap: 0.55rem 0.75rem;
   color: var(--brass);
   font-family: var(--font-system);
-  font-size: 0.62rem;
-  letter-spacing: 0.24em;
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  line-height: 1.2;
   text-transform: uppercase;
 }
 
-.gameplay-heading > p,
-.gameplay-heading div > p,
-.gameplay-heading h2 {
+.gameplay-lab__meta p {
   margin: 0;
 }
 
-.gameplay-heading > span {
+.gameplay-lab__meta p:last-child {
+  grid-column: 1 / -1;
+  color: var(--steel);
+}
+
+.gameplay-lab__meta span {
   height: 1px;
   margin-top: 0.42rem;
-  background: linear-gradient(90deg, var(--scarlet), rgb(168 32 36 / 8%));
+  background: linear-gradient(90deg, var(--scarlet), transparent);
 }
 
-.gameplay-heading div > p {
-  margin-bottom: 0.45rem;
-  color: var(--steel);
+.gameplay-lab__lockup {
+  grid-column: 3 / span 7;
 }
 
-.gameplay-heading h2 {
+.gameplay-lab__lockup h2 {
+  max-width: 11ch;
+  margin: 0;
   color: var(--ivory);
   font-family: var(--font-display);
-  font-size: clamp(1.4rem, 6vw, 2.1rem);
+  font-size: clamp(3.2rem, 6.3vw, 7.4rem);
   font-weight: 400;
-  letter-spacing: 0.025em;
-  line-height: 1.05;
+  letter-spacing: -0.025em;
+  line-height: 0.86;
   text-transform: uppercase;
 }
 
-.gameplay-evidence {
-  position: relative;
-  z-index: 3;
-  margin: 1.4rem 0 0;
+.gameplay-lab__lockup > p {
+  max-width: 43rem;
+  margin: clamp(1.4rem, 2.4vw, 2.2rem) 0 0;
+  color: var(--frost);
+  font-size: clamp(1rem, 1.25vw, 1.2rem);
+  line-height: 1.65;
+}
+
+.gameplay-lab__evidence {
+  grid-column: 10 / -1;
+  align-self: end;
+  margin: 0;
+  border-right: 2px solid var(--scarlet);
+  padding-right: 0.8rem;
   color: var(--steel);
   font-family: var(--font-system);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   letter-spacing: 0.18em;
-  line-height: 1.5;
+  line-height: 1.55;
+  text-align: right;
   text-transform: uppercase;
 }
 
-.gameplay-pillars {
+.gameplay-lab__stage {
+  --gameplay-pointer-x: 50%;
+  --gameplay-pointer-y: 42%;
+  --gameplay-shift-x: 0px;
+  --gameplay-shift-y: 0px;
+
   position: relative;
+  isolation: isolate;
+  height: clamp(28rem, 38vw, 42rem);
+  margin-top: clamp(3.5rem, 6vw, 6.5rem);
+  overflow: hidden;
+  border-top: 1px solid var(--border-brass);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--void);
+  box-shadow: var(--shadow-deep);
+}
+
+.gameplay-lab__pointer-light {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle 24rem at var(--gameplay-pointer-x) var(--gameplay-pointer-y),
+    rgb(210 71 50 / 10%),
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+}
+
+.gameplay-lab__signal {
+  position: absolute;
+  z-index: 8;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  pointer-events: none;
+}
+
+.gameplay-lab__signal span {
+  display: block;
+  width: 33.333%;
+  height: 100%;
+  background: var(--scarlet);
+  box-shadow: var(--glow-red);
+  transform: translateX(0);
+  transition: transform 760ms cubic-bezier(0.2, 0.72, 0.16, 1);
+}
+
+.gameplay-lab__stage[data-active-index='1'] .gameplay-lab__signal span {
+  transform: translateX(100%);
+}
+
+.gameplay-lab__stage[data-active-index='2'] .gameplay-lab__signal span {
+  transform: translateX(200%);
+}
+
+.gameplay-lab__apertures {
+  position: absolute;
   z-index: 1;
-  display: grid;
-  gap: 4.5rem;
-  margin: 4rem 0 0;
+  inset: 0;
+  display: flex;
+  margin: 0;
   padding: 0;
+  overflow: hidden;
   list-style: none;
 }
 
-.gameplay-pillar {
+.gameplay-aperture {
   position: relative;
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 0.75rem;
-}
-
-.gameplay-pillar__media {
-  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
   overflow: hidden;
-  background: var(--charcoal);
-  border-bottom: 1px solid var(--border-subtle);
+  border-left: 1px solid rgb(184 152 64 / 22%);
+  transition: flex-grow 820ms cubic-bezier(0.2, 0.72, 0.16, 1);
+  will-change: flex-grow;
 }
 
-.gameplay-pillar__media picture,
-.gameplay-pillar__media img {
+.gameplay-aperture:first-child {
+  border-left: 0;
+}
+
+.gameplay-aperture[data-active] {
+  flex-grow: 4.7;
+}
+
+.gameplay-aperture__surface {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgb(23 50 44 / 14%), transparent 42%), var(--void);
+}
+
+.gameplay-aperture__surface::after {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgb(168 32 36 / 72%) 28% 72%,
+    transparent
+  );
+  opacity: 0;
+  content: '';
+  transition: opacity 300ms ease;
+}
+
+.gameplay-aperture[data-active] .gameplay-aperture__surface::after {
+  opacity: 1;
+}
+
+.gameplay-aperture__media,
+.gameplay-aperture__media picture,
+.gameplay-aperture__media img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
+  height: 100%;
 }
 
-.gameplay-pillar__media img {
-  height: auto;
+.gameplay-aperture__media {
+  z-index: 0;
+  overflow: hidden;
+  background: var(--void);
 }
 
-.gameplay-pillar__copy {
-  position: relative;
-  margin-top: 1.5rem;
+.gameplay-aperture__media img {
+  object-fit: cover;
+  opacity: 0.46;
+  transform: scale(1.075);
+  transition:
+    opacity 520ms ease,
+    transform 900ms cubic-bezier(0.2, 0.72, 0.16, 1);
+  will-change: transform, opacity;
 }
 
-.gameplay-pillar__directive {
+.gameplay-aperture[data-active] .gameplay-aperture__media img {
+  object-fit: contain;
+  opacity: 0.96;
+  transform: translate3d(var(--gameplay-shift-x), var(--gameplay-shift-y), 0)
+    scale(1.012);
+}
+
+.gameplay-aperture__atmosphere {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(5 10 7 / 28%),
+      transparent 34%,
+      rgb(5 10 7 / 52%)
+    ),
+    linear-gradient(90deg, rgb(5 10 7 / 32%), rgb(5 10 7 / 8%));
+  transition: background-color 420ms ease;
+}
+
+.gameplay-aperture[data-active] .gameplay-aperture__atmosphere {
+  background:
+    linear-gradient(
+      90deg,
+      rgb(5 10 7 / 92%) 0%,
+      rgb(5 10 7 / 66%) 24%,
+      rgb(5 10 7 / 12%) 55%,
+      transparent 76%
+    ),
+    linear-gradient(
+      180deg,
+      rgb(5 10 7 / 16%),
+      transparent 66%,
+      rgb(5 10 7 / 18%)
+    );
+}
+
+.gameplay-aperture__scan {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: -12%;
+  width: 2px;
+  pointer-events: none;
+  background: var(--scarlet);
+  box-shadow:
+    0 0 18px rgb(168 32 36 / 72%),
+    0 0 80px rgb(168 32 36 / 30%);
+  opacity: 0;
+}
+
+.gameplay-aperture[data-active] .gameplay-aperture__scan {
+  animation: gameplay-aperture-scan 820ms cubic-bezier(0.2, 0.72, 0.16, 1);
+}
+
+@keyframes gameplay-aperture-scan {
+  0% {
+    left: -4%;
+    opacity: 0;
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  82% {
+    opacity: 0.7;
+  }
+
+  100% {
+    left: 104%;
+    opacity: 0;
+  }
+}
+
+.gameplay-aperture__copy {
+  position: absolute;
+  z-index: 5;
+  bottom: clamp(2.2rem, 4vw, 4.5rem);
+  left: clamp(1.6rem, 3.5vw, 4rem);
+  width: min(38rem, 70%);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-20px, 18px, 0);
+  transition:
+    opacity 280ms ease,
+    transform 620ms cubic-bezier(0.2, 0.72, 0.16, 1);
+}
+
+.gameplay-aperture[data-active] .gameplay-aperture__copy {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 210ms;
+}
+
+.gameplay-aperture__directive {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.75rem;
   margin: 0 0 0.85rem;
   color: var(--ivory);
   font-family: var(--font-system);
-  font-size: 0.62rem;
+  font-size: 0.64rem;
   letter-spacing: 0.22em;
+  line-height: 1.3;
   text-transform: uppercase;
 }
 
-.gameplay-pillar__directive::before {
-  width: 2.5rem;
+.gameplay-aperture__directive::before {
+  width: clamp(2.4rem, 4vw, 4.5rem);
   height: 2px;
+  flex: 0 0 auto;
   background: var(--scarlet);
   box-shadow: var(--glow-red);
   content: '';
 }
 
-.gameplay-pillar__directive span {
+.gameplay-aperture__directive span {
   color: var(--brass);
 }
 
-.gameplay-pillar__title-mask {
-  overflow: hidden;
-  padding-bottom: 0.1em;
-}
-
-.gameplay-pillar__title {
+.gameplay-aperture__copy h3 {
   margin: 0;
   color: var(--ivory);
   font-family: var(--font-display);
-  font-size: clamp(2.8rem, 14vw, 5.2rem);
+  font-size: clamp(4rem, 8vw, 9rem);
   font-weight: 400;
-  letter-spacing: 0.015em;
-  line-height: 0.92;
+  letter-spacing: -0.035em;
+  line-height: 0.84;
+  text-transform: uppercase;
+  text-shadow: 0 5px 28px rgb(0 0 0 / 86%);
+}
+
+.gameplay-aperture__copy > p:last-child {
+  max-width: 36rem;
+  margin: clamp(1.2rem, 2vw, 1.8rem) 0 0;
+  color: var(--frost);
+  font-size: clamp(0.96rem, 1.2vw, 1.15rem);
+  line-height: 1.65;
+  text-shadow: 0 3px 22px rgb(0 0 0 / 90%);
+}
+
+.gameplay-aperture__closed-label {
+  position: absolute;
+  z-index: 5;
+  bottom: 2rem;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  pointer-events: none;
+  color: var(--ivory);
+  font-family: var(--font-system);
+  writing-mode: vertical-rl;
+  transform: translateX(-50%) rotate(180deg);
+  transition:
+    opacity 220ms ease,
+    transform 520ms cubic-bezier(0.2, 0.72, 0.16, 1);
+}
+
+.gameplay-aperture__closed-label span {
+  color: var(--brass);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+}
+
+.gameplay-aperture__closed-label strong {
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
 }
 
-.gameplay-pillar__description {
-  max-width: 38rem;
-  margin: 1.1rem 0 0;
-  color: var(--frost);
-  font-size: 1rem;
-  line-height: 1.62;
+.gameplay-aperture[data-active] .gameplay-aperture__closed-label {
+  opacity: 0;
+  transform: translateX(-50%) translateY(12px) rotate(180deg);
 }
 
-.gameplay-veil,
-.gameplay-shutter,
-.gameplay-seam,
-.gameplay-state-nav,
-.gameplay-progress,
-.gameplay-exit,
-.gameplay-exit-seam {
-  display: none;
+.gameplay-aperture__trigger {
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
 }
 
-/* GSAP still measures the chapter on mobile; these declarations keep its
-   inline desktop states from changing the vertical editorial composition. */
-@media (width < 768px) {
-  .gameplay-heading,
-  .gameplay-evidence,
-  .gameplay-pillar__media,
-  .gameplay-pillar__copy,
-  .gameplay-pillar__title,
-  .gameplay-pillar__description {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-  }
+.gameplay-aperture__trigger:focus-visible {
+  outline: 2px solid var(--scarlet);
+  outline-offset: -5px;
+  box-shadow:
+    inset 0 0 0 1px rgb(237 231 211 / 32%),
+    var(--glow-red);
 }
 
-@media (width >= 900px) and (height >= 600px) {
+.gameplay-lab__footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 1.2rem;
+  color: var(--steel);
+  font-family: var(--font-system);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  line-height: 1.55;
+  text-transform: uppercase;
+}
+
+.gameplay-lab__footer p,
+.gameplay-lab__footer span {
+  margin: 0;
+}
+
+.gameplay-lab__footer > div {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.gameplay-lab__footer > div p {
+  color: var(--ivory);
+}
+
+.gameplay-lab__footer > p {
+  display: flex;
+  gap: 1rem;
+  color: var(--ivory);
+}
+
+.gameplay-lab__footer > p span {
+  color: var(--scarlet);
+}
+
+@media (width < 900px), (height < 600px) {
   .gameplay-chapter {
-    height: 350vh;
+    min-height: 0;
   }
 
-  .gameplay-stage {
-    --gameplay-progress: 0;
-
-    position: sticky;
-    top: var(--chapter-bar-height);
-    isolation: isolate;
-    height: calc(100svh - var(--chapter-bar-height));
-    padding: 0;
-    background: var(--void);
+  .gameplay-lab {
+    padding: 5.5rem 1.25rem 7rem;
   }
 
-  .gameplay-pillars,
-  .gameplay-pillar,
-  .gameplay-pillar__media,
-  .gameplay-pillar__media picture {
-    position: absolute;
-    inset: 0;
-  }
-
-  .gameplay-pillars {
+  .gameplay-lab__intro {
     display: block;
-    margin: 0;
   }
 
-  .gameplay-pillar {
-    border: 0;
-    padding: 0;
+  .gameplay-lab__meta {
+    width: min(100%, 18rem);
   }
 
-  .gameplay-pillar__media {
-    overflow: hidden;
-    border: 0;
-    background: var(--charcoal);
-    opacity: 0;
-    will-change: transform, opacity;
+  .gameplay-lab__lockup {
+    margin-top: 2.5rem;
   }
 
-  .gameplay-pillar:first-child .gameplay-pillar__media {
-    opacity: 1;
+  .gameplay-lab__lockup h2 {
+    font-size: clamp(2.9rem, 14vw, 5.3rem);
   }
 
-  .gameplay-pillar:first-child .gameplay-pillar__copy {
-    opacity: 1;
+  .gameplay-lab__lockup > p {
+    margin-top: 1.25rem;
   }
 
-  .gameplay-pillar__media picture,
-  .gameplay-pillar__media img {
-    width: 100%;
-    height: 100%;
-  }
-
-  .gameplay-pillar__media img {
-    object-fit: contain;
-    object-position: center center;
-  }
-
-  .gameplay-pillar__media::after {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    content: '';
-  }
-
-  .gameplay-pillar__media[data-gameplay-id='explore']::after {
-    background: radial-gradient(
-      72% 86% at 52% 55%,
-      transparent 40%,
-      rgb(5 10 7 / 22%) 100%
-    );
-  }
-
-  .gameplay-pillar__media[data-gameplay-id='endure']::after {
-    background:
-      radial-gradient(68% 70% at 52% 42%, transparent 42%, rgb(5 10 7 / 28%)),
-      linear-gradient(180deg, rgb(198 210 206 / 5%), transparent 38%);
-  }
-
-  .gameplay-pillar__media[data-gameplay-id='confront']::after {
-    background: radial-gradient(
-      62% 82% at 88% 62%,
-      rgb(122 21 21 / 14%),
-      transparent 66%
-    );
-  }
-
-  .gameplay-veil {
-    position: absolute;
-    z-index: 2;
-    inset: 0;
-    display: block;
-    pointer-events: none;
-    background:
-      linear-gradient(
-          90deg,
-          rgb(5 10 7 / 20%) 0%,
-          transparent 43%,
-          rgb(5 10 7 / 50%) 72%,
-          rgb(5 10 7 / 82%) 100%
-        )
-        top right / 100% calc(100% - clamp(5.5rem, 12vh, 8.5rem)) no-repeat,
-      linear-gradient(
-        to top,
-        rgb(5 10 7 / 20%) 0%,
-        transparent 18%,
-        rgb(5 10 7 / 10%) 100%
-      );
-  }
-
-  .gameplay-shutter {
-    position: absolute;
-    z-index: 5;
-    right: -1px;
-    left: -1px;
-    display: block;
-    height: calc(50% + 2px);
-    background:
-      linear-gradient(
-        90deg,
-        rgb(13 22 19 / 72%),
-        transparent 18% 82%,
-        rgb(13 22 19 / 72%)
-      ),
-      var(--void);
-    will-change: transform;
-  }
-
-  .gameplay-shutter--top {
-    top: -1px;
-    border-bottom: 1px solid rgb(237 231 211 / 7%);
-    transform: translateY(-100%);
-  }
-
-  .gameplay-shutter--bottom {
-    bottom: -1px;
-    border-top: 1px solid rgb(237 231 211 / 7%);
-    transform: translateY(100%);
-  }
-
-  .gameplay-seam {
-    position: absolute;
-    z-index: 6;
-    top: calc(50% - 1px);
-    right: 6vw;
-    left: 6vw;
-    display: block;
-    height: 2px;
-    background: var(--scarlet);
-    box-shadow:
-      0 0 18px rgb(168 32 36 / 72%),
-      0 0 80px rgb(168 32 36 / 28%);
-    opacity: 0;
-  }
-
-  .gameplay-heading {
-    position: absolute;
-    z-index: 7;
-    top: clamp(1.25rem, 3vw, 2.4rem);
-    left: clamp(2.25rem, 5vw, 5rem);
-    grid-template-columns: auto clamp(3.5rem, 8vw, 8rem) auto;
-    max-width: 42rem;
-  }
-
-  .gameplay-heading h2 {
-    font-size: clamp(1.25rem, 2.2vw, 2.1rem);
-  }
-
-  .gameplay-evidence {
-    position: absolute;
-    z-index: 7;
-    top: clamp(1.5rem, 3vw, 2.55rem);
-    right: clamp(2.2rem, 5vw, 5rem);
-    margin: 0;
-    border-right: 2px solid var(--scarlet);
-    padding-right: 0.8rem;
-    text-align: right;
-  }
-
-  .gameplay-pillar__copy {
-    position: absolute;
-    z-index: 7;
-    right: clamp(2.4rem, 7vw, 7rem);
-    bottom: clamp(7.5rem, 18vh, 11rem);
-    width: min(55vw, 43rem);
-    margin: 0;
-    text-align: right;
-    text-shadow: 0 4px 28px rgb(0 0 0 / 82%);
-    opacity: 0;
-  }
-
-  .gameplay-pillar__directive {
-    justify-content: flex-end;
-    margin-bottom: 0.9rem;
-  }
-
-  .gameplay-pillar__directive::before {
-    order: 3;
-  }
-
-  .gameplay-pillar__title {
-    font-size: clamp(3.4rem, 8vw, 8.5rem);
-    line-height: 0.88;
-  }
-
-  .gameplay-pillar__description {
-    margin-right: 0;
-    margin-left: auto;
-    font-size: clamp(0.98rem, 1.35vw, 1.18rem);
-  }
-
-  .gameplay-state-nav {
-    position: absolute;
-    z-index: 8;
-    top: 50%;
-    left: clamp(1.5rem, 3.2vw, 3.2rem);
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    transform: translateY(-50%);
-  }
-
-  .gameplay-state-nav__item {
-    display: grid;
-    grid-template-columns: 3rem auto;
-    align-items: center;
-    min-height: 2.75rem;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--steel);
-    font-family: var(--font-system);
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
+  .gameplay-lab__evidence {
+    margin-top: 1.5rem;
+    border-right: 0;
+    border-left: 2px solid var(--scarlet);
+    padding-right: 0;
+    padding-left: 0.75rem;
     text-align: left;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: color 220ms ease;
   }
 
-  .gameplay-state-nav__rule {
-    width: 1.6rem;
-    height: 1px;
-    background: rgb(237 231 211 / 28%);
-    transition:
-      width 260ms ease,
-      background-color 220ms ease,
-      box-shadow 220ms ease;
+  .gameplay-lab__stage {
+    height: auto;
+    min-height: 0;
+    margin-top: 3rem;
+    overflow: visible;
+    border-bottom: 0;
+    box-shadow: none;
   }
 
-  .gameplay-state-nav__label {
+  .gameplay-lab__signal,
+  .gameplay-lab__pointer-light {
     display: none;
   }
 
-  .gameplay-state-nav__item[aria-current='step'] {
-    color: var(--ivory);
+  .gameplay-lab__apertures {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    overflow: visible;
   }
 
-  .gameplay-state-nav__item[aria-current='step'] .gameplay-state-nav__rule {
-    width: 2.75rem;
-    background: var(--scarlet);
-    box-shadow: var(--glow-red);
-  }
-
-  .gameplay-progress {
-    position: absolute;
-    z-index: 7;
-    top: 20%;
-    left: 0.75rem;
-    display: block;
-    width: 1px;
-    height: 60%;
-    overflow: hidden;
-    background: rgb(237 231 211 / 13%);
-  }
-
-  .gameplay-progress span {
-    display: block;
+  .gameplay-aperture {
     width: 100%;
-    height: 100%;
-    background: var(--scarlet);
-    transform: scaleY(var(--gameplay-progress));
-    transform-origin: top;
+    height: 7.25rem;
+    flex: none;
+    border-top: 1px solid var(--border-subtle);
+    border-left: 0;
+    transition: height 720ms cubic-bezier(0.2, 0.72, 0.16, 1);
+    will-change: height;
   }
 
-  .gameplay-exit {
-    position: absolute;
-    z-index: 10;
-    top: -1px;
-    bottom: -1px;
+  .gameplay-aperture[data-active] {
+    height: clamp(28rem, 112vw, 38rem);
+  }
+
+  .gameplay-aperture__surface {
+    min-height: 100%;
+  }
+
+  .gameplay-aperture__media img {
+    object-position: center;
+  }
+
+  .gameplay-aperture[data-active] .gameplay-aperture__media img {
+    transform: scale(1);
+  }
+
+  .gameplay-aperture[data-active] .gameplay-aperture__atmosphere {
+    background:
+      linear-gradient(
+        180deg,
+        rgb(5 10 7 / 10%),
+        transparent 56%,
+        rgb(5 10 7 / 72%) 100%
+      ),
+      linear-gradient(90deg, rgb(5 10 7 / 40%), transparent 72%);
+  }
+
+  .gameplay-aperture__copy {
+    right: 1.25rem;
+    bottom: 1.5rem;
+    left: 1.25rem;
+    width: auto;
+  }
+
+  .gameplay-aperture__copy h3 {
+    font-size: clamp(3.2rem, 15vw, 5.2rem);
+  }
+
+  .gameplay-aperture__copy > p:last-child {
+    max-width: 31rem;
+    font-size: 0.96rem;
+    line-height: 1.55;
+  }
+
+  .gameplay-aperture__closed-label {
+    right: 1.25rem;
+    bottom: 50%;
+    left: 1.25rem;
+    justify-content: space-between;
+    writing-mode: horizontal-tb;
+    transform: translateY(50%);
+  }
+
+  .gameplay-aperture[data-active] .gameplay-aperture__closed-label {
+    transform: translateY(calc(50% + 10px));
+  }
+
+  .gameplay-lab__footer {
     display: block;
-    width: calc(50% + 1px);
-    background: var(--void);
-    will-change: transform;
+    margin-top: 1.5rem;
   }
 
-  .gameplay-exit--left {
-    left: -1px;
-    transform: translateX(-100%);
+  .gameplay-lab__footer > div {
+    justify-content: space-between;
   }
 
-  .gameplay-exit--right {
-    right: -1px;
-    transform: translateX(100%);
-  }
-
-  .gameplay-exit-seam {
-    position: absolute;
-    z-index: 11;
-    top: 8vh;
-    bottom: 8vh;
-    left: calc(50% - 1px);
-    display: block;
-    width: 2px;
-    background: var(--scarlet);
-    box-shadow:
-      0 0 18px rgb(168 32 36 / 72%),
-      0 0 80px rgb(168 32 36 / 28%);
-    opacity: 0;
-  }
-}
-
-@media (width >= 1100px) and (height >= 600px) {
-  .gameplay-state-nav__item {
-    grid-template-columns: 3rem 4rem auto;
-  }
-
-  .gameplay-state-nav__label {
-    display: inline;
-    opacity: 0.62;
-  }
-
-  .gameplay-state-nav__item[aria-current='step'] .gameplay-state-nav__label {
-    opacity: 1;
+  .gameplay-lab__footer > p {
+    margin-top: 0.85rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gameplay-chapter {
+  .gameplay-lab__stage {
     height: auto;
+    overflow: visible;
+    box-shadow: none;
   }
 
-  .gameplay-stage {
+  .gameplay-lab__pointer-light,
+  .gameplay-lab__signal,
+  .gameplay-aperture__closed-label,
+  .gameplay-aperture__scan,
+  .gameplay-aperture__trigger {
+    display: none;
+  }
+
+  .gameplay-lab__apertures {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 7vw, 6rem);
+    overflow: visible;
+  }
+
+  .gameplay-aperture,
+  .gameplay-aperture[data-active] {
+    width: 100%;
     height: auto;
-    padding: 5rem clamp(1.25rem, 5vw, 5rem);
-    background:
-      linear-gradient(180deg, rgb(13 22 19 / 72%), transparent 14rem),
-      var(--void);
-  }
-
-  .gameplay-heading,
-  .gameplay-evidence {
-    position: relative;
-    top: auto;
-    right: auto;
-    left: auto;
-    width: auto;
-    max-width: 48rem;
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-  }
-
-  .gameplay-evidence {
-    margin-top: 1.4rem;
-    border: 0;
-    padding: 0;
-    text-align: left;
-  }
-
-  .gameplay-pillars {
-    position: relative;
-    inset: auto;
-    display: grid;
-    gap: 5rem;
-    margin-top: 4rem;
-  }
-
-  .gameplay-pillar,
-  .gameplay-pillar__media,
-  .gameplay-pillar__media picture,
-  .gameplay-pillar__copy {
-    position: relative;
-    inset: auto;
-    width: auto;
-  }
-
-  .gameplay-pillar {
+    flex: none;
+    overflow: visible;
     border-top: 1px solid var(--border-subtle);
-    padding-top: 0.75rem;
+    border-left: 0;
+    transition: none;
   }
 
-  .gameplay-pillar__media {
-    border-bottom: 1px solid var(--border-subtle);
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
+  .gameplay-aperture__surface {
+    height: auto;
+    overflow: visible;
   }
 
-  .gameplay-pillar__media picture,
-  .gameplay-pillar__media img {
+  .gameplay-aperture__media,
+  .gameplay-aperture__media picture,
+  .gameplay-aperture__media img {
+    position: relative;
+    inset: auto;
     width: 100%;
     height: auto;
   }
 
-  .gameplay-pillar__copy {
-    margin-top: 1.5rem;
-    text-align: left;
-    text-shadow: none;
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
+  .gameplay-aperture__media {
+    aspect-ratio: 16 / 9;
   }
 
-  .gameplay-pillar__directive {
-    justify-content: flex-start;
+  .gameplay-aperture__media picture,
+  .gameplay-aperture__media img {
+    height: 100%;
   }
 
-  .gameplay-pillar__directive::before {
-    order: initial;
+  .gameplay-aperture__media img,
+  .gameplay-aperture[data-active] .gameplay-aperture__media img {
+    object-fit: contain;
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 
-  .gameplay-pillar__title {
-    font-size: clamp(2.8rem, 8vw, 6rem);
-    transform: none !important;
-  }
-
-  .gameplay-pillar__description {
-    margin-right: 0;
-    margin-left: 0;
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-  }
-
-  .gameplay-veil,
-  .gameplay-shutter,
-  .gameplay-seam,
-  .gameplay-state-nav,
-  .gameplay-progress,
-  .gameplay-exit,
-  .gameplay-exit-seam {
+  .gameplay-aperture__atmosphere {
     display: none;
+  }
+
+  .gameplay-aperture__copy,
+  .gameplay-aperture[data-active] .gameplay-aperture__copy {
+    position: relative;
+    inset: auto;
+    width: min(100%, 44rem);
+    margin-top: 1.5rem;
+    pointer-events: auto;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .gameplay-aperture__copy h3 {
+    font-size: clamp(3rem, 9vw, 6rem);
+    text-shadow: none;
+  }
+
+  .gameplay-aperture__copy > p:last-child {
+    text-shadow: none;
   }
 }
 

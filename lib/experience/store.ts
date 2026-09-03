@@ -38,6 +38,8 @@ type ExperienceState = {
   documentVisible: boolean;
   /** El navegador pudo crear un contexto WebGL. */
   webglAvailable: boolean;
+  /** Las texturas del capítulo 02 ya están listas dentro del canvas. */
+  worldSceneReady: boolean;
   /** El tier ya se degradó en esta sesión; la detección deja de aplicarse. */
   graphicsTierDegraded: boolean;
 
@@ -53,6 +55,7 @@ type ExperienceState = {
   setReducedMotion: (reducedMotion: boolean) => void;
   setDocumentVisible: (documentVisible: boolean) => void;
   setWebglAvailable: (webglAvailable: boolean) => void;
+  setWorldSceneReady: (worldSceneReady: boolean) => void;
 };
 
 /** Escalones de degradación. `c` es terminal. */
@@ -75,6 +78,7 @@ export const useExperienceStore = create<ExperienceState>((set, get) => ({
   reducedMotion: false,
   documentVisible: true,
   webglAvailable: false,
+  worldSceneReady: false,
   graphicsTierDegraded: false,
 
   setChapter: (chapter) => {
@@ -121,6 +125,11 @@ export const useExperienceStore = create<ExperienceState>((set, get) => ({
   setWebglAvailable: (webglAvailable) => {
     if (get().webglAvailable === webglAvailable) return;
     set({ webglAvailable });
+  },
+
+  setWorldSceneReady: (worldSceneReady) => {
+    if (get().worldSceneReady === worldSceneReady) return;
+    set({ worldSceneReady });
   },
 }));
 

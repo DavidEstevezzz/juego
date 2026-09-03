@@ -23,6 +23,8 @@ type MediaPlaneProps = {
   fogColor: string;
   /** Escribe los uniforms en cada frame. Debe ser estable entre renders. */
   onFrame: MediaPlaneFrame;
+  /** Informa cuándo ambas texturas ya pueden sustituir al fallback DOM. */
+  onReadyChange?: (ready: boolean) => void;
 };
 
 /**
@@ -38,15 +40,25 @@ export function MediaPlane({
   focals,
   fogColor,
   onFrame,
+  onReadyChange,
 }: MediaPlaneProps) {
   const viewport = useThree((state) => state.viewport);
   const meshRef = useRef<THREE.Mesh>(null);
   const [ready, setReady] = useState(false);
   const onFrameRef = useRef(onFrame);
+  const onReadyChangeRef = useRef(onReadyChange);
 
   useEffect(() => {
     onFrameRef.current = onFrame;
+    onReadyChangeRef.current = onReadyChange;
   });
+
+  useEffect(() => {
+    onReadyChangeRef.current?.(ready);
+    return () => {
+      if (ready) onReadyChangeRef.current?.(false);
+    };
+  }, [ready]);
 
   // El material se crea una sola vez para la vida del componente: compilar el
   // shader es caro y el color de niebla es una constante del capítulo.

@@ -5,7 +5,6 @@ import { useThree } from '@react-three/fiber';
 import { media } from '@/content/media';
 import { getChapterProgress } from '@/lib/experience/chapter-progress';
 import { useExperienceStore } from '@/lib/experience/store';
-import { DriftParticles, type DriftUniforms } from './drift-particles';
 import { MediaPlane } from './media-plane';
 import type { TransitionUniforms } from './transition-material';
 
@@ -22,44 +21,41 @@ const SOURCES_SMALL = [
 
 const FOCALS = [media.images.world.focal, media.images.village.focal] as const;
 
-const FOG_COLOR = '#0e1a17';
-const PARTICLE_COLOR = '#c6d2ce';
-
-/** Presupuesto fijo de partículas. Tier B recorta un 73 % sobre tier A. */
-const PARTICLE_BUDGET = { a: 900, b: 240, c: 0 } as const;
-
-/** Límites del lenguaje de movimiento del blueprint. */
-const MAX_ZOOM = 1.08;
-const BASE_DISPLACEMENT = 0.018;
-const MAX_DISPLACEMENT = 0.055;
+const FOG_COLOR = '#0b1715';
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-/** Rampa suave 0..1 entre dos límites. */
 function ramp(value: number, from: number, to: number) {
   return clamp((value - from) / (to - from), 0, 1);
 }
 
+function smoothRamp(value: number, from: number, to: number) {
+  const progress = ramp(value, from, to);
+  return progress * progress * (3 - 2 * progress);
+}
+
 /**
- * Capítulo 02 en WebGL: una sola toma que evoluciona de Driftwood al pueblo
- * helado.
- *
- * `uMix`, cámara, niebla y luz salen exclusivamente del progreso de scroll, así
- * que el recorrido es reversible sin saltos. La velocidad solo modula la
- * amplitud del desplazamiento dentro de un límite, nunca el estado final.
+ * Capítulo 02 en WebGL: un único plano, dos texturas y una transición por
+ * whiteout. El material reemplaza por completo al antiguo campo de quads de
+ * nieve; toda la atmósfera se resuelve en una sola llamada de dibujo.
  */
 export function WorldScene() {
   const graphicsTier = useExperienceStore((state) => state.graphicsTier);
   const invalidate = useThree((state) => state.invalidate);
+  const viewportAspect = useThree(
+    (state) => state.size.width / Math.max(state.size.height, 1),
+  );
 
   const sources = graphicsTier === 'a' ? SOURCES : SOURCES_SMALL;
-  const particleCount = PARTICLE_BUDGET[graphicsTier];
+
+  const handleReadyChange = useCallback((ready: boolean) => {
+    useExperienceStore.getState().setWorldSceneReady(ready);
+  }, []);
 
   const visibility = useCallback(() => {
     const { coverage } = getChapterProgress('world');
-    // Entra y sale con el capítulo; fuera de su tramo no pinta nada.
     return Math.min(ramp(coverage, 0, 0.16), 1 - ramp(coverage, 0.84, 1));
   }, []);
 
@@ -69,51 +65,54 @@ export function WorldScene() {
       const opacity = visibility();
       const { velocity } = useExperienceStore.getState();
 
-      uniforms.uMix.value = progress;
-      uniforms.uZoom.value = 1 + (MAX_ZOOM - 1) * progress;
-      uniforms.uFog.value = 0.14 + 0.3 * progress;
-      uniforms.uLight.value = 1 - 0.16 * progress;
+      const sceneMix = smoothRamp(progress, 0.47, 0.59);
+      const whiteout = Math.min(
+        smoothRamp(progress, 0.36, 0.51),
+        1 - smoothRamp(progress, 0.56, 0.7),
+      );
+      const firstDolly = smoothRamp(progress, 0.11, 0.43);
+      const secondDolly = smoothRamp(progress, 0.59, 0.91);
+      const exitShadow = smoothRamp(progress, 0.91, 1);
+      const portrait = viewportAspect < 0.85;
+
+      uniforms.uSceneMix.value = sceneMix;
+      uniforms.uWhiteout.value = whiteout;
+      uniforms.uZoomA.value = 1.015 + firstDolly * 0.06;
+      uniforms.uZoomB.value = 1.02 + secondDolly * 0.055;
+      uniforms.uPanA.value.set(
+        (portrait ? -0.038 : -0.018) + firstDolly * (portrait ? 0.045 : 0.03),
+        portrait ? 0.012 : 0,
+      );
+      uniforms.uPanB.value.set(
+        (portrait ? 0.018 : 0.01) - secondDolly * (portrait ? 0.025 : 0.018),
+        portrait ? 0.012 : 0,
+      );
+      uniforms.uFog.value = 0.08 + sceneMix * 0.08;
+      uniforms.uLight.value = 1 - sceneMix * 0.06 - exitShadow * 0.13;
       uniforms.uOpacity.value = opacity;
+      uniforms.uWind.value =
+        (graphicsTier === 'a' ? 0.72 : 0.4) + Math.abs(velocity) * 0.3;
       uniforms.uDisplacement.value = clamp(
-        BASE_DISPLACEMENT + Math.abs(velocity) * 0.04,
-        BASE_DISPLACEMENT,
-        MAX_DISPLACEMENT,
+        0.006 + whiteout * 0.017 + Math.abs(velocity) * 0.014,
+        0.006,
+        0.038,
       );
 
-      // Mientras el capítulo está en pantalla mantenemos el bucle vivo; en
-      // cuanto sale, `frameloop="demand"` vuelve a dejar la GPU en reposo.
+      // La deriva atmosférica continúa solo mientras el capítulo es visible;
+      // fuera de él, frameloop="demand" devuelve la GPU al reposo.
       if (opacity > 0.002) invalidate();
     },
-    [invalidate, visibility],
-  );
-
-  const handleParticleFrame = useCallback(
-    (uniforms: DriftUniforms) => {
-      const { progress } = getChapterProgress('world');
-      const { velocity } = useExperienceStore.getState();
-      uniforms.uOpacity.value = visibility() * (0.25 + 0.55 * progress);
-      uniforms.uDrift.value = 1 + clamp(Math.abs(velocity) * 2, 0, 1.4);
-    },
-    [visibility],
+    [graphicsTier, invalidate, viewportAspect, visibility],
   );
 
   return (
-    <>
-      <MediaPlane
-        sources={sources}
-        focals={FOCALS}
-        fogColor={FOG_COLOR}
-        onFrame={handlePlaneFrame}
-      />
-      {particleCount > 0 && (
-        <group position={[0, 0, 0.5]}>
-          <DriftParticles
-            count={particleCount}
-            color={PARTICLE_COLOR}
-            onFrame={handleParticleFrame}
-          />
-        </group>
-      )}
-    </>
+    <MediaPlane
+      key={graphicsTier}
+      sources={sources}
+      focals={FOCALS}
+      fogColor={FOG_COLOR}
+      onFrame={handlePlaneFrame}
+      onReadyChange={handleReadyChange}
+    />
   );
 }

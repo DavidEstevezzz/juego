@@ -102,7 +102,7 @@ export const chapterMap = Object.fromEntries(
 export const worldChapterContent = {
   deckLabel: 'Cubierta 02',
   premise:
-    'El descenso empieza fuera del barco: un asentamiento helado en el borde del mapa, batido por el viento y aislado del resto del mundo.',
+    'Un asentamiento helado al borde del mapa. La tormenta borra las rutas, el rastro y cualquier promesa de regreso.',
   observations: [
     {
       index: '01',
@@ -112,7 +112,7 @@ export const worldChapterContent = {
     {
       index: '02',
       label: 'Clima',
-      text: 'El viento y la nieve marcan el ritmo del avance y borran el rastro que dejas detrás.',
+      text: 'El viento no decora el paisaje: lo oculta, lo transforma y decide cuánto puedes ver.',
     },
     {
       index: '03',
@@ -120,5 +120,4 @@ export const worldChapterContent = {
       text: 'Driftwood se sostiene sobre madera, hielo y restos varados por la marea.',
     },
   ],
-  provisionalLabel: 'Copy provisional',
 } as const;

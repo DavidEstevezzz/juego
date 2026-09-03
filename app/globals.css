@@ -197,80 +197,396 @@ body {
 /*
  * Capítulo 02 — Driftwood.
  *
- * La sección reserva la distancia de scroll y el escenario queda `sticky`
- * dentro de ella: no hay pinning por JavaScript, así que el layout se calcula
- * una sola vez. En móvil la reserva no pasa de 140vh.
+ * Una sola toma sticky, dividida en cuatro beats. La reserva vertical da
+ * tiempo a leer el encuadre; el escenario no se fija con JavaScript y por eso
+ * no introduce saltos de layout. El clima actúa como transición de montaje,
+ * no como una capa de copos decorativos.
  */
 .world-chapter {
-  height: 140vh;
+  height: 220svh;
 }
 
 @media (width >= 768px) {
   .world-chapter {
-    height: 260vh;
+    height: 300vh;
   }
 }
 
 .world-stage {
+  --world-progress: 0;
+  --world-scene-mix: 0;
+  --world-whiteout: 0;
+
   position: sticky;
   top: var(--chapter-bar-height);
-  display: flex;
+  isolation: isolate;
   height: calc(100svh - var(--chapter-bar-height));
-  flex-direction: column;
-  justify-content: flex-end;
   overflow: hidden;
 }
 
-/* Fallback DOM: dos imágenes superpuestas con crossfade por `--world-mix`. */
-.world-media {
+/* Fallback DOM: el mismo montaje que WebGL, oculto bajo el whiteout central. */
+.world-media,
+.world-media picture {
   position: absolute;
   inset: 0;
 }
 
-.world-media picture {
-  position: absolute;
-  inset: 0;
+.world-media {
+  z-index: 0;
+  background: var(--void);
+}
+
+.world-media picture:first-child {
+  opacity: calc(1 - var(--world-scene-mix));
+}
+
+.world-media picture + picture {
+  opacity: var(--world-scene-mix);
 }
 
 .world-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scale(1.045);
 }
 
-.world-media picture + picture {
-  opacity: var(--world-mix, 0);
+.world-media picture:first-child img {
+  object-position: 48% 50%;
 }
 
+.world-media picture + picture img {
+  object-position: 52% 52%;
+}
+
+/* El negro encuadra, pero ya no borra el material del juego en el tercio bajo. */
 .world-veil {
   position: absolute;
+  z-index: 1;
   inset: 0;
+  pointer-events: none;
   background:
     linear-gradient(
       to top,
-      rgb(5 10 7 / 96%) 0%,
-      rgb(5 10 7 / 74%) 32%,
-      rgb(5 10 7 / 22%) 74%,
-      rgb(5 10 7 / 6%) 100%
+      rgb(5 10 7 / 72%) 0%,
+      rgb(5 10 7 / 30%) 29%,
+      rgb(5 10 7 / 7%) 62%,
+      rgb(5 10 7 / 16%) 100%
     ),
-    radial-gradient(110% 70% at 8% 100%, rgb(122 21 21 / 16%), transparent 62%);
+    linear-gradient(
+      90deg,
+      rgb(5 10 7 / 30%) 0%,
+      transparent 43%,
+      rgb(5 10 7 / 24%) 100%
+    ),
+    radial-gradient(105% 72% at 4% 102%, rgb(122 21 21 / 14%), transparent 58%);
 }
 
-.world-copy {
-  position: relative;
-  z-index: 1;
-  padding: 0 1.25rem 2.5rem;
+/* Solo para tier C: una masa direccional, nunca sprites de nieve. */
+.world-css-whiteout {
+  position: absolute;
+  z-index: 2;
+  inset: -12%;
+  opacity: var(--world-whiteout);
+  pointer-events: none;
+  background:
+    linear-gradient(
+      101deg,
+      transparent 4%,
+      rgb(198 210 206 / 40%) 24%,
+      rgb(224 231 227 / 91%) 50%,
+      rgb(155 174 168 / 46%) 76%,
+      transparent 96%
+    ),
+    repeating-linear-gradient(
+      174deg,
+      transparent 0 21px,
+      rgb(237 231 211 / 8%) 22px 24px,
+      transparent 25px 42px
+    );
+  filter: blur(12px);
+  transform: translate3d(-3%, 0, 0) scale(1.08);
 }
 
-@media (width >= 640px) {
-  .world-copy {
-    padding: 0 2.5rem 3rem;
+.world-stage[data-webgl] .world-css-whiteout {
+  display: none;
+}
+
+/* Dos placas negras abren una rendija horizontal hacia el exterior. */
+.world-shutter {
+  position: absolute;
+  z-index: 8;
+  right: -1px;
+  left: -1px;
+  height: calc(50% + 2px);
+  background: var(--void);
+  will-change: transform;
+}
+
+.world-shutter--top {
+  top: -1px;
+}
+
+.world-shutter--bottom {
+  bottom: -1px;
+}
+
+.world-seam {
+  position: absolute;
+  z-index: 9;
+  top: calc(50% - 1px);
+  right: 7vw;
+  left: 7vw;
+  height: 2px;
+  background: var(--scarlet);
+  box-shadow:
+    0 0 18px rgb(168 32 36 / 78%),
+    0 0 90px rgb(168 32 36 / 36%);
+}
+
+.world-meta {
+  position: absolute;
+  z-index: 5;
+  top: clamp(1.15rem, 3vw, 2.25rem);
+  left: clamp(1.25rem, 4.5vw, 4.5rem);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  color: var(--brass);
+  font-family: var(--font-system);
+  font-size: 0.64rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.world-meta__line {
+  width: clamp(2.5rem, 8vw, 7.5rem);
+  height: 1px;
+  background: linear-gradient(90deg, var(--scarlet), rgb(168 32 36 / 8%));
+}
+
+.world-lockup {
+  position: absolute;
+  z-index: 4;
+  top: 16%;
+  right: clamp(2rem, 7vw, 7rem);
+  width: min(72vw, 72rem);
+  text-align: right;
+  text-shadow: 0 8px 38px rgb(0 0 0 / 60%);
+}
+
+.world-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin: 0 0 0.75rem;
+  color: var(--ivory);
+  font-family: var(--font-system);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.world-kicker::before {
+  width: 2.75rem;
+  height: 2px;
+  background: var(--scarlet);
+  box-shadow: var(--glow-red);
+  content: '';
+}
+
+.world-title {
+  margin: 0;
+  color: var(--ivory);
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 9.4vw, 10rem);
+  font-weight: 500;
+  letter-spacing: 0.015em;
+  line-height: 0.86;
+  text-transform: uppercase;
+}
+
+.world-premise {
+  position: absolute;
+  z-index: 4;
+  bottom: clamp(3rem, 9vh, 7rem);
+  left: clamp(1.25rem, 5.5vw, 5.5rem);
+  max-width: 35rem;
+  margin: 0;
+  border-left: 2px solid var(--scarlet);
+  padding-left: clamp(1rem, 2vw, 1.5rem);
+  color: var(--frost);
+  font-size: clamp(0.95rem, 1.35vw, 1.2rem);
+  line-height: 1.65;
+  text-shadow: 0 3px 22px rgb(0 0 0 / 82%);
+}
+
+.world-observations {
+  position: absolute;
+  z-index: 4;
+  right: clamp(1.25rem, 6vw, 6rem);
+  bottom: clamp(3rem, 9vh, 7rem);
+  width: min(39rem, calc(100vw - 2.5rem));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.world-observation {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  margin: 0;
+  padding-top: 1.1rem;
+  text-align: right;
+}
+
+.world-observation::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(100%, 8.5rem);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--scarlet));
+  box-shadow: 18px 0 52px rgb(168 32 36 / 28%);
+  content: '';
+}
+
+.world-observation__label {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin: 0 0 0.7rem;
+  color: var(--ivory);
+  font-family: var(--font-system);
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.world-observation__label span {
+  color: var(--brass);
+}
+
+.world-observation__copy {
+  margin: 0 0 0 auto;
+  max-width: 34rem;
+  color: var(--frost);
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.65;
+  text-shadow: 0 3px 22px rgb(0 0 0 / 82%);
+}
+
+.world-progress {
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  right: clamp(0.8rem, 2vw, 1.6rem);
+  width: 1px;
+  height: clamp(7rem, 24vh, 14rem);
+  overflow: hidden;
+  background: rgb(237 231 211 / 18%);
+  transform: translateY(-50%);
+}
+
+.world-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--scarlet);
+  box-shadow: var(--glow-red);
+  transform: scaleY(var(--world-progress));
+  transform-origin: top;
+}
+
+.world-outro {
+  position: absolute;
+  z-index: 6;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to top,
+      var(--void) 0%,
+      rgb(5 10 7 / 84%) 26%,
+      transparent 72%
+    ),
+    radial-gradient(90% 45% at 50% 108%, rgb(122 21 21 / 18%), transparent 68%);
+}
+
+@media (width < 768px) {
+  .world-veil {
+    background:
+      linear-gradient(
+        to top,
+        rgb(5 10 7 / 82%) 0%,
+        rgb(5 10 7 / 32%) 38%,
+        rgb(5 10 7 / 9%) 65%,
+        rgb(5 10 7 / 25%) 100%
+      ),
+      radial-gradient(
+        120% 62% at 0% 100%,
+        rgb(122 21 21 / 15%),
+        transparent 62%
+      );
   }
-}
 
-@media (width >= 1024px) {
-  .world-copy {
-    padding: 0 4rem 4rem;
+  .world-lockup {
+    top: 15%;
+    right: 1.25rem;
+    left: 1.25rem;
+    width: auto;
+    text-align: left;
+  }
+
+  .world-kicker {
+    justify-content: flex-start;
+    font-size: 0.62rem;
+  }
+
+  .world-title {
+    font-size: clamp(2.75rem, 12.5vw, 5.4rem);
+    letter-spacing: -0.01em;
+    line-height: 0.92;
+  }
+
+  .world-premise,
+  .world-observations {
+    right: 2.5rem;
+    bottom: 2.2rem;
+    left: 1.25rem;
+    width: auto;
+  }
+
+  .world-premise {
+    max-width: 27rem;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .world-observation {
+    right: auto;
+    left: 0;
+    text-align: left;
+  }
+
+  .world-observation::before {
+    right: auto;
+    left: 0;
+    background: linear-gradient(90deg, var(--scarlet), transparent);
+  }
+
+  .world-observation__label {
+    justify-content: flex-start;
+  }
+
+  .world-observation__copy {
+    margin-right: auto;
+    margin-left: 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
   }
 }
 
@@ -304,8 +620,8 @@ body {
   .world-stage {
     position: static;
     height: auto;
-    gap: 1.5rem;
-    padding-top: 5rem;
+    padding-bottom: 5rem;
+    background: var(--void);
   }
 
   .world-media {
@@ -319,21 +635,89 @@ body {
     display: block;
   }
 
+  .world-media picture:first-child,
   .world-media picture + picture {
-    opacity: 1;
+    opacity: 1 !important;
   }
 
   .world-media img {
     height: auto;
     aspect-ratio: 16 / 9;
+    transform: none;
   }
 
-  .world-veil {
+  .world-veil,
+  .world-css-whiteout,
+  .world-shutter,
+  .world-seam,
+  .world-progress,
+  .world-outro {
     display: none;
   }
 
-  .world-copy {
-    padding-bottom: 5rem;
+  .world-meta,
+  .world-lockup,
+  .world-premise,
+  .world-observations,
+  .world-observation {
+    position: static;
+    width: auto;
+    max-width: none;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .world-meta {
+    margin: 3rem 1.25rem 0;
+  }
+
+  .world-lockup {
+    margin: 2rem 1.25rem 0;
+    text-align: left;
+    text-shadow: none;
+  }
+
+  .world-kicker,
+  .world-observation__label {
+    justify-content: flex-start;
+  }
+
+  .world-title {
+    font-size: clamp(3rem, 13vw, 6rem);
+    line-height: 0.94;
+  }
+
+  .world-premise {
+    margin: 2rem 1.25rem 0;
+    padding-left: 1rem;
+    font-size: 1rem;
+    text-shadow: none;
+  }
+
+  .world-observations {
+    display: grid;
+    gap: 2.5rem;
+    margin: 3.5rem 1.25rem 0;
+    padding: 0;
+  }
+
+  .world-observation {
+    padding-top: 1rem;
+    text-align: left;
+  }
+
+  .world-observation::before {
+    right: auto;
+    left: 0;
+    background: linear-gradient(90deg, var(--scarlet), transparent);
+  }
+
+  .world-observation__copy {
+    margin-right: auto;
+    margin-left: 0;
+    max-width: 36rem;
+    text-shadow: none;
   }
 
   *,

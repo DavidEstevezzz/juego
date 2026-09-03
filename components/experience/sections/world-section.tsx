@@ -14,27 +14,34 @@ import type { ResponsiveImage } from '@/types/experience';
 const chapter = chapterMap.world;
 const content = worldChapterContent;
 
+function clamp(value: number, min = 0, max = 1) {
+  return Math.min(Math.max(value, min), max);
+}
+
+/** Curva determinista para que WebGL y el fallback CSS compartan el montaje. */
+function smoothRamp(value: number, from: number, to: number) {
+  const progress = clamp((value - from) / (to - from));
+  return progress * progress * (3 - 2 * progress);
+}
+
 /**
  * Capítulo 02 — Driftwood.
  *
- * La sección reserva la distancia de scroll y su escenario queda `sticky`: no
- * hay pinning de ScrollTrigger, así que no se recalcula el layout ni aparecen
- * saltos. La imagen vive en la capa WebGL persistente y el texto siempre está
- * en el DOM.
- *
- * Tres modos, decididos por el runtime y no por el user agent:
- * - WebGL: `MediaPlane` con displacement procedural (ver `world-scene.tsx`).
- * - CSS: dos `<picture>` superpuestas cuyo crossfade escribe la misma timeline.
- * - Estático: con movimiento reducido la hoja de estilos convierte el escenario
- *   en una composición editorial con las dos imágenes, sin scrubbing.
+ * La tormenta funciona como montaje, no como decoración: la primera imagen se
+ * abre dentro del negro, una masa de niebla oculta el cambio de plano y el
+ * asentamiento aparece al retirarse. El progreso narrativo es reversible y se
+ * comparte con el shader; no hay partículas DOM ni listeners por elemento.
  */
 export function WorldSection() {
   const root = useRef<HTMLElement>(null);
   const reducedMotion = useExperienceStore((state) => state.reducedMotion);
   const graphicsTier = useExperienceStore((state) => state.graphicsTier);
   const webglAvailable = useExperienceStore((state) => state.webglAvailable);
+  const worldSceneReady = useExperienceStore((state) => state.worldSceneReady);
 
-  const webglMode = webglAvailable && graphicsTier !== 'c' && !reducedMotion;
+  const webglEligible =
+    webglAvailable && graphicsTier !== 'c' && !reducedMotion;
+  const webglMode = webglEligible && worldSceneReady;
 
   useEffect(() => () => clearChapterProgress('world'), []);
 
@@ -42,9 +49,23 @@ export function WorldSection() {
     root,
     ({ gsap, ScrollTrigger, scope }) => {
       const stage = scope.querySelector<HTMLElement>('[data-world-stage]');
+      const shutterTop = scope.querySelector<HTMLElement>(
+        '[data-world-shutter="top"]',
+      );
+      const shutterBottom = scope.querySelector<HTMLElement>(
+        '[data-world-shutter="bottom"]',
+      );
+      const seam = scope.querySelector<HTMLElement>('[data-world-seam]');
+      const meta = scope.querySelector<HTMLElement>('[data-world-meta]');
+      const lockup = scope.querySelector<HTMLElement>('[data-world-lockup]');
+      const premise = scope.querySelector<HTMLElement>('[data-world-premise]');
+      const outro = scope.querySelector<HTMLElement>('[data-world-outro]');
+      const notes = Array.from(
+        scope.querySelectorAll<HTMLElement>('[data-world-note]'),
+      );
 
-      // Presencia del capítulo en el viewport: alimenta la entrada y salida de
-      // la capa WebGL sin que ninguna sección observe el scroll por su cuenta.
+      // El capítulo entra y sale de la capa WebGL mediante la misma señal
+      // compartida que usa el resto de la experiencia.
       ScrollTrigger.create({
         trigger: scope,
         start: 'top bottom',
@@ -54,34 +75,63 @@ export function WorldSection() {
           setChapterProgress('world', { coverage: self.progress }),
       });
 
-      // Ventana creativa: coincide con el tramo en que el escenario está fijo.
-      // Todo el estado final depende de este progreso, así que subir devuelve
-      // exactamente la misma imagen.
-      ScrollTrigger.create({
-        trigger: scope,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
-        onUpdate: (self) => {
-          setChapterProgress('world', { progress: self.progress });
-          stage?.style.setProperty('--world-mix', self.progress.toFixed(4));
+      gsap.set(meta, { autoAlpha: 0, y: -10 });
+      gsap.set(lockup, { autoAlpha: 0, y: 28 });
+      gsap.set(premise, { autoAlpha: 0, y: 20 });
+      gsap.set(notes, { autoAlpha: 0, y: 24 });
+      gsap.set(outro, { autoAlpha: 0 });
+      gsap.set(seam, { scaleX: 0.08, transformOrigin: 'center center' });
+
+      const timeline = gsap.timeline({
+        defaults: { ease: 'power3.inOut' },
+        scrollTrigger: {
+          trigger: scope,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.45,
+          onUpdate: (self) => {
+            const progress = self.progress;
+            const sceneMix = smoothRamp(progress, 0.47, 0.59);
+            const whiteout = Math.min(
+              smoothRamp(progress, 0.36, 0.51),
+              1 - smoothRamp(progress, 0.56, 0.7),
+            );
+
+            setChapterProgress('world', { progress });
+            stage?.style.setProperty('--world-progress', progress.toFixed(4));
+            stage?.style.setProperty('--world-scene-mix', sceneMix.toFixed(4));
+            stage?.style.setProperty('--world-whiteout', whiteout.toFixed(4));
+          },
         },
       });
 
-      gsap.from('[data-world-reveal]', {
-        autoAlpha: 0,
-        y: 20,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: scope,
-          start: 'top 65%',
-          toggleActions: 'play none none reverse',
-        },
-      });
+      // 01 — Una fisura escarlata convierte el negro del hero en una abertura.
+      timeline
+        .to(seam, { scaleX: 1, duration: 8, ease: 'power2.inOut' }, 0)
+        .to(shutterTop, { yPercent: -100, duration: 14 }, 5)
+        .to(shutterBottom, { yPercent: 100, duration: 14 }, 5)
+        .to(seam, { autoAlpha: 0, duration: 5, ease: 'power2.out' }, 14)
+        .to(meta, { autoAlpha: 1, y: 0, duration: 7 }, 11)
+
+        // 02 — El nombre ocupa el encuadre; el material sigue siendo protagonista.
+        .to(lockup, { autoAlpha: 1, y: 0, duration: 10 }, 15)
+        .to(premise, { autoAlpha: 1, y: 0, duration: 8 }, 24)
+        .to(lockup, { autoAlpha: 0, y: -22, duration: 8 }, 41)
+        .to(premise, { autoAlpha: 0, y: -14, duration: 7 }, 43)
+
+        // 03 — Después del whiteout, las reglas del lugar aparecen una a una.
+        .to(notes[0], { autoAlpha: 1, y: 0, duration: 7 }, 59)
+        .to(notes[0], { autoAlpha: 0, y: -18, duration: 6 }, 69)
+        .to(notes[1], { autoAlpha: 1, y: 0, duration: 7 }, 70)
+        .to(notes[1], { autoAlpha: 0, y: -18, duration: 6 }, 80)
+        .to(notes[2], { autoAlpha: 1, y: 0, duration: 7 }, 81)
+        .to(notes[2], { autoAlpha: 0, y: -18, duration: 6 }, 92)
+
+        // 04 — Una sombra ascendente deja preparada la entrada al capítulo 03.
+        .to(outro, { autoAlpha: 1, duration: 8, ease: 'power2.in' }, 92)
+        .to(meta, { autoAlpha: 0, y: -8, duration: 5 }, 95);
     },
-    [webglMode],
+    [webglEligible],
   );
 
   return (
@@ -97,10 +147,7 @@ export function WorldSection() {
         data-webgl={webglMode || undefined}
         className="world-stage"
       >
-        {/*
-          Fallback DOM: solo se monta cuando la capa WebGL no va a dibujar, de
-          modo que las mismas imágenes no se descarguen dos veces.
-        */}
+        {/* El fallback solo se monta cuando WebGL no dibuja las mismas imágenes. */}
         {!webglMode && (
           <div className="world-media" aria-hidden="true">
             <WorldPicture image={media.images.world} />
@@ -109,58 +156,59 @@ export function WorldSection() {
         )}
 
         <div aria-hidden="true" className="world-veil" />
+        <div aria-hidden="true" className="world-css-whiteout" />
 
-        <div className="world-copy">
-          <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-            <div data-world-reveal className="signal-rule" aria-hidden="true" />
+        <div
+          data-world-shutter="top"
+          aria-hidden="true"
+          className="world-shutter world-shutter--top"
+        />
+        <div
+          data-world-shutter="bottom"
+          aria-hidden="true"
+          className="world-shutter world-shutter--bottom"
+        />
+        <div data-world-seam aria-hidden="true" className="world-seam" />
 
-            <p
-              data-world-reveal
-              className="font-system text-[0.68rem] uppercase tracking-[0.28em] text-brass"
-            >
-              {content.deckLabel}
-            </p>
-
-            <h2
-              id="world-title"
-              data-world-reveal
-              className="font-display max-w-3xl text-[clamp(2.25rem,5.4vw,4.75rem)] leading-[1.02] tracking-[0.02em] text-ivory"
-            >
-              {chapter.title}
-            </h2>
-
-            <p
-              data-world-reveal
-              className="max-w-[56ch] text-base leading-[1.65] text-steel sm:text-lg"
-            >
-              {content.premise}
-            </p>
-
-            <ul
-              data-world-reveal
-              className="grid max-w-4xl gap-5 border-t border-[color:var(--border-subtle)] pt-6 sm:grid-cols-3"
-            >
-              {content.observations.map((observation) => (
-                <li key={observation.index} className="flex flex-col gap-2">
-                  <p className="font-system text-[0.64rem] uppercase tracking-[0.22em] text-steel">
-                    <span className="text-brass">{observation.index}</span>{' '}
-                    {observation.label}
-                  </p>
-                  <p className="max-w-[34ch] text-sm leading-[1.6] text-steel">
-                    {observation.text}
-                  </p>
-                </li>
-              ))}
-            </ul>
-
-            <p
-              data-world-reveal
-              className="font-system w-fit border border-[color:var(--border-brass)] px-2 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-brass"
-            >
-              {content.provisionalLabel}
-            </p>
-          </div>
+        <div data-world-meta className="world-meta" aria-hidden="true">
+          <span>{content.deckLabel}</span>
+          <span className="world-meta__line" />
+          <span>02 / 08</span>
         </div>
+
+        <div data-world-lockup className="world-lockup">
+          <p className="world-kicker">El mundo</p>
+          <h2 id="world-title" className="world-title">
+            <span className="sr-only">El mundo: </span>
+            Driftwood
+          </h2>
+        </div>
+
+        <p data-world-premise className="world-premise">
+          {content.premise}
+        </p>
+
+        <ol className="world-observations">
+          {content.observations.map((observation) => (
+            <li
+              key={observation.index}
+              data-world-note
+              className="world-observation"
+            >
+              <p className="world-observation__label">
+                <span aria-hidden="true">{observation.index}</span>
+                {observation.label}
+              </p>
+              <p className="world-observation__copy">{observation.text}</p>
+            </li>
+          ))}
+        </ol>
+
+        <div className="world-progress" aria-hidden="true">
+          <span />
+        </div>
+
+        <div data-world-outro aria-hidden="true" className="world-outro" />
       </div>
     </section>
   );

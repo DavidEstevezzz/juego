@@ -5,6 +5,7 @@ import { AdaptiveDpr, PerformanceMonitor } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import { subscribeScrollMetrics } from '@/lib/experience/scroll-metrics';
 import { useExperienceStore } from '@/lib/experience/store';
+import { WorldScene } from './world-scene';
 
 /** Espera mínima entre degradaciones para no saltarse un escalón por un bache. */
 const DECLINE_COOLDOWN_MS = 4000;
@@ -12,10 +13,10 @@ const DECLINE_COOLDOWN_MS = 4000;
 /**
  * Escena persistente de la experiencia.
  *
- * En esta fase está deliberadamente vacía: no hay shaders, modelos ni
- * postprocesado. Lo que sí queda montado es el contrato de rendimiento —
- * frameloop bajo demanda, pausa por visibilidad, DPR adaptativo y degradación
- * de tier — para que cada capítulo posterior solo añada contenido.
+ * Sostiene el contrato de rendimiento común —frameloop bajo demanda, pausa por
+ * visibilidad, DPR adaptativo y degradación de tier— y monta las escenas de
+ * cada capítulo. Ahora mismo solo existe la del capítulo 02; cada escena decide
+ * por sí misma cuándo es visible a partir de su progreso de scroll.
  */
 export default function ExperienceScene() {
   const documentVisible = useExperienceStore((state) => state.documentVisible);
@@ -55,6 +56,7 @@ export default function ExperienceScene() {
       <PerformanceMonitor onDecline={handleDecline}>
         <AdaptiveDpr pixelated />
         <SceneDriver />
+        <WorldScene />
       </PerformanceMonitor>
     </Canvas>
   );

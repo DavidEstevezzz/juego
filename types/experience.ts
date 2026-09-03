@@ -47,3 +47,17 @@ export type ExperienceChapter = {
   /** Objetivo narrativo provisional mientras no exista copy aprobado. */
   summary: string;
 };
+
+/**
+ * Imagen responsive del material aprobado.
+ *
+ * `focal` se expresa en coordenadas normalizadas 0..1 y la usan tanto el
+ * `object-position` del DOM como el encuadre «cover» del plano WebGL, de modo
+ * que el punto de interés sobrevive a 16:9, 4:3 y móvil.
+ */
+export type ResponsiveImage = {
+  avif: { small: string; large: string };
+  webp: { small: string; large: string };
+  alt: string;
+  focal: readonly [number, number];
+};

@@ -91,3 +91,34 @@ export function getChapter(id: ChapterId): ExperienceChapter | undefined {
 export const chapterMap = Object.fromEntries(
   chapters.map((chapter) => [chapter.id, chapter]),
 ) as Record<ChapterId, ExperienceChapter>;
+
+/**
+ * Contenido del capítulo 02 — Driftwood.
+ *
+ * Copy provisional: describe aislamiento, clima y localización siguiendo el
+ * objetivo de docs/EXPERIENCE-BLUEPRINT.md, sin inventar lore, nombres ni
+ * datos de producción. Se sustituye cuando el equipo apruebe el texto.
+ */
+export const worldChapterContent = {
+  deckLabel: 'Cubierta 02',
+  premise:
+    'El descenso empieza fuera del barco: un asentamiento helado en el borde del mapa, batido por el viento y aislado del resto del mundo.',
+  observations: [
+    {
+      index: '01',
+      label: 'Aislamiento',
+      text: 'No hay ruta de vuelta a la vista. Lo único que continúa es el camino hacia el interior.',
+    },
+    {
+      index: '02',
+      label: 'Clima',
+      text: 'El viento y la nieve marcan el ritmo del avance y borran el rastro que dejas detrás.',
+    },
+    {
+      index: '03',
+      label: 'Localización',
+      text: 'Driftwood se sostiene sobre madera, hielo y restos varados por la marea.',
+    },
+  ],
+  provisionalLabel: 'Copy provisional',
+} as const;

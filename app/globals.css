@@ -58,7 +58,7 @@
   --font-display: var(--font-cinzel), Georgia, serif;
   --font-body: var(--font-plex-sans), Arial, sans-serif;
   --font-system: var(--font-share-tech-mono), ui-monospace, monospace;
-  --font-system-compact: 0.70rem;
+  --font-system-compact: 0.75rem;
   --font-system-label: 0.8rem;
   --font-system-action: 0.82rem;
 

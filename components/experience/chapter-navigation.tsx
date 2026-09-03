@@ -42,7 +42,7 @@ export function ChapterNavigation() {
                   href={`#${chapter.id}`}
                   aria-current={isActive ? 'true' : undefined}
                   data-active={isActive || undefined}
-                  className="font-system group flex items-center gap-2 border border-transparent px-1.5 py-1 text-[var(--font-system-compact)] uppercase tracking-[0.14em] text-steel transition-colors hover:text-foreground focus-visible:border-[color:var(--border-scarlet)] data-[active]:text-scarlet sm:px-2"
+                  className="font-system group flex items-center gap-2 border border-transparent px-1.5 py-1 text-[0.75rem] uppercase tracking-[0.14em] text-steel transition-colors hover:text-foreground focus-visible:border-[color:var(--border-scarlet)] data-[active]:text-scarlet sm:px-2"
                 >
                   {/* La numeración se mantiene en latón como detalle naval;
                       el estado activo pasa a `scarlet`. */}

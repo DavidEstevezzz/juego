@@ -24,4 +24,4 @@ npm run lint
 4. Añadir escenas 3D y vídeo de manera diferida.
 5. Incorporar contacto y analítica cuando el contenido esté validado.
 
-La estructura detallada está en `docs/ARCHITECTURE.md` y la petición de materiales en `docs/ASSET-HANDOFF.md`.
+La estructura detallada está en `docs/ARCHITECTURE.md`, la petición de materiales en `docs/ASSET-HANDOFF.md` y el sistema visual en `docs/VISUAL-DIRECTION.md`.

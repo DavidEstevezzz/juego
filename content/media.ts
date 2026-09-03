@@ -1,49 +1,73 @@
+import type { ResponsiveImage } from '@/types/experience';
+
+const IMAGES = '/assets/media/images';
+
+/**
+ * Material optimizado para web. Cada imagen ofrece AVIF y WebP en 960 y 1920.
+ *
+ * Las texturas WebGL usan la variante WebP porque `TextureLoader` decodifica a
+ * través de `<img>` y WebP está disponible en todos los navegadores objetivo;
+ * el `<picture>` del DOM sí aprovecha AVIF cuando el navegador lo soporta.
+ */
+function image(
+  name: string,
+  alt: string,
+  focal: readonly [number, number] = [0.5, 0.45],
+): ResponsiveImage {
+  return {
+    avif: {
+      small: `${IMAGES}/${name}-960.avif`,
+      large: `${IMAGES}/${name}-1920.avif`,
+    },
+    webp: {
+      small: `${IMAGES}/${name}-960.webp`,
+      large: `${IMAGES}/${name}-1920.webp`,
+    },
+    alt,
+    focal,
+  };
+}
+
 export const media = {
   video: {
-    heroLoop: "/assets/media/video/hero-loop.mp4",
-    heroPoster: "/assets/media/video/hero-poster.webp",
-    teaser: "/assets/media/video/teaser-1080p.mp4",
+    heroLoop: '/assets/media/video/hero-loop.mp4',
+    heroPoster: '/assets/media/video/hero-poster.webp',
+    teaser: '/assets/media/video/teaser-1080p.mp4',
   },
   images: {
-    world: {
-      small: "/assets/media/images/driftwood-outskirts-960.webp",
-      large: "/assets/media/images/driftwood-outskirts-1920.webp",
-      alt: "Draga avanza por un asentamiento helado azotado por el viento.",
-    },
-    village: {
-      small: "/assets/media/images/frozen-village-960.webp",
-      large: "/assets/media/images/frozen-village-1920.webp",
-      alt: "Un pueblo costero abandonado bajo una tormenta de nieve.",
-    },
-    draga: {
-      small: "/assets/media/images/draga-profile-960.webp",
-      large: "/assets/media/images/draga-profile-1920.webp",
-      alt: "Primer plano de Draga iluminada por una luz azul y fría.",
-    },
-    izzy: {
-      small: "/assets/media/images/izzy-protagonist-960.webp",
-      large: "/assets/media/images/izzy-protagonist-1920.webp",
-      alt: "Izzy observa una escena ritual iluminada por velas.",
-    },
-    growth: {
-      small: "/assets/media/images/organic-growth-960.webp",
-      large: "/assets/media/images/organic-growth-1920.webp",
-      alt: "Draga contempla una inmensa masa orgánica dentro del barco.",
-    },
-    blubberRoom: {
-      small: "/assets/media/images/blubber-room-960.webp",
-      large: "/assets/media/images/blubber-room-1920.webp",
-      alt: "Una estancia del barco invadida por tejido orgánico rojo.",
-    },
-    vessel: {
-      small: "/assets/media/images/vessel-creature-960.webp",
-      large: "/assets/media/images/vessel-creature-1920.webp",
-      alt: "Una criatura de carne pálida observa con numerosos ojos azules.",
-    },
-    dialogue: {
-      small: "/assets/media/images/bill-dialogue-960.webp",
-      large: "/assets/media/images/bill-dialogue-1920.webp",
-      alt: "Dos personajes conversan en la penumbra.",
-    },
+    world: image(
+      'driftwood-outskirts',
+      'Draga avanza por un asentamiento helado azotado por el viento.',
+      [0.52, 0.48],
+    ),
+    village: image(
+      'frozen-village',
+      'Un pueblo costero abandonado bajo una tormenta de nieve.',
+      [0.5, 0.5],
+    ),
+    draga: image(
+      'draga-profile',
+      'Primer plano de Draga iluminada por una luz azul y fría.',
+    ),
+    izzy: image(
+      'izzy-protagonist',
+      'Izzy observa una escena ritual iluminada por velas.',
+    ),
+    growth: image(
+      'organic-growth',
+      'Draga contempla una inmensa masa orgánica dentro del barco.',
+    ),
+    blubberRoom: image(
+      'blubber-room',
+      'Una estancia del barco invadida por tejido orgánico rojo.',
+    ),
+    vessel: image(
+      'vessel-creature',
+      'Una criatura de carne pálida observa con numerosos ojos azules.',
+    ),
+    dialogue: image(
+      'bill-dialogue',
+      'Dos personajes conversan en la penumbra.',
+    ),
   },
 } as const;

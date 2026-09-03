@@ -195,6 +195,86 @@ body {
 }
 
 /*
+ * Capítulo 02 — Driftwood.
+ *
+ * La sección reserva la distancia de scroll y el escenario queda `sticky`
+ * dentro de ella: no hay pinning por JavaScript, así que el layout se calcula
+ * una sola vez. En móvil la reserva no pasa de 140vh.
+ */
+.world-chapter {
+  height: 140vh;
+}
+
+@media (width >= 768px) {
+  .world-chapter {
+    height: 260vh;
+  }
+}
+
+.world-stage {
+  position: sticky;
+  top: var(--chapter-bar-height);
+  display: flex;
+  height: calc(100svh - var(--chapter-bar-height));
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+/* Fallback DOM: dos imágenes superpuestas con crossfade por `--world-mix`. */
+.world-media {
+  position: absolute;
+  inset: 0;
+}
+
+.world-media picture {
+  position: absolute;
+  inset: 0;
+}
+
+.world-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.world-media picture + picture {
+  opacity: var(--world-mix, 0);
+}
+
+.world-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgb(5 10 7 / 96%) 0%,
+      rgb(5 10 7 / 74%) 32%,
+      rgb(5 10 7 / 22%) 74%,
+      rgb(5 10 7 / 6%) 100%
+    ),
+    radial-gradient(110% 70% at 8% 100%, rgb(122 21 21 / 16%), transparent 62%);
+}
+
+.world-copy {
+  position: relative;
+  z-index: 1;
+  padding: 0 1.25rem 2.5rem;
+}
+
+@media (width >= 640px) {
+  .world-copy {
+    padding: 0 2.5rem 3rem;
+  }
+}
+
+@media (width >= 1024px) {
+  .world-copy {
+    padding: 0 4rem 4rem;
+  }
+}
+
+/*
  * Capa WebGL persistente. Es `fixed` y se pinta detrás del documento, así que
  * montarla o desmontarla nunca provoca cambios de layout (CLS).
  */
@@ -211,6 +291,51 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /*
+   * Con movimiento reducido el capítulo 02 abandona la toma continua y pasa a
+   * una composición editorial estática: mismo orden y mismo contenido, las dos
+   * imágenes visibles y ningún scrubbing. Al resolverse en CSS desde el primer
+   * pintado, el cambio de altura nunca produce un salto de layout.
+   */
+  .world-chapter {
+    height: auto;
+  }
+
+  .world-stage {
+    position: static;
+    height: auto;
+    gap: 1.5rem;
+    padding-top: 5rem;
+  }
+
+  .world-media {
+    position: static;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .world-media picture {
+    position: static;
+    display: block;
+  }
+
+  .world-media picture + picture {
+    opacity: 1;
+  }
+
+  .world-media img {
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .world-veil {
+    display: none;
+  }
+
+  .world-copy {
+    padding-bottom: 5rem;
+  }
+
   *,
   *::before,
   *::after {

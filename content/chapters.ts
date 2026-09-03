@@ -94,12 +94,12 @@ export const chapterMap = Object.fromEntries(
 /**
  * Contenido del capítulo 02 — Driftwood.
  *
- * Copy provisional: describe aislamiento, clima y localización siguiendo el
- * objetivo de docs/EXPERIENCE-BLUEPRINT.md, sin inventar lore, nombres ni
- * datos de producción. Se sustituye cuando el equipo apruebe el texto.
+ * Describe aislamiento, clima y localización siguiendo el objetivo de
+ * docs/EXPERIENCE-BLUEPRINT.md, sin inventar lore, nombres ni datos de
+ * producción. Se sustituye cuando el equipo entregue el texto definitivo.
  */
 export const worldChapterContent = {
-  deckLabel: 'Deck 02',
+  deckLabel: 'Driftwood',
   premise:
     'A frozen settlement at the edge of the map. The storm erases every route, every trail and any promise of return.',
   observations: [
@@ -127,7 +127,6 @@ export const worldChapterContent = {
  * mechanics, systems or production claims.
  */
 export const gameplayChapterContent = {
-  deckLabel: 'Deck 03',
   category: 'Gameplay',
   heading: 'The gameplay promise',
   evidenceLabel: 'In-game captures · Original UI visible',

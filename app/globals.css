@@ -71,7 +71,7 @@
   --radius: 0.25rem;
 
   /* Altura de la barra de capítulos; evita saltos al fijar el encabezado. */
-  --chapter-bar-height: 3.25rem;
+  --chapter-bar-height: 4.125rem;
 }
 
 /*

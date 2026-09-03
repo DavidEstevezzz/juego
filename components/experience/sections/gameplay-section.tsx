@@ -161,8 +161,6 @@ export function GameplaySection() {
       <div className="gameplay-lab">
         <header data-gameplay-intro className="gameplay-lab__intro">
           <div className="gameplay-lab__meta">
-            <p>{content.deckLabel}</p>
-            <span aria-hidden="true" />
             <p>{content.category}</p>
           </div>
 

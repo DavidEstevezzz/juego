@@ -48,7 +48,7 @@ export function HeroSection() {
         transformOrigin: 'left center',
         duration: 0.7,
       })
-      .from('[data-hero-deck]', { autoAlpha: 0, y: 12, duration: 0.7 }, 0.1)
+      .from('[data-hero-studio]', { autoAlpha: 0, y: 12, duration: 0.8 }, 0)
       // Revelado por máscara vertical: el contenedor recorta y la línea sube.
       .from(
         '[data-hero-line="primary"]',
@@ -60,7 +60,11 @@ export function HeroSection() {
         { yPercent: 118, letterSpacing: '0em', duration: 1 },
         0.38,
       )
-      .from('[data-hero-genre]', { autoAlpha: 0, y: 14, duration: 0.8 }, 0.74)
+      .from(
+        '[data-hero-positioning]',
+        { autoAlpha: 0, y: 14, duration: 0.8 },
+        0.74,
+      )
       .from(
         '[data-hero-cta]',
         { autoAlpha: 0, y: 18, duration: 0.8, stagger: 0.09 },
@@ -164,14 +168,29 @@ export function HeroSection() {
 
       <div className="relative z-20 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end px-5 pb-6 pt-10 sm:px-10 sm:pb-8 lg:px-16">
         <div data-hero-copy>
-          <div data-hero-rule aria-hidden="true" className="signal-rule mb-5" />
-
-          <p
-            data-hero-deck
-            className="font-system mb-6 text-[var(--font-system-label)] uppercase tracking-[0.24em] text-brass"
+          {/*
+            Identidad del estudio antes que la del juego, como en la web
+            anterior de Strange Creature Factory: para un publisher, saber quién
+            firma la obra es la primera señal de credibilidad.
+          */}
+          <div
+            data-hero-studio
+            className="mb-7 flex flex-col items-start gap-3"
           >
-            {hero.deckLabel}
-          </p>
+            {/* oxlint-disable-next-line next/no-img-element */}
+            <img
+              src={hero.studioLogo}
+              alt={hero.studio}
+              className="h-[clamp(3rem,5vw,4.5rem)] w-auto opacity-90"
+            />
+            <p className="font-system text-[var(--font-system-compact)] uppercase tracking-[0.34em] text-brass">
+              <span aria-hidden="true">— </span>
+              {hero.presents}
+              <span aria-hidden="true"> —</span>
+            </p>
+          </div>
+
+          <div data-hero-rule aria-hidden="true" className="signal-rule mb-5" />
 
           <h1 id="hero-title" className="mb-6">
             <span className="-mb-[0.14em] block overflow-hidden pb-[0.14em]">
@@ -196,13 +215,10 @@ export function HeroSection() {
           </h1>
 
           <p
-            data-hero-genre
-            className="font-system mb-8 flex max-w-[46rem] flex-wrap items-center gap-x-3 gap-y-2 text-[var(--font-system-label)] uppercase tracking-[0.18em] text-steel"
+            data-hero-positioning
+            className="font-system mb-8 max-w-[46rem] text-[var(--font-system-label)] uppercase tracking-[0.22em] text-steel"
           >
-            {hero.genre}
-            <span className="border border-[color:var(--border-brass)] px-2 py-1 text-[var(--font-system-compact)] tracking-[0.14em] text-brass">
-              {hero.genreStatus}
-            </span>
+            {hero.positioning}
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -223,12 +239,8 @@ export function HeroSection() {
 
         <div
           data-hero-meta
-          className="font-system mt-10 flex items-end justify-between gap-4 border-t border-[color:var(--border-subtle)] pt-4 text-[var(--font-system-compact)] uppercase tracking-[0.18em] text-steel"
+          className="font-system mt-10 flex items-end justify-end gap-4 border-t border-[color:var(--border-subtle)] pt-4 text-[var(--font-system-compact)] uppercase tracking-[0.18em] text-steel"
         >
-          <span>
-            <span className="text-brass">{chapter.index}</span> —{' '}
-            {chapter.navLabel}
-          </span>
           <a
             href="#world"
             className="inline-flex items-center gap-2 transition-colors hover:text-foreground focus-ring"

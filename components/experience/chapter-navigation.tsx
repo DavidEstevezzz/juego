@@ -10,6 +10,9 @@ import { useExperienceStore } from '@/lib/experience/store';
  * El estado activo usa `scarlet`; la numeración se queda en latón como detalle
  * naval secundario.
  *
+ * La marca se acorta a «Black Tides» para dejar aire a los ocho capítulos: con
+ * el nombre completo, los rótulos no caben en una sola línea a este tamaño.
+ *
  * Son anchors nativos, así que funcionan sin JavaScript y respetan el
  * historial. En móvil solo se muestra el número de cubierta (el nombre queda
  * para lectores de pantalla) para que la barra quepa en una sola línea y no
@@ -27,12 +30,12 @@ export function ChapterNavigation() {
       <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-10 lg:px-16">
         <a
           href="#hero"
-          className="font-display hidden shrink-0 truncate text-[0.8rem] uppercase tracking-[0.18em] text-foreground sm:block"
+          className="font-display hidden shrink-0 whitespace-nowrap text-[1rem] uppercase tracking-[0.16em] text-foreground sm:block"
         >
-          {siteContent.projectLabel}
+          {siteContent.navBrand}
         </a>
 
-        <ul className="flex min-w-0 items-center gap-0.5 sm:gap-2">
+        <ul className="flex min-w-0 items-center gap-1 sm:gap-2.5">
           {chapters.map((chapter) => {
             const isActive = chapter.id === activeChapter;
 
@@ -42,7 +45,7 @@ export function ChapterNavigation() {
                   href={`#${chapter.id}`}
                   aria-current={isActive ? 'true' : undefined}
                   data-active={isActive || undefined}
-                  className="font-system group flex items-center gap-2 border border-transparent px-1.5 py-1 text-[0.75rem] uppercase tracking-[0.14em] text-steel transition-colors hover:text-foreground focus-visible:border-[color:var(--border-scarlet)] data-[active]:text-scarlet sm:px-2"
+                  className="font-system group flex shrink-0 items-center gap-2.5 whitespace-nowrap border border-transparent px-1.5 py-1.5 text-[0.95rem] uppercase tracking-[0.12em] text-steel transition-colors hover:text-foreground focus-visible:border-[color:var(--border-scarlet)] data-[active]:text-scarlet sm:px-2"
                 >
                   {/* La numeración se mantiene en latón como detalle naval;
                       el estado activo pasa a `scarlet`. */}
@@ -52,7 +55,10 @@ export function ChapterNavigation() {
                   >
                     {chapter.index}
                   </span>
-                  <span className="sr-only whitespace-nowrap xl:not-sr-only">
+                  {/* `not-sr-only` restaura `white-space: normal`, así que el
+                      nowrap debe repetirse en el mismo breakpoint o los
+                      rótulos de dos palabras caen a dos líneas. */}
+                  <span className="sr-only whitespace-nowrap xl:not-sr-only xl:whitespace-nowrap">
                     {chapter.navLabel}
                   </span>
                 </a>

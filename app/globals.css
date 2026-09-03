@@ -132,6 +132,60 @@ body {
     radial-gradient(circle at 50% 45%, rgb(237 231 211 / 6%), transparent 48%);
 }
 
+/*
+ * Veladura del hero: el negro sostiene la lectura del texto sin apagar la luz
+ * cálida del propio material. En pantallas anchas oscurece desde la izquierda,
+ * donde vive la columna editorial; en móvil lo hace desde abajo.
+ */
+.hero-veil {
+  background: linear-gradient(
+    to top,
+    rgb(5 10 7 / 97%) 0%,
+    rgb(5 10 7 / 78%) 30%,
+    rgb(5 10 7 / 24%) 72%,
+    rgb(5 10 7 / 8%) 100%
+  );
+}
+
+@media (width >= 768px) {
+  .hero-veil {
+    background:
+      linear-gradient(
+        90deg,
+        rgb(5 10 7 / 94%) 0%,
+        rgb(5 10 7 / 76%) 34%,
+        rgb(5 10 7 / 24%) 66%,
+        rgb(5 10 7 / 6%) 100%
+      ),
+      linear-gradient(
+        to top,
+        rgb(5 10 7 / 88%) 0%,
+        rgb(5 10 7 / 34%) 34%,
+        transparent 70%
+      );
+  }
+}
+
+/* Firma roja del capítulo: masa contenida, siempre por debajo del negro. */
+.hero-signal {
+  background: radial-gradient(
+    120% 78% at 6% 100%,
+    rgb(168 32 36 / 26%),
+    rgb(122 21 21 / 12%) 42%,
+    transparent 68%
+  );
+}
+
+/*
+ * Anillo de foco único de la experiencia. Como clase propia evita depender del
+ * orden entre utilidades de `outline-*` y garantiza el mismo foco visible en
+ * botones, enlaces y controles del diálogo.
+ */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: 2px;
+}
+
 /* Línea roja de estado y dirección; detalle estructural, nunca texto pequeño. */
 .signal-rule {
   width: 2.5rem;

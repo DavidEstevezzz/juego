@@ -27,3 +27,11 @@ El equipo web comprimirá después geometría y texturas para el navegador. Nunc
 - Máster de vídeo limpio para generar WebM/MP4 y pósteres optimizados.
 - Música y ambiente en pistas independientes, con permiso para uso web.
 - El sonido solo se activará tras una acción explícita del visitante.
+
+## Flujo local de optimización
+
+- Los archivos maestros se guardan en `source-assets/` y no se suben a Git.
+- Los archivos listos para navegador se generan en `public/assets/media/`.
+- `npm run assets:optimize` regenera imágenes AVIF/WebP, el loop del hero,
+  el póster y el teaser 1080p.
+- Los derivados sí pueden versionarse y desplegarse con la web.

@@ -35,6 +35,28 @@ export const media = {
     teaser: '/assets/media/video/teaser-1080p.mp4',
   },
   images: {
+    storage: image(
+      'submarine-storage',
+      'Original game capture: a lamp lights timber shelves, nets and barrels inside a ship’s storage compartment.',
+      [0.5, 0.5],
+    ),
+    cabin: image(
+      'captains-cabin',
+      'Original game capture: Draga stands in a lantern-lit cabin.',
+      [0.5, 0.5],
+    ),
+    productionBlockout: {
+      avif: {
+        small: '/assets/production/storage-blockout-v1-960.avif',
+        large: '/assets/production/storage-blockout-v1-1920.avif',
+      },
+      webp: {
+        small: '/assets/production/storage-blockout-v1-960.webp',
+        large: '/assets/production/storage-blockout-v1-1920.webp',
+      },
+      alt: 'AI-recreated blockout of the storage compartment: grey clay surfaces and fine wireframe edges. Not an original development capture.',
+      focal: [0.5, 0.5],
+    },
     world: image(
       'driftwood-outskirts',
       'Draga moves through a frozen settlement battered by the wind.',

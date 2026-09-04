@@ -227,3 +227,89 @@ export const infectionChapterContent = {
     },
   ],
 } as const;
+
+/** Layout copy only, pending studio approval. No milestones or results implied. */
+export const productionChapterContent = {
+  category: 'Production / Field notes',
+  title: ['Before the', 'dark takes shape.'],
+  introduction:
+    'First, a space. Then the weight of its surfaces, the trace of a life, the light that makes you hesitate. A world becomes believable one decision at a time.',
+  draftLabel: 'Editorial copy · Draft for review',
+  comparison: {
+    label: 'Study 01 / The storage compartment',
+    title: 'From structure to atmosphere',
+    instruction: 'Move across the scene. Let the finished world linger.',
+    staticInstruction:
+      'Choose a view to compare the structure and the finished scene.',
+    loading: 'Preparing the comparison. You can also choose a full view.',
+    error:
+      'One comparison image could not load. The available view remains below.',
+    modes: {
+      explore: 'Explore',
+      blockout: 'Blockout',
+      final: 'Finished scene',
+    },
+    provenance: 'AI-recreated blockout / Original in-game capture',
+    disclaimer:
+      'Illustrative comparison. The blockout is a provisional AI recreation, not a development archive; some geometry differs. Authentic paired captures will replace it.',
+  },
+  notes: [
+    {
+      index: '01',
+      title: 'Space',
+      subtitle: 'Before the detail',
+      text: 'A passage. A blind corner. A room that asks you to step inside. Even without its surfaces, a place should carry a feeling.',
+    },
+    {
+      index: '02',
+      title: 'Surface',
+      subtitle: 'The evidence of use',
+      text: 'Timber, rope and steel give the room its weight. Wear turns a collection of objects into somewhere that feels inhabited.',
+    },
+    {
+      index: '03',
+      title: 'Light',
+      subtitle: 'What remains unseen',
+      text: 'A pool of warmth draws the eye. The darkness around it leaves a question. Atmosphere lives in the distance between the two.',
+    },
+  ],
+  gallery: {
+    label: 'Selected frames',
+    title: 'A world in the details.',
+    description: 'Original game captures. Explore at your own pace.',
+    frames: [
+      {
+        media: 'cabin',
+        title: 'A room with a history',
+        caption: 'The captain’s cabin',
+        width: 1920,
+        height: 1049,
+      },
+      {
+        media: 'atrium',
+        title: 'The scale of the hull',
+        caption: 'Inside the ship',
+        width: 1920,
+        height: 1080,
+      },
+      {
+        media: 'corridor',
+        title: 'Beyond the light',
+        caption: 'Below deck',
+        width: 1920,
+        height: 1049,
+      },
+    ],
+  },
+  studio: {
+    label: 'The people behind the world',
+    name: 'Strange Creature Factory',
+    text: 'A closer look at Black Tides: Draga’s Wake starts here. For a conversation about the project, meet the studio behind it.',
+    url: 'https://strangecreaturefactory.com/',
+    cta: 'Visit the studio',
+    facts: [
+      { label: 'Production stage', value: 'Pending studio approval' },
+      { label: 'Target platforms', value: 'Pending studio approval' },
+    ],
+  },
+} as const;

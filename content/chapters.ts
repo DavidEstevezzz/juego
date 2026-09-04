@@ -313,3 +313,38 @@ export const productionChapterContent = {
     ],
   },
 } as const;
+
+/** Draft closing line; links reuse the approved destinations in site content. */
+export const finalSignalContent = {
+  category: 'Final signal',
+  eyebrow: 'Black Tides: Draga’s Wake',
+  title: ['The deep', 'is calling.'],
+  invitation:
+    'Keep Black Tides on your horizon. Follow the game and add it to your wishlist on Steam.',
+  cta: 'Wishlist on Steam',
+  ctaNote: 'Opens the game’s Steam page',
+  studioLabel: 'A game by',
+  studioName: 'Strange Creature Factory',
+  studioUrl: 'https://strangecreaturefactory.com/',
+  studioCta: 'Meet the studio',
+  backToTop: 'Return to the surface',
+  chapterNavLabel: 'Revisit a chapter',
+  endLabel: 'End of transmission',
+  credits: 'Black Tides: Draga’s Wake · Strange Creature Factory',
+  privacyPending: 'Privacy policy · Pending studio approval',
+  accessibility: {
+    trigger: 'Accessibility',
+    title: 'Your pace. Your way.',
+    description:
+      'The experience follows your device’s motion preference. The content remains available without visual effects.',
+    reduced: 'Reduced motion is active on this device.',
+    standard: 'Standard motion is active on this device.',
+    motion:
+      'To reduce motion throughout the experience, enable Reduce motion in your device or browser accessibility settings. The page responds automatically.',
+    keyboard:
+      'Use Tab to move between links and controls, Enter to activate them, and Escape to close dialogs. The chapter links use ordinary page navigation.',
+    sound:
+      'There is no background audio. The teaser starts muted and only opens when you choose to watch it.',
+    close: 'Back to the signal',
+  },
+} as const;

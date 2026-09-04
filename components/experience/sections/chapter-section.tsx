@@ -38,7 +38,7 @@ export function ChapterSection({
         {/* Marca roja de dirección; la numeración se queda en latón. */}
         <div className="signal-rule" aria-hidden="true" />
 
-        <p className="font-system text-[var(--font-system-label)] uppercase tracking-[0.2em] text-steel">
+        <p className="font-system text-[var(--font-system-label)] uppercase tracking-[var(--tracking-system-wide)] text-steel">
           <span aria-hidden="true" className="text-brass">
             {chapter.index} /{' '}
           </span>
@@ -47,17 +47,17 @@ export function ChapterSection({
 
         <h2
           id={titleId}
-          className="font-display max-w-3xl text-[clamp(2.25rem,5vw,4.5rem)] leading-[1.05] tracking-[0.01em]"
+          className="font-display max-w-[18ch] text-[length:var(--text-display-scaffold)] leading-[1.05] tracking-[0.01em] uppercase"
         >
           {chapter.title}
         </h2>
 
         {children ?? (
           <>
-            <p className="max-w-[60ch] text-base leading-[1.65] text-steel sm:text-lg">
+            <p className="max-w-[var(--measure)] text-[length:var(--text-lead)] leading-[var(--leading-lead)] text-steel">
               {chapter.summary}
             </p>
-            <p className="font-system text-[var(--font-system-compact)] uppercase tracking-[0.18em] text-steel/70">
+            <p className="font-system text-[var(--font-system-compact)] uppercase tracking-[var(--tracking-system)] text-steel/70">
               {siteContent.scaffoldLabel}
             </p>
           </>

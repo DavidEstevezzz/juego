@@ -20,12 +20,28 @@ export function registerGsap(): typeof gsap {
   if (registered || typeof window === 'undefined') return gsap;
 
   gsap.registerPlugin(ScrollTrigger);
+
+  // Todo lo que se anima aquí es transformación u opacidad. Forzar la capa 3D
+  // evita que GSAP decida caso por caso y que un tween arranque en el hilo
+  // principal y salte al compositor a mitad de recorrido.
+  gsap.config({ force3D: true });
+
+  // El ticker recupera hasta 500 ms de retraso (pestaña ocupada, GC, carga de
+  // texturas) sin dar un salto: por encima de 33 ms de frame, GSAP hace como si
+  // solo hubiera pasado un frame. Es el valor por defecto, declarado aquí para
+  // que quede claro que la experiencia depende de él.
+  gsap.ticker.lagSmoothing(500, 33);
+
   ScrollTrigger.config({
     // `resize` sale de la lista de GSAP a propósito: el refresco lo dispara el
     // runtime desde `subscribeLayoutChange`, que además de redimensionar la
     // ventana cubre los cambios de altura del documento (fuentes, medios,
     // orientación) y llega agrupado. Ver `use-experience-runtime.ts`.
     autoRefreshEvents: 'DOMContentLoaded,load,refreshInit',
+    // La barra de direcciones de móvil cambia `100vh` al desplazarse y provoca
+    // un refresco a media secuencia: el escenario da un salto justo mientras se
+    // lee. Las alturas del sitio son `svh`, así que ese refresco no aporta nada.
+    ignoreMobileResize: true,
   });
   registered = true;
 
@@ -33,6 +49,26 @@ export function registerGsap(): typeof gsap {
 }
 
 export { gsap, ScrollTrigger };
+
+/**
+ * Retardo de `scrub` compartido por las secuencias largas (capítulos 02 y 05).
+ *
+ * Es el tiempo, en segundos, que la animación tarda en alcanzar la posición de
+ * scroll. Convierte los escalones de la rueda del ratón —que llegan como saltos
+ * discretos de decenas de píxeles— en un recorrido continuo. Por debajo de
+ * ~0.6 s los escalones se siguen notando; por encima de ~1.2 s la imagen deja
+ * de responder al gesto.
+ */
+export const SCRUB_SECONDS = 0.85;
+
+/**
+ * Easing del seguimiento amortiguado del capítulo 05, que calcula su propio
+ * progreso porque además necesita el rectángulo del fotograma para la capa
+ * WebGL. Es el mismo que ScrollTrigger usa internamente para un `scrub`
+ * numérico, de modo que las dos secuencias largas del sitio comparten inercia
+ * y no se sienten como dos webs distintas al desplazarse.
+ */
+export const FOLLOW_EASE = 'expo';
 
 /** `useLayoutEffect` seguro en SSR. */
 const useIsomorphicLayoutEffect =

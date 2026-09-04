@@ -42,7 +42,7 @@ export const media = {
     ),
     village: image(
       'frozen-village',
-      'An abandoned coastal village beneath a snowstorm.',
+      'Timber houses in Driftwood, a few windows still lit under a low storm sky.',
       [0.5, 0.5],
     ),
     corridor: image(

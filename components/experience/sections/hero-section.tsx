@@ -62,11 +62,16 @@ export function HeroSection() {
       )
       .from('[data-hero-genre]', { autoAlpha: 0, y: 14, duration: 0.8 }, 0.74)
       .from(
+        '[data-hero-synopsis]',
+        { autoAlpha: 0, y: 16, duration: 0.9 },
+        0.82,
+      )
+      .from(
         '[data-hero-cta]',
         { autoAlpha: 0, y: 18, duration: 0.8, stagger: 0.09 },
-        0.84,
+        0.96,
       )
-      .from('[data-hero-meta]', { autoAlpha: 0, y: 12, duration: 0.7 }, 1);
+      .from('[data-hero-meta]', { autoAlpha: 0, y: 12, duration: 0.7 }, 1.12);
 
     // Salida por scroll: primer 20 % del hero, scrubbed y reversible.
     // No fija la sección ni hace un fade-out global; apaga la luz, hunde el
@@ -168,7 +173,7 @@ export function HeroSection() {
 
           <p
             data-hero-deck
-            className="font-system mb-6 text-[var(--font-system-label)] uppercase tracking-[0.24em] text-brass"
+            className="font-system mb-6 text-[var(--font-system-label)] uppercase tracking-[var(--tracking-system-wide)] text-brass"
           >
             {hero.deckLabel}
           </p>
@@ -177,7 +182,7 @@ export function HeroSection() {
             <span className="-mb-[0.14em] block overflow-hidden pb-[0.14em]">
               <span
                 data-hero-line="primary"
-                className="font-display block whitespace-nowrap text-[clamp(2.4rem,9.2vw,8rem)] leading-[0.92] tracking-[0.05em] text-ivory uppercase"
+                className="font-display block whitespace-nowrap text-[length:var(--text-display-hero)] leading-[0.92] tracking-[0.04em] text-ivory uppercase"
               >
                 {hero.titlePrimary}
               </span>
@@ -188,7 +193,7 @@ export function HeroSection() {
             <span className="mt-4 block overflow-hidden pb-[0.1em]">
               <span
                 data-hero-line="secondary"
-                className="font-system inline-block bg-scarlet px-3 py-1.5 text-[clamp(0.8rem,2.6vw,1.35rem)] leading-none tracking-[0.3em] text-ivory uppercase shadow-[var(--glow-red)]"
+                className="font-system inline-block bg-scarlet px-3 py-1.5 text-[clamp(0.9rem,2.7vw,1.45rem)] leading-none tracking-[0.2em] text-ivory uppercase shadow-[var(--glow-red)]"
               >
                 {hero.titleSecondary}
               </span>
@@ -197,12 +202,21 @@ export function HeroSection() {
 
           <p
             data-hero-genre
-            className="font-system mb-8 flex max-w-[46rem] flex-wrap items-center gap-x-3 gap-y-2 text-[var(--font-system-label)] uppercase tracking-[0.18em] text-steel"
+            className="font-system mb-5 flex max-w-[46rem] flex-wrap items-center gap-x-3 gap-y-2 text-[var(--font-system-label)] uppercase tracking-[var(--tracking-system)] text-steel"
           >
             {hero.genre}
-            <span className="border border-[color:var(--border-brass)] px-2 py-1 text-[var(--font-system-compact)] tracking-[0.14em] text-brass">
+            <span className="border border-[color:var(--border-brass)] px-2 py-1 text-[var(--font-system-compact)] tracking-[var(--tracking-system-tight)] text-brass">
               {hero.genreStatus}
             </span>
+          </p>
+
+          {/* Una sola frase de mundo antes de los CTA: la promesa del juego,
+              no un párrafo de marketing (docs/EXPERIENCE-BLUEPRINT.md 01). */}
+          <p
+            data-hero-synopsis
+            className="mb-8 max-w-[var(--measure)] text-[length:var(--text-body-sm)] leading-[1.55] text-frost [text-shadow:0_3px_22px_rgb(0_0_0/80%)] sm:text-[length:var(--text-body)] sm:leading-[var(--leading-body)]"
+          >
+            {hero.synopsis}
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -213,7 +227,7 @@ export function HeroSection() {
               href={hero.steamUrl}
               target="_blank"
               rel="noreferrer noopener"
-              className="font-system inline-flex min-h-12 items-center gap-3 border border-[color:var(--border-brass)] px-6 text-[var(--font-system-action)] uppercase tracking-[0.18em] text-steel transition-colors duration-200 hover:border-brass hover:text-foreground focus-ring"
+              className="font-system inline-flex min-h-12 items-center gap-3 border border-[color:var(--border-brass)] px-6 text-[var(--font-system-action)] uppercase tracking-[var(--tracking-system)] text-steel transition-colors duration-200 hover:border-brass hover:text-foreground focus-ring"
             >
               {hero.ctaSecondary}
               <MoveUpRight aria-hidden="true" className="h-4 w-4" />
@@ -223,7 +237,7 @@ export function HeroSection() {
 
         <div
           data-hero-meta
-          className="font-system mt-10 flex items-end justify-between gap-4 border-t border-[color:var(--border-subtle)] pt-4 text-[var(--font-system-compact)] uppercase tracking-[0.18em] text-steel"
+          className="font-system mt-10 flex items-end justify-between gap-4 border-t border-[color:var(--border-subtle)] pt-4 text-[var(--font-system-compact)] uppercase tracking-[var(--tracking-system)] text-steel"
         >
           <span>
             <span className="text-brass">{chapter.index}</span> —{' '}

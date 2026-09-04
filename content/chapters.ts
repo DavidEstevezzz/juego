@@ -8,10 +8,10 @@ import type {
  * Registro único de capítulos de la experiencia.
  *
  * El orden de este array define el orden del documento, la navegación y el
- * cálculo del capítulo activo. Los textos son provisionales: proceden de los
- * objetivos de docs/EXPERIENCE-BLUEPRINT.md y del contenido ya presente en la
- * maqueta, nunca de lore inventado. Se sustituirán por copy aprobado en los
- * prompts de sección.
+ * cálculo del capítulo activo. Los textos combinan los objetivos de
+ * docs/EXPERIENCE-BLUEPRINT.md con la información pública del juego (ficha de
+ * Steam y material del estudio). Nada procede de lore inventado: los capítulos
+ * sin dirección visual siguen mostrando solo su resumen.
  */
 export const chapters: readonly ExperienceChapter[] = [
   {
@@ -28,7 +28,7 @@ export const chapters: readonly ExperienceChapter[] = [
     navLabel: 'Driftwood',
     title: 'The world: Driftwood',
     summary:
-      'The tone, world rules and premise that give the project its identity.',
+      'The era, the ice and the ship: the rules of the world Draga is trapped in.',
   },
   {
     id: 'gameplay',
@@ -36,7 +36,7 @@ export const chapters: readonly ExperienceChapter[] = [
     navLabel: 'Gameplay',
     title: 'The gameplay promise',
     summary:
-      'The player fantasy, its essential pillars and the rhythm of play.',
+      'The player fantasy, its three pillars and the rhythm of close-quarters horror.',
   },
   {
     id: 'draga',
@@ -102,37 +102,41 @@ export const chapterMap = Object.fromEntries(
 /**
  * Contenido del capítulo 02 — Driftwood.
  *
- * Copy provisional: describe aislamiento, clima y localización siguiendo el
- * objetivo de docs/EXPERIENCE-BLUEPRINT.md, sin inventar lore, nombres ni
- * datos de producción. Se sustituye cuando el equipo apruebe el texto.
+ * El lugar (Driftwood) procede del guion del proyecto en
+ * docs/EXPERIENCE-BLUEPRINT.md; la época, la Ormora y el culto proceden de la
+ * ficha pública del juego. Las tres observaciones cubren el objetivo del
+ * capítulo —aislamiento, clima y localización— sin inventar lore ni datos de
+ * producción.
  */
 export const worldChapterContent = {
   deckLabel: 'Deck 02',
   premise:
-    'A frozen settlement at the edge of the map. The storm erases every route, every trail and any promise of return.',
+    'Driftwood sits at the edge of the ice, in an alternate 1900s where ancient gods and vessels of steam and steel share the same black water.',
   observations: [
     {
       index: '01',
       label: 'Isolation',
-      text: 'No route back remains in sight. The only path still open leads further inland.',
+      text: 'The storm closes every route behind you. What remains open leads further out, never back.',
     },
     {
       index: '02',
       label: 'Weather',
-      text: 'The wind does not decorate the landscape: it conceals it, reshapes it and decides how far you can see.',
+      text: 'The wind does not decorate this place. It hides it, redraws it, and decides how far you are allowed to see.',
     },
     {
       index: '03',
-      label: 'Location',
-      text: 'Driftwood stands on timber, ice and wreckage stranded by the tide.',
+      label: 'The Ormora',
+      text: 'Out in the ice waits a colossal whaling steamship, taken by a doomsday cult and by something older than the cult itself.',
     },
   ],
 } as const;
 
 /**
- * Replaceable copy for chapter 03. The three pillars are approved concepts;
- * the supporting lines stay deliberately qualitative and avoid unconfirmed
- * mechanics, systems or production claims.
+ * Copy del capítulo 03. Los tres pilares son conceptos aprobados en
+ * docs/EXPERIENCE-BLUEPRINT.md; las líneas de apoyo reformulan la promesa de
+ * combate que el estudio ya comunica públicamente —cuerpo a cuerpo brutal,
+ * sin distancia, medido en tiempo, posición y agresividad— sin prometer
+ * sistemas, armas ni progresión sin confirmar.
  */
 export const gameplayChapterContent = {
   deckLabel: 'Deck 03',
@@ -148,7 +152,7 @@ export const gameplayChapterContent = {
       title: 'Explore',
       directive: 'Read the space',
       description:
-        'Enter hostile spaces, read their shape and uncover what the darkness keeps out of sight.',
+        'Steel corridors, flooded holds and compartments that no longer hold their shape. Read each room before you commit to it.',
       media: 'corridor',
     },
     {
@@ -157,28 +161,35 @@ export const gameplayChapterContent = {
       title: 'Endure',
       directive: 'Withstand the pressure',
       description:
-        'Cold, darkness and limited visibility turn every step forward into sustained pressure.',
+        'Cold, darkness and a crew that keeps getting smaller. Every deck you clear takes something you do not get back.',
       media: 'frozenDeck',
     },
     {
       id: 'confront',
       index: '03',
       title: 'Confront',
-      directive: 'Face the threat',
+      directive: 'No distance left',
       description:
-        'When distance collapses, the experience shifts from observation to direct confrontation.',
+        'Survival here is not about keeping your distance. It is about winning the fight when there is none left: timing, position, aggression.',
       media: 'atrium',
     },
   ],
 } as const;
 
-/** No approved biography has been supplied. Do not substitute invented lore. */
+/**
+ * Capítulo 04. La biografía resume el retrato del personaje que el estudio ya
+ * ha hecho público: marinero curtido y ladrón de oficio, leal a Caleb, ni
+ * héroe ni villano. No añade sucesos, relaciones ni finales no confirmados.
+ */
 export const dragaChapterContent = {
   deckLabel: 'Deck 04',
   category: 'Character study',
   name: 'Draga',
-  role: 'The protagonist',
-  biography: null as string | null,
+  role: 'Smuggler · Ormora survivor',
+  biography:
+    'A hardened sailor and career thief who has spent his life following Caleb’s orders without question. Not a hero: a survivor, a loyalist, a man whose moral code was built for a simpler world. As the ship takes his crew one by one and an ancient god takes root in his body, Draga has to choose between the man he was and the thing he is becoming.' as
+      | string
+      | null,
   pendingBiography: 'Biography pending approval.',
   imageCaption: 'Original game portrait',
   gameTitle: 'Black Tides: Draga’s Wake',
@@ -201,7 +212,7 @@ export const infectionChapterContent = {
     {
       id: 'room',
       label: 'Overtaken',
-      description: 'Organic matter overtakes the room.',
+      description: 'Living matter takes the compartment.',
       media: 'blubberRoom',
       width: 1920,
       height: 1049,
@@ -209,7 +220,7 @@ export const infectionChapterContent = {
     {
       id: 'presence',
       label: 'Presence',
-      description: 'A shape emerges from the dark.',
+      description: 'Something is waking inside the hull.',
       media: 'vessel',
       width: 1920,
       height: 935,

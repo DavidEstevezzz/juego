@@ -7,8 +7,10 @@ import { useExperienceStore } from '@/lib/experience/store';
 /**
  * Índice de cubierta: navegación accesible por capítulos.
  *
- * El estado activo usa `scarlet`; la numeración se queda en latón como detalle
- * naval secundario.
+ * El estado activo se marca con marfil y una barra `scarlet` bajo la etiqueta:
+ * el rojo entra como estructura, no como color de texto pequeño sobre negro
+ * (scarlet sobre void rinde 2,75:1, por debajo del mínimo AA). La numeración se
+ * queda en latón como detalle naval secundario.
  *
  * Son anchors nativos, así que funcionan sin JavaScript y respetan el
  * historial. En móvil solo se muestra el número de cubierta (el nombre queda
@@ -27,12 +29,20 @@ export function ChapterNavigation() {
       <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-10 lg:px-16">
         <a
           href="#hero"
-          className="font-display hidden shrink-0 truncate text-[0.8rem] uppercase tracking-[0.18em] text-foreground sm:block"
+          aria-label={siteContent.projectLabel}
+          className="font-display hidden shrink-0 truncate text-[var(--font-system-label)] uppercase tracking-[var(--tracking-system)] text-foreground sm:block"
         >
-          {siteContent.projectLabel}
+          <span aria-hidden="true" className="xl:hidden">
+            {siteContent.projectLabel}
+          </span>
+          {/* A partir de `xl` la barra muestra también los nombres de los
+              capítulos y la marca cede el ancho que necesitan. */}
+          <span aria-hidden="true" className="hidden xl:inline">
+            {siteContent.projectLabelShort}
+          </span>
         </a>
 
-        <ul className="flex min-w-0 items-center gap-0.5 sm:gap-2">
+        <ul className="flex min-w-0 items-center gap-0.5 sm:gap-1.5">
           {chapters.map((chapter) => {
             const isActive = chapter.id === activeChapter;
 
@@ -42,19 +52,32 @@ export function ChapterNavigation() {
                   href={`#${chapter.id}`}
                   aria-current={isActive ? 'true' : undefined}
                   data-active={isActive || undefined}
-                  className="font-system group flex items-center gap-2 border border-transparent px-1.5 py-1 text-[0.75rem] uppercase tracking-[0.14em] text-steel transition-colors hover:text-foreground focus-visible:border-[color:var(--border-scarlet)] data-[active]:text-scarlet sm:px-2"
+                  className="font-system group relative flex items-center gap-1.5 border border-transparent px-1.5 py-1 text-[var(--font-system-compact)] uppercase tracking-[var(--tracking-system-tight)] text-steel transition-colors hover:text-foreground focus-visible:border-[color:var(--border-scarlet)] data-[active]:text-ivory sm:px-2"
                 >
                   {/* La numeración se mantiene en latón como detalle naval;
-                      el estado activo pasa a `scarlet`. */}
+                      el estado activo pasa a `ember`, legible sobre el negro. */}
                   <span
                     aria-hidden="true"
-                    className="text-brass transition-colors group-data-[active]:text-scarlet"
+                    className="text-brass transition-colors group-data-[active]:text-ember"
                   >
                     {chapter.index}
                   </span>
-                  <span className="sr-only whitespace-nowrap xl:not-sr-only">
+                  {/* Dos nodos en vez de alternar `sr-only`/`not-sr-only`:
+                      `not-sr-only` restablece `white-space: normal`, así que la
+                      etiqueta visible se partía en dos líneas y desbordaba la
+                      altura fija de la barra. */}
+                  <span className="sr-only">{chapter.navLabel}</span>
+                  <span
+                    aria-hidden="true"
+                    className="hidden whitespace-nowrap xl:inline"
+                  >
                     {chapter.navLabel}
                   </span>
+                  {/* Marca de estado: el rojo pesa como línea, no como texto. */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-1.5 -bottom-px h-0.5 origin-left scale-x-0 bg-scarlet shadow-[var(--glow-red)] transition-transform duration-300 group-data-[active]:scale-x-100 sm:inset-x-2"
+                  />
                 </a>
               </li>
             );

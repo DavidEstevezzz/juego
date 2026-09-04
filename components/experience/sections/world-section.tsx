@@ -11,22 +11,17 @@ import {
   clearChapterProgress,
   setChapterProgress,
 } from '@/lib/experience/chapter-progress';
-import { useExperienceTimeline } from '@/lib/experience/gsap';
+import { SCRUB_SECONDS, useExperienceTimeline } from '@/lib/experience/gsap';
 import { useExperienceStore } from '@/lib/experience/store';
+import { createStyleWriter } from '@/lib/experience/style-writer';
+import {
+  sampleWorld,
+  WORLD_TIMELINE_LENGTH,
+} from '@/lib/experience/world-timeline';
 import type { ResponsiveImage } from '@/types/experience';
 
 const chapter = chapterMap.world;
 const content = worldChapterContent;
-
-function clamp(value: number, min = 0, max = 1) {
-  return Math.min(Math.max(value, min), max);
-}
-
-/** Curva determinista para que WebGL y el fallback CSS compartan el montaje. */
-function smoothRamp(value: number, from: number, to: number) {
-  const progress = clamp((value - from) / (to - from));
-  return progress * progress * (3 - 2 * progress);
-}
 
 /**
  * Capítulo 02 — Driftwood.
@@ -35,6 +30,13 @@ function smoothRamp(value: number, from: number, to: number) {
  * abre dentro del negro, una masa de niebla oculta el cambio de plano y el
  * asentamiento aparece al retirarse. El progreso narrativo es reversible y se
  * comparte con el shader; no hay partículas DOM ni listeners por elemento.
+ *
+ * Todo el capítulo se mueve con un único reloj: un `playhead` que vive dentro
+ * de la propia timeline con `scrub`. Las variables CSS, el shader y los tweens
+ * leen exactamente el mismo valor amortiguado, así que ninguna capa adelanta a
+ * las demás. Antes las variables se escribían desde `ScrollTrigger.onUpdate`,
+ * que entrega la posición cruda del scroll: la niebla y el fundido entre planos
+ * seguían los escalones de la rueda mientras las persianas llegaban con retraso.
  */
 export function WorldSection() {
   const root = useRef<HTMLElement>(null);
@@ -69,7 +71,8 @@ export function WorldSection() {
       );
 
       // El capítulo entra y sale de la capa WebGL mediante la misma señal
-      // compartida que usa el resto de la experiencia.
+      // compartida que usa el resto de la experiencia. Esta sí es la posición
+      // cruda: solo decide presencia, no dibuja nada que se pueda ver saltar.
       ScrollTrigger.create({
         trigger: scope,
         start: 'top bottom',
@@ -79,6 +82,12 @@ export function WorldSection() {
           setChapterProgress('world', { coverage: self.progress }),
       });
 
+      // Se declara la composición antes del primer frame: si el navegador
+      // decide promocionar la capa a mitad del fundido, ese frame se ve.
+      const layers = [meta, lockup, premise, outro, ...notes].filter(
+        (element): element is HTMLElement => element !== null,
+      );
+      gsap.set(layers, { willChange: 'transform, opacity' });
       gsap.set(meta, { autoAlpha: 0, y: -10 });
       gsap.set(lockup, { autoAlpha: 0, y: 28 });
       gsap.set(premise, { autoAlpha: 0, y: 20 });
@@ -86,54 +95,75 @@ export function WorldSection() {
       gsap.set(outro, { autoAlpha: 0 });
       gsap.set(seam, { scaleX: 0.08, transformOrigin: 'center center' });
 
+      const writer = createStyleWriter(stage);
+      const playhead = { progress: 0 };
+
+      const publish = () => {
+        const frame = sampleWorld(playhead.progress);
+
+        setChapterProgress('world', { progress: frame.progress });
+        writer.set('--world-progress', frame.progress);
+        writer.set('--world-scene-mix', frame.sceneMix);
+        writer.set('--world-whiteout', frame.whiteout);
+      };
+
       const timeline = gsap.timeline({
         defaults: { ease: 'power3.inOut' },
         scrollTrigger: {
           trigger: scope,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 0.45,
-          onUpdate: (self) => {
-            const progress = self.progress;
-            const sceneMix = smoothRamp(progress, 0.47, 0.59);
-            const whiteout = Math.min(
-              smoothRamp(progress, 0.36, 0.51),
-              1 - smoothRamp(progress, 0.56, 0.7),
-            );
-
-            setChapterProgress('world', { progress });
-            stage?.style.setProperty('--world-progress', progress.toFixed(4));
-            stage?.style.setProperty('--world-scene-mix', sceneMix.toFixed(4));
-            stage?.style.setProperty('--world-whiteout', whiteout.toFixed(4));
-          },
+          scrub: SCRUB_SECONDS,
+          // Con `svh` y medios diferidos, la altura de la sección cambia
+          // después del primer cálculo; sin esto las marcas se quedan en la
+          // posición vieja y la secuencia termina antes de tiempo.
+          invalidateOnRefresh: true,
         },
       });
 
-      // 01 — Una fisura escarlata convierte el negro del hero en una abertura.
+      // 00 — El reloj compartido. Va dentro de la timeline, así que lo que
+      // escribe ya viene amortiguado por `scrub` igual que el resto de tweens.
       timeline
-        .to(seam, { scaleX: 1, duration: 8, ease: 'power2.inOut' }, 0)
-        .to(shutterTop, { yPercent: -100, duration: 14 }, 5)
-        .to(shutterBottom, { yPercent: 100, duration: 14 }, 5)
-        .to(seam, { autoAlpha: 0, duration: 5, ease: 'power2.out' }, 14)
-        .to(meta, { autoAlpha: 1, y: 0, duration: 7 }, 11)
+        .to(
+          playhead,
+          {
+            progress: 1,
+            duration: WORLD_TIMELINE_LENGTH,
+            ease: 'none',
+            onUpdate: publish,
+          },
+          0,
+        )
+
+        // 01 — Una fisura escarlata convierte el negro del hero en una abertura.
+        .to(seam, { scaleX: 1, duration: 6, ease: 'power2.inOut' }, 0)
+        .to(shutterTop, { yPercent: -100, duration: 10 }, 3)
+        .to(shutterBottom, { yPercent: 100, duration: 10 }, 3)
+        .to(seam, { autoAlpha: 0, duration: 4, ease: 'power2.out' }, 9)
+        .to(meta, { autoAlpha: 1, y: 0, duration: 5 }, 8)
 
         // 02 — El nombre ocupa el encuadre; el material sigue siendo protagonista.
-        .to(lockup, { autoAlpha: 1, y: 0, duration: 10 }, 15)
-        .to(premise, { autoAlpha: 1, y: 0, duration: 8 }, 24)
-        .to(lockup, { autoAlpha: 0, y: -22, duration: 8 }, 41)
-        .to(premise, { autoAlpha: 0, y: -14, duration: 7 }, 43)
+        // La salida cae dentro de la subida de la tormenta (0.31–0.42): el texto
+        // no se desvanece sobre la imagen limpia, se lo lleva la niebla.
+        .to(lockup, { autoAlpha: 1, y: 0, duration: 8 }, 13)
+        .to(premise, { autoAlpha: 1, y: 0, duration: 7 }, 20)
+        .to(lockup, { autoAlpha: 0, y: -22, duration: 6 }, 32)
+        .to(premise, { autoAlpha: 0, y: -14, duration: 5 }, 33)
 
-        // 03 — Después del whiteout, las reglas del lugar aparecen una a una.
-        .to(notes[0], { autoAlpha: 1, y: 0, duration: 7 }, 59)
-        .to(notes[0], { autoAlpha: 0, y: -18, duration: 6 }, 69)
-        .to(notes[1], { autoAlpha: 1, y: 0, duration: 7 }, 70)
-        .to(notes[1], { autoAlpha: 0, y: -18, duration: 6 }, 80)
-        .to(notes[2], { autoAlpha: 1, y: 0, duration: 7 }, 81)
-        .to(notes[2], { autoAlpha: 0, y: -18, duration: 6 }, 92)
+        // 03 — Con la tormenta ya retirada (0.53), las reglas del lugar aparecen
+        // una a una: entrada de 6, lectura de 6 y salida de 4, sin cruzarse.
+        // Las tres comparten caja, así que solaparlas superponía dos textos.
+        .to(notes[0], { autoAlpha: 1, y: 0, duration: 6 }, 54)
+        .to(notes[0], { autoAlpha: 0, y: -18, duration: 4 }, 66)
+        .to(notes[1], { autoAlpha: 1, y: 0, duration: 6 }, 70)
+        .to(notes[1], { autoAlpha: 0, y: -18, duration: 4 }, 82)
+        .to(notes[2], { autoAlpha: 1, y: 0, duration: 6 }, 86)
 
-        // 04 — Una sombra ascendente deja preparada la entrada al capítulo 03.
-        .to(outro, { autoAlpha: 1, duration: 8, ease: 'power2.in' }, 92)
-        .to(meta, { autoAlpha: 0, y: -8, duration: 5 }, 95);
+        // 04 — La tercera observación conserva su lectura completa (92–96) antes
+        // de que una sombra ascendente se la lleve y deje preparada la entrada
+        // al capítulo 03.
+        .to(outro, { autoAlpha: 1, duration: 4, ease: 'power2.in' }, 96)
+        .to(meta, { autoAlpha: 0, y: -8, duration: 4 }, 96);
     },
     [webglEligible],
   );

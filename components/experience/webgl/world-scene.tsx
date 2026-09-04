@@ -5,6 +5,7 @@ import { useThree } from '@react-three/fiber';
 import { media } from '@/content/media';
 import { getChapterProgress } from '@/lib/experience/chapter-progress';
 import { useExperienceStore } from '@/lib/experience/store';
+import { sampleWorld } from '@/lib/experience/world-timeline';
 import { MediaPlane } from './media-plane';
 import type { TransitionUniforms } from './transition-material';
 
@@ -29,11 +30,6 @@ function clamp(value: number, min: number, max: number) {
 
 function ramp(value: number, from: number, to: number) {
   return clamp((value - from) / (to - from), 0, 1);
-}
-
-function smoothRamp(value: number, from: number, to: number) {
-  const progress = ramp(value, from, to);
-  return progress * progress * (3 - 2 * progress);
 }
 
 /**
@@ -67,14 +63,10 @@ export function WorldScene() {
       const opacity = visibility();
       const { velocity } = useExperienceStore.getState();
 
-      const sceneMix = smoothRamp(progress, 0.47, 0.59);
-      const whiteout = Math.min(
-        smoothRamp(progress, 0.36, 0.51),
-        1 - smoothRamp(progress, 0.56, 0.7),
-      );
-      const firstDolly = smoothRamp(progress, 0.11, 0.43);
-      const secondDolly = smoothRamp(progress, 0.59, 0.91);
-      const exitShadow = smoothRamp(progress, 0.91, 1);
+      // Mismo muestreo que el DOM: el shader no puede tener su propia versión
+      // del montaje o la niebla se retiraría antes en una capa que en la otra.
+      const { sceneMix, whiteout, firstDolly, secondDolly, exitShadow } =
+        sampleWorld(progress);
       const portrait = viewportAspect < 0.85;
 
       uniforms.uSceneMix.value = sceneMix;

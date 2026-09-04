@@ -65,7 +65,7 @@ export function TrailerDialog({ onOpenChange }: TrailerDialogProps) {
             type="button"
             aria-label={hero.ctaPrimary}
             data-hero-cta
-            className="font-system inline-flex min-h-12 items-center gap-3 border border-[color:var(--border-scarlet)] bg-transparent px-6 text-[var(--font-system-action)] uppercase tracking-[0.18em] text-foreground transition-colors duration-200 hover:bg-scarlet focus-visible:bg-scarlet focus-ring"
+            className="font-system inline-flex min-h-12 items-center gap-3 border border-[color:var(--border-scarlet)] bg-transparent px-6 text-[var(--font-system-action)] uppercase tracking-[var(--tracking-system)] text-foreground transition-colors duration-200 hover:bg-scarlet focus-visible:bg-scarlet focus-ring"
           />
         }
       >
@@ -77,7 +77,7 @@ export function TrailerDialog({ onOpenChange }: TrailerDialogProps) {
         showCloseButton={false}
         className="max-w-[min(96vw,1180px)] gap-0 rounded-none border border-[color:var(--border-scarlet)] bg-void p-0 text-foreground ring-0 sm:max-w-[min(96vw,1180px)]"
       >
-        <DialogTitle className="font-system border-b border-[color:var(--border-subtle)] px-4 py-3 text-[var(--font-system-label)] uppercase tracking-[0.18em] text-steel">
+        <DialogTitle className="font-system border-b border-[color:var(--border-subtle)] px-4 py-3 text-[var(--font-system-label)] uppercase tracking-[var(--tracking-system)] text-steel">
           {hero.trailerTitle}
         </DialogTitle>
         <DialogDescription className="sr-only">
@@ -109,7 +109,7 @@ export function TrailerDialog({ onOpenChange }: TrailerDialogProps) {
             type="button"
             onClick={toggleSound}
             aria-pressed={!muted}
-            className="font-system inline-flex min-h-11 items-center gap-2 border border-[color:var(--border-brass)] px-4 text-[var(--font-system-label)] uppercase tracking-[0.16em] text-steel transition-colors hover:border-brass hover:text-foreground focus-ring"
+            className="font-system inline-flex min-h-11 items-center gap-2 border border-[color:var(--border-brass)] px-4 text-[var(--font-system-label)] uppercase tracking-[var(--tracking-system)] text-steel transition-colors hover:border-brass hover:text-foreground focus-ring"
           >
             {muted ? (
               <VolumeX aria-hidden="true" className="h-4 w-4" />
@@ -122,7 +122,7 @@ export function TrailerDialog({ onOpenChange }: TrailerDialogProps) {
           <button
             type="button"
             onClick={() => handleOpenChange(false)}
-            className="font-system inline-flex min-h-11 items-center gap-2 border border-[color:var(--border-scarlet)] px-4 text-[var(--font-system-label)] uppercase tracking-[0.16em] text-foreground transition-colors hover:bg-scarlet focus-ring"
+            className="font-system inline-flex min-h-11 items-center gap-2 border border-[color:var(--border-scarlet)] px-4 text-[var(--font-system-label)] uppercase tracking-[var(--tracking-system)] text-foreground transition-colors hover:bg-scarlet focus-ring"
           >
             {hero.closeTrailer}
           </button>

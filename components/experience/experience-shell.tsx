@@ -34,7 +34,7 @@ export function ExperienceShell() {
     <>
       <a
         href="#experience-main"
-        className="font-system sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-scarlet focus:bg-void focus:px-4 focus:py-2 focus:text-xs focus:uppercase focus:tracking-[0.18em] focus:text-foreground"
+        className="font-system sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-scarlet focus:bg-void focus:px-4 focus:py-2 focus:text-xs focus:uppercase focus:tracking-[var(--tracking-system)] focus:text-foreground"
       >
         {siteContent.skipLinkLabel}
       </a>

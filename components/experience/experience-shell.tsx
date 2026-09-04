@@ -6,7 +6,6 @@ import { useChapterObserver } from '@/lib/experience/use-chapter-observer';
 import { useExperienceRuntime } from '@/lib/experience/use-experience-runtime';
 import { ChapterNavigation } from './chapter-navigation';
 import { ExperienceCanvas } from './experience-canvas';
-import { CrewSection } from './sections/crew-section';
 import { DragaSection } from './sections/draga-section';
 import { FinalSignalSection } from './sections/final-signal-section';
 import { GameplaySection } from './sections/gameplay-section';
@@ -53,7 +52,6 @@ export function ExperienceShell() {
         <WorldSection />
         <GameplaySection />
         <DragaSection />
-        <CrewSection />
         <InfectionSection />
         <ProductionSection />
         <FinalSignalSection />

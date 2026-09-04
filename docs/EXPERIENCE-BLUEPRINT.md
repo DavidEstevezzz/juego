@@ -129,13 +129,22 @@ Objetivo: explicar qué hace el jugador.
 
 Objetivo: convertir a la protagonista en el centro emocional.
 
-- Retrato lateral de Draga con luz fría y espacio negativo para texto.
-- Revelado por máscara orgánica o condensación sobre cristal.
-- El puntero modifica ligeramente luz, enfoque y separación de planos.
-- Preparado para sustituir el retrato por un modelo GLB optimizado en una fase
-  posterior sin cambiar la composición ni el contenido.
+- Collage frío de láminas irregulares a distintas alturas, inspirado en páginas
+  dañadas por agua y fuego, sin representar un libro literal ni inventar un archivo.
+- Retrato vertical más cercano, lámina ambiental amplia y recorte inferior del
+  abrigo: tres escalas del mismo arte sobre una base ceniza/blood. Nombre grande
+  sobre el encuentro con el negro, sin tarjeta lateral vacía ni cara duplicada.
+- Pausa contemplativa en flujo natural: sin fijación ni progreso ligado al scroll.
+  Una entrada breve asienta los bordes y disipa una veladura tenue.
+- Solo las láminas exteriores reaccionan discretamente al ratón. Cara y texto
+  inmóviles; móvil, tier C y reduced motion conservan la composición estática.
+- Slot MediaSubject independiente del layout, extensible cuando llegue un GLB
+  optimizado. Ningún modelo ni biografía se inventan mientras tanto.
 
-### 05 — Ecos humanos / Izzy y la tripulación
+### Aplazado — Ecos humanos / Izzy y la tripulación
+
+Fuera del recorrido y la navegación por ahora. Se conserva el borrador para
+retomarlo después; no ocupa un número de cubierta activo.
 
 Objetivo: demostrar que el horror tiene relaciones y consecuencias.
 
@@ -144,17 +153,21 @@ Objetivo: demostrar que el horror tiene relaciones y consecuencias.
 - Microfragmentos de voz, diálogo o biografía aprobada.
 - La interfaz utiliza señales náuticas y de archivo, no paneles futuristas.
 
-### 06 — La infección
+### 05 — La infección (Prompt 06)
 
 Objetivo: realizar el gran giro visual de la página.
 
 - `Growth`, `Blubber Room` y `Vessel` forman una secuencia, no una galería.
-- El negro-rojo presente desde el inicio se desplaza hacia tonos `blood` y
-  `ember`, reduciendo progresivamente la luz fría.
+- El negro-rojo gana superficie con los tonos originales de Growth y Blubber.
+  La criatura final conserva su luz fría y sus ojos azules; el rojo la rodea.
 - Un shader de distorsión de baja amplitud reacciona a scroll y proximidad.
 - La criatura se revela por partes; nunca mediante un susto o flash agresivo.
+- Holds inmóviles entre revelaciones. El ruido depende del progreso, no del
+  tiempo; la secuencia vuelve exactamente al mismo punto al subir.
+- Alternativa editorial sin deformación para reduced motion, sin JavaScript
+  y viewports de poca altura. Tier C conserva la secuencia con máscaras CSS.
 
-### 07 — Evidencia de producción
+### 06 — Evidencia de producción (Prompt 07)
 
 Objetivo: comunicar alcance y credibilidad sin convertir la web en un pitch
 deck público.
@@ -164,7 +177,7 @@ deck público.
 - Puede incluir un módulo de trailer completo y galería manual.
 - Sin cifras financieras públicas salvo aprobación expresa.
 
-### 08 — Señal final
+### 07 — Señal final (Prompt 08)
 
 Objetivo: cerrar con una imagen memorable y una acción clara.
 

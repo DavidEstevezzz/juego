@@ -40,6 +40,8 @@ type ExperienceState = {
   webglAvailable: boolean;
   /** Las texturas del capítulo 02 ya están listas dentro del canvas. */
   worldSceneReady: boolean;
+  /** Infection textures have reached the shared canvas. */
+  infectionSceneReady: boolean;
   /** El tier ya se degradó en esta sesión; la detección deja de aplicarse. */
   graphicsTierDegraded: boolean;
 
@@ -56,6 +58,7 @@ type ExperienceState = {
   setDocumentVisible: (documentVisible: boolean) => void;
   setWebglAvailable: (webglAvailable: boolean) => void;
   setWorldSceneReady: (worldSceneReady: boolean) => void;
+  setInfectionSceneReady: (ready: boolean) => void;
 };
 
 /** Escalones de degradación. `c` es terminal. */
@@ -79,6 +82,7 @@ export const useExperienceStore = create<ExperienceState>((set, get) => ({
   documentVisible: true,
   webglAvailable: false,
   worldSceneReady: false,
+  infectionSceneReady: false,
   graphicsTierDegraded: false,
 
   setChapter: (chapter) => {
@@ -130,6 +134,11 @@ export const useExperienceStore = create<ExperienceState>((set, get) => ({
   setWorldSceneReady: (worldSceneReady) => {
     if (get().worldSceneReady === worldSceneReady) return;
     set({ worldSceneReady });
+  },
+
+  setInfectionSceneReady: (infectionSceneReady) => {
+    if (get().infectionSceneReady === infectionSceneReady) return;
+    set({ infectionSceneReady });
   },
 }));
 

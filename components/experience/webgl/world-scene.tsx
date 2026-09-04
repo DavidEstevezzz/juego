@@ -59,6 +59,8 @@ export function WorldScene() {
     return Math.min(ramp(coverage, 0, 0.16), 1 - ramp(coverage, 0.84, 1));
   }, []);
 
+  const isVisible = useCallback(() => visibility() > 0.002, [visibility]);
+
   const handlePlaneFrame = useCallback(
     (uniforms: TransitionUniforms) => {
       const { progress } = getChapterProgress('world');
@@ -113,6 +115,7 @@ export function WorldScene() {
       fogColor={FOG_COLOR}
       onFrame={handlePlaneFrame}
       onReadyChange={handleReadyChange}
+      isVisible={isVisible}
     />
   );
 }

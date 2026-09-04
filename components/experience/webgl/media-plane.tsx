@@ -25,6 +25,8 @@ type MediaPlaneProps = {
   onFrame: MediaPlaneFrame;
   /** Informa cuándo ambas texturas ya pueden sustituir al fallback DOM. */
   onReadyChange?: (ready: boolean) => void;
+  /** Skip both the draw call and uniform work when another chapter is active. */
+  isVisible?: () => boolean;
 };
 
 /**
@@ -41,6 +43,7 @@ export function MediaPlane({
   fogColor,
   onFrame,
   onReadyChange,
+  isVisible,
 }: MediaPlaneProps) {
   const viewport = useThree((state) => state.viewport);
   const meshRef = useRef<THREE.Mesh>(null);
@@ -134,6 +137,8 @@ export function MediaPlane({
   useFrame((_, delta) => {
     const mesh = meshRef.current;
     if (!mesh) return;
+    mesh.visible = isVisible?.() ?? true;
+    if (!mesh.visible) return;
 
     const { uniforms } = mesh.material as TransitionMaterial;
     uniforms.uTime.value += delta;

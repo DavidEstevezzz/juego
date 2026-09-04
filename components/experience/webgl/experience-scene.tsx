@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { AdaptiveDpr, PerformanceMonitor } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
+import type { WebGLRenderer } from 'three';
 import { subscribeScrollMetrics } from '@/lib/experience/scroll-metrics';
 import { useExperienceStore } from '@/lib/experience/store';
 import { WorldScene } from './world-scene';
+import { InfectionScene } from './infection-scene';
 
 /** Espera mínima entre degradaciones para no saltarse un escalón por un bache. */
 const DECLINE_COOLDOWN_MS = 4000;
@@ -15,7 +17,7 @@ const DECLINE_COOLDOWN_MS = 4000;
  *
  * Sostiene el contrato de rendimiento común —frameloop bajo demanda, pausa por
  * visibilidad, DPR adaptativo y degradación de tier— y monta las escenas de
- * cada capítulo. Ahora mismo solo existe la del capítulo 02; cada escena decide
+ * cada capítulo. Driftwood e Infection comparten el canvas; cada escena decide
  * por sí misma cuándo es visible a partir de su progreso de scroll.
  */
 export default function ExperienceScene() {
@@ -57,6 +59,7 @@ export default function ExperienceScene() {
         <AdaptiveDpr pixelated />
         <SceneDriver />
         <WorldScene />
+        <InfectionScene />
       </PerformanceMonitor>
     </Canvas>
   );
@@ -74,14 +77,38 @@ function SceneDriver() {
 
   useEffect(() => {
     const canvas = gl.domElement;
+    const restoreShaderDebug = attachShaderFallback(gl);
     const handleContextLost = () => {
       useExperienceStore.getState().setWebglAvailable(false);
     };
 
     canvas.addEventListener('webglcontextlost', handleContextLost);
-    return () =>
+    return () => {
       canvas.removeEventListener('webglcontextlost', handleContextLost);
+      restoreShaderDebug();
+    };
   }, [gl]);
 
   return null;
+}
+
+/** Renderer integration stays outside React's immutable hook values. */
+function attachShaderFallback(renderer: WebGLRenderer) {
+  const debug = renderer.debug;
+  const previous = debug.onShaderError;
+  debug.onShaderError = (context, program, vertex, fragment) => {
+    if (previous) previous(context, program, vertex, fragment);
+    else
+      console.error(
+        'WebGL shader failed; restoring image fallback.',
+        context.getProgramInfoLog(program),
+        context.getShaderInfoLog(fragment),
+      );
+    queueMicrotask(() =>
+      useExperienceStore.getState().setWebglAvailable(false),
+    );
+  };
+  return () => {
+    debug.onShaderError = previous;
+  };
 }

@@ -1,4 +1,8 @@
-import type { ChapterId, ExperienceChapter } from '@/types/experience';
+import type {
+  ActiveChapterId,
+  ChapterId,
+  ExperienceChapter,
+} from '@/types/experience';
 
 /**
  * Registro único de capítulos de la experiencia.
@@ -42,16 +46,8 @@ export const chapters: readonly ExperienceChapter[] = [
     summary: 'Place the protagonist at the emotional center of the experience.',
   },
   {
-    id: 'crew',
-    index: '05',
-    navLabel: 'Crew',
-    title: 'Human echoes',
-    summary:
-      'Models, factions and key figures presented as interactive narrative pieces.',
-  },
-  {
     id: 'infection',
-    index: '06',
+    index: '05',
     navLabel: 'Infection',
     title: 'The infection',
     summary:
@@ -59,7 +55,7 @@ export const chapters: readonly ExperienceChapter[] = [
   },
   {
     id: 'production',
-    index: '07',
+    index: '06',
     navLabel: 'Production',
     title: 'Production evidence',
     summary:
@@ -67,12 +63,24 @@ export const chapters: readonly ExperienceChapter[] = [
   },
   {
     id: 'signal',
-    index: '08',
+    index: '07',
     navLabel: 'Signal',
     title: 'Final signal',
     summary: 'Close with a memorable image and one clear action.',
   },
 ] as const;
+
+/** Crew stays out of the active route; its draft can be restored later. */
+export const deferredCrewChapter: ExperienceChapter = {
+  id: 'crew',
+  index: '—',
+  navLabel: 'Crew',
+  title: 'Human echoes',
+  summary:
+    'Models, factions and key figures presented as interactive narrative pieces.',
+};
+
+export const chapterCountLabel = String(chapters.length).padStart(2, '0');
 
 /** Primer capítulo del documento; estado inicial del store. */
 export const firstChapterId: ChapterId = chapters[0].id;
@@ -89,7 +97,7 @@ export function getChapter(id: ChapterId): ExperienceChapter | undefined {
 /** Acceso por id sin búsquedas ni aserciones en los componentes. */
 export const chapterMap = Object.fromEntries(
   chapters.map((chapter) => [chapter.id, chapter]),
-) as Record<ChapterId, ExperienceChapter>;
+) as Record<ActiveChapterId, ExperienceChapter>;
 
 /**
  * Contenido del capítulo 02 — Driftwood.
@@ -160,6 +168,51 @@ export const gameplayChapterContent = {
       description:
         'When distance collapses, the experience shifts from observation to direct confrontation.',
       media: 'atrium',
+    },
+  ],
+} as const;
+
+/** No approved biography has been supplied. Do not substitute invented lore. */
+export const dragaChapterContent = {
+  deckLabel: 'Deck 04',
+  category: 'Character study',
+  name: 'Draga',
+  role: 'The protagonist',
+  biography: null as string | null,
+  pendingBiography: 'Biography pending approval.',
+  imageCaption: 'Original game portrait',
+  gameTitle: 'Black Tides: Draga’s Wake',
+} as const;
+
+/** Descriptions of the supplied images, not new lore or gameplay claims. */
+export const infectionChapterContent = {
+  category: 'Horror within',
+  title: 'The infection',
+  continueLabel: 'Beyond the infection',
+  phases: [
+    {
+      id: 'growth',
+      label: 'Growth',
+      description: 'Steel gives way to flesh.',
+      media: 'growth',
+      width: 1920,
+      height: 1049,
+    },
+    {
+      id: 'room',
+      label: 'Overtaken',
+      description: 'Organic matter overtakes the room.',
+      media: 'blubberRoom',
+      width: 1920,
+      height: 1049,
+    },
+    {
+      id: 'presence',
+      label: 'Presence',
+      description: 'A shape emerges from the dark.',
+      media: 'vessel',
+      width: 1920,
+      height: 935,
     },
   ],
 } as const;

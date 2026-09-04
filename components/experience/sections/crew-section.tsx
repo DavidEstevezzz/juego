@@ -1,7 +1,7 @@
-import { chapterMap } from '@/content/chapters';
+import { deferredCrewChapter } from '@/content/chapters';
 import { ChapterSection } from './chapter-section';
 
 /** Contenedor provisional del capítulo. Se desarrolla en su propio prompt. */
 export function CrewSection() {
-  return <ChapterSection chapter={chapterMap.crew} />;
+  return <ChapterSection chapter={deferredCrewChapter} />;
 }

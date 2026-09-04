@@ -19,7 +19,7 @@ components/experience/
   experience-canvas.tsx Capa WebGL persistente, diferida y aria-hidden
   chapter-navigation.tsx Índice de cubierta accesible
   sections/             Un archivo por capítulo + ChapterSection común
-  webgl/                Escena persistente (vacía en esta fase)
+  webgl/                Canvas compartido: WorldScene e InfectionScene
 lib/experience/
   store.ts              Estado mínimo compartido (zustand)
   scroll-metrics.ts     Driver ÚNICO de scroll
@@ -27,6 +27,8 @@ lib/experience/
   motion-preferences.ts prefers-reduced-motion
   visibility.ts         Visibilidad de la pestaña
   gsap.ts               Registro central de GSAP/ScrollTrigger y hook de timelines
+  infection-frame.ts    Bounds, puntero y progreso no reactivos para el shader
+  infection-timeline.ts Curvas deterministas de las tres revelaciones
   use-experience-runtime.ts  Conecta las fuentes anteriores con el store
   use-chapter-observer.ts    Capítulo activo con un único IntersectionObserver
 content/
@@ -70,7 +72,33 @@ content/
 
 ## Estado de las secciones
 
-Los ocho capítulos existen como contenedores semánticos con anchors y
-navegación. Su dirección visual se implementa en los prompts 01–08 de
-`docs/PROMPTS-BY-SECTION.md`; hasta entonces muestran su objetivo narrativo y la
-etiqueta de contenedor provisional.
+Siete capítulos activos: The Wake 01, Driftwood 02, Gameplay 03, Draga 04,
+Infection 05, Production 06 y Signal 07. Crew queda en `deferredCrewChapter`,
+sin montaje ni navegación; el total visible se deriva del registro activo.
+
+Hero, World, Gameplay, Draga e Infection tienen dirección visual implementada.
+Production y Signal conservan sus contenedores provisionales. Los números de
+prompt son históricos: Prompt 06 implementa ahora Deck 05.
+
+## Infection
+
+Un único playhead GSAP 0..1 se mueve desde el driver existente, sin pin JS ni
+listener nuevo. CSS define el stage sticky y una alternativa editorial estática
+para scripting deshabilitado, reduced motion y alturas inferiores a 600 px.
+`infection-frame.ts` publica progreso, bounds reales del área de imagen y
+puntero sin renders de React. `infection-timeline.ts` mantiene pausas entre las
+revelaciones y un final inmóvil; se verifica con las pruebas de runtime.
+
+Una malla y un material de tres texturas en el canvas existente. Carga diferida
+al entrar en Draga, texturas 1920/960 según tier y material estable al degradar.
+La mezcla erosiona la imagen desde puntos de origen; el desplazamiento total
+no supera 12 px CSS y protege el rostro final. El puntero modifica filamentos
+solo dentro del frente. No existe reloj ni auto-invalidación en esta escena.
+
+El DOM sigue presente hasta el primer frame renderizado y reaparece de forma
+inmediata si fallan texturas, shader o contexto. Las mallas de capítulos
+inactivos se ocultan realmente para evitar draw calls transparentes.
+
+Pruebas de lógica: `node --experimental-strip-types --test tests/infection-runtime.test.mjs`.
+Los objetivos de FPS requieren una medición de navegador; build y pruebas de
+lógica no sustituyen esa medición.

@@ -4,6 +4,11 @@ Estos prompts están pensados para ejecutarse en orden. Cada uno limita el
 alcance para que la calidad de movimiento, rendimiento y responsive pueda
 validarse antes de ampliar la experiencia.
 
+Recorrido activo: The Wake 01 → Driftwood 02 → Gameplay 03 → Draga 04 →
+Infection 05 → Production 06 → Signal 07. Crew queda aplazado. Los números de
+prompt se conservan como referencias históricas: Prompt 06 corresponde ahora
+a Deck 05, Prompt 07 a Deck 06 y Prompt 08 a Deck 07.
+
 ## Prompt 00 — Núcleo de la experiencia
 
 ```text
@@ -161,17 +166,30 @@ Implementa únicamente el capítulo de Draga usando draga-profile-960/1920.
 
 Dirección:
 - Retrato frío, íntimo y casi inmóvil después del ritmo de gameplay.
-- Texto en el espacio negativo de la imagen.
+- Collage editorial de láminas desiguales, inspirado en los distintos espesores
+  de páginas mojadas y quemadas. No representar un libro literal, papel sepia
+  ni un archivo ficticio; las superficies siguen siendo negras y frías.
+- Retrato más vertical y cercano, una base ceniza con borde blood, una lámina
+  ambiental fría visible en la parte superior derecha y un recorte del abrigo
+  abajo. Tres escalas reales del mismo material; no duplicar el rostro.
+- Nombre grande en el encuentro entre retrato y negro, sin tarjeta lateral vacía.
+  Bordes irregulares y sombras estáticas separan las alturas.
+- Texto en el espacio negativo de la imagen, sin invadir la cara. En móvil,
+  retrato y texto se apilan con los bordes de las láminas aún visibles.
 - Información: nombre, rol y una cita o descripción marcada como pendiente si
-  el equipo aún no ha aprobado el copy. No inventes biografía.
+  el equipo aún no ha aprobado el copy. Todo en inglés, sin inventar biografía.
 
 Movimiento:
-- Revela la imagen con una máscara inspirada en condensación o sal sobre cristal.
-- Crea separación de tres planos a partir de una sola imagen solo mediante
-  recorte y transformaciones discretas; evita aspecto de recorte de cartón.
-- Puntero/touch inclina luz y foco con amplitud mínima.
-- Prepara una interfaz MediaSubject para sustituir más adelante la imagen por un
-  GLB sin cambiar layout ni API de la sección.
+- Flujo natural, sin pin, scrub, secuencia por scroll ni altura artificial.
+- Una sola entrada breve: las láminas periféricas se asientan y desaparece una
+  veladura tenue de condensación. El retrato y los textos nunca se ocultan.
+- Solo un puntero fino desplaza las láminas exteriores hasta 6 px en horizontal
+  y 4 px en vertical. Cara y texto inmóviles. En touch, tier C y reduced motion,
+  composición estática completa; no añadir controles decorativos.
+- Un frame por lote de entrada, sin bucle permanente. Cancelar el frame pendiente
+  al salir, cancelar el gesto, desmontar o deshabilitar el efecto.
+- Prepara un slot MediaSubject independiente del layout, extensible a un GLB
+  futuro. La API actual solo acepta la imagen disponible.
 
 No implementes todavía el modelo 3D.
 
@@ -179,10 +197,15 @@ Criterios:
 - El rostro conserva nitidez.
 - El texto mantiene contraste en todos los breakpoints.
 - Reduced motion elimina máscara animada y parallax.
+- El contenido sigue visible sin JavaScript. Las imágenes decorativas no repiten
+  el texto alternativo; AVIF/WebP y dimensiones explícitas en ambos usos.
 - No se descarga ningún asset 3D inexistente.
 ```
 
-## Prompt 05 — Izzy y ecos humanos
+## Prompt 05 — Izzy y ecos humanos (aplazado, fuera del recorrido)
+
+No ejecutar por ahora. Se conserva el borrador y los medios, sin montaje ni
+entrada en navegación.
 
 ```text
 Implementa únicamente la sección de personajes secundarios.
@@ -209,7 +232,7 @@ Criterios:
 - Reduced motion usa cambio instantáneo o disolución corta.
 ```
 
-## Prompt 06 — La infección
+## Prompt 06 — La infección (Deck 05)
 
 ```text
 Implementa únicamente el gran capítulo de horror orgánico usando, en este orden,
@@ -219,21 +242,33 @@ Objetivo: construir una escalada visual continua. No lo presentes como galería.
 
 Técnica:
 - Una timeline principal normalizada 0..1 controla las tres revelaciones.
+- El driver de scroll existente mide el stage y lleva esa única timeline al
+  progreso correcto. No hay listeners de scroll adicionales ni inercia acumulada.
 - WebGL mezcla texturas con ruido orgánico, erosión de bordes y desplazamiento
-  máximo de 10–14 px visuales.
-- La paleta transita gradualmente de steel/oxidation a ritual red.
+  máximo de 12 px CSS, con dirección y puntos de origen reconocibles.
+- Growth y Blubber conservan su rojo real. Vessel mantiene la luz fría y sus
+  ojos azules; el rojo queda en los bordes, sin teñir la criatura.
 - El capítulo amplía una presencia roja que ya existía desde el hero: no debe
   parecer que la web cambia repentinamente a una identidad diferente.
-- Un campo de partículas o filamentos reacciona a la proximidad del puntero,
+- Un campo de filamentos en el frente de transición reacciona al puntero,
   pero nunca bloquea enlaces ni captura input.
 - La criatura final se revela por regiones, sin flashes ni jumpscare.
 - El shader debe compilar una vez y usar uniforms; no recrees materiales.
+- Los tramos de reposo y el plano final quedan inmóviles. Ruido determinista,
+  sin bucle atmosférico permanente ni salto aleatorio al invertir el scroll.
 
 Rendimiento y seguridad:
-- Tier B reduce resolución del render target y partículas.
+- Reutiliza el canvas existente. Tier B reduce el framebuffer mediante su DPR,
+  carga texturas 960 y reduce los octaves/filamentos, sin render target adicional.
 - Tier C usa imágenes y clip-path CSS.
+- Sin JavaScript, con reduced motion o en viewports de menos de 600 px de alto,
+  las tres imágenes y sus textos se presentan en flujo editorial estático.
 - No uses vídeo adicional ni texturas superiores a 1920.
 - Pausa toda actualización fuera de viewport.
+- Empieza a precargar en Draga. No ocultes las imágenes DOM hasta el primer
+  frame WebGL; error de textura, shader o pérdida de contexto restaura el fallback.
+- Oculta realmente las mallas inactivas, no solo su alpha. Libera incluso las
+  texturas que terminen de cargar después de cancelar o fallar una carga hermana.
 - Incluye alternativa reduced motion sin deformaciones continuas.
 
 Criterios:
@@ -242,7 +277,7 @@ Criterios:
 - Texto y navegación permanecen estables sobre el efecto.
 ```
 
-## Prompt 07 — Evidencia de producción
+## Prompt 07 — Evidencia de producción (Deck 06)
 
 ```text
 Implementa únicamente la sección de evidencia de producción. Debe convencer a
@@ -268,7 +303,7 @@ Criterios:
 - Mobile mantiene botones y vídeo dentro del viewport.
 ```
 
-## Prompt 08 — Señal final y navegación global
+## Prompt 08 — Señal final y navegación global (Deck 07)
 
 ```text
 Implementa el cierre de la experiencia y termina la navegación global.

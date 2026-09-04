@@ -63,6 +63,7 @@ export const media = {
     draga: image(
       'draga-profile',
       'Close portrait of Draga under cold blue light.',
+      [0.34, 0.36],
     ),
     izzy: image(
       'izzy-protagonist',
@@ -71,14 +72,17 @@ export const media = {
     growth: image(
       'organic-growth',
       'Draga faces an immense organic mass inside the ship.',
+      [0.66, 0.52],
     ),
     blubberRoom: image(
       'blubber-room',
       'A ship compartment overtaken by red organic tissue.',
+      [0.58, 0.5],
     ),
     vessel: image(
       'vessel-creature',
       'A pale-fleshed creature watches through numerous blue eyes.',
+      [0.47, 0.3],
     ),
     dialogue: image('bill-dialogue', 'Two characters speak in the shadows.'),
   },

@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { chapterMap, worldChapterContent } from '@/content/chapters';
+import {
+  chapterCountLabel,
+  chapterMap,
+  worldChapterContent,
+} from '@/content/chapters';
 import { media } from '@/content/media';
 import {
   clearChapterProgress,
@@ -173,7 +177,9 @@ export function WorldSection() {
         <div data-world-meta className="world-meta" aria-hidden="true">
           <span>{content.deckLabel}</span>
           <span className="world-meta__line" />
-          <span>02 / 08</span>
+          <span>
+            {chapter.index} / {chapterCountLabel}
+          </span>
         </div>
 
         <div data-world-lockup className="world-lockup">

@@ -15,6 +15,8 @@ export type ChapterId =
   | 'production'
   | 'signal';
 
+export type ActiveChapterId = Exclude<ChapterId, 'crew'>;
+
 /**
  * Tier gráfico según el presupuesto de calidad del blueprint.
  * - `a`: escritorio capaz, WebGL completo.
@@ -38,7 +40,7 @@ export type ScrollMetrics = {
 
 export type ExperienceChapter = {
   id: ChapterId;
-  /** Número de cubierta mostrado en la interfaz ("01"…"08"). */
+  /** Número de cubierta activo ("01"…"07"), o "—" si está aplazada. */
   index: string;
   /** Etiqueta corta para la navegación. */
   navLabel: string;
@@ -60,4 +62,12 @@ export type ResponsiveImage = {
   webp: { small: string; large: string };
   alt: string;
   focal: readonly [number, number];
+};
+
+/** Media slot shared by character layouts. Extend the union when a GLB exists. */
+export type MediaSubjectSource = {
+  kind: 'image';
+  image: ResponsiveImage;
+  width: number;
+  height: number;
 };

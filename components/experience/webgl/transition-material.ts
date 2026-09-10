@@ -3,14 +3,13 @@ import * as THREE from 'three';
 /**
  * Material cinematográfico de Driftwood.
  *
- * El capítulo tiene dos cortes y ninguno es un fundido. El primero lo tapa una
- * ventisca que además lo transporta: el mismo campo decide dónde la nieve es
- * más espesa y hasta dónde ha llegado el cambio de fotografía. El segundo
- * ocurre cuando el temporal alcanza la lente y el agua se agarra al cristal.
- * No existen sprites ni geometría: niebla, copos, refracción, condensación y
- * gotas se resuelven en una sola pasada de fragmento. La escena y el montaje
- * dependen del scroll; el tiempo solo mueve la atmósfera y el agua, que nunca
- * deciden qué imagen corresponde a cada punto del recorrido.
+ * El capítulo tiene dos cortes y ninguno es un fundido. El primero ocurre
+ * dentro de una masa de whiteout anisotrópica; el segundo, cuando el temporal
+ * alcanza la lente y el agua se agarra al cristal. No existen sprites ni
+ * geometría: niebla, refracción, filamentos, condensación y gotas se resuelven
+ * en una sola pasada de fragmento. La escena y el montaje dependen del scroll;
+ * el tiempo solo mueve la atmósfera y el agua, que nunca deciden qué imagen
+ * corresponde a cada punto del recorrido.
  */
 
 const VERTEX = /* glsl */ `
@@ -148,82 +147,6 @@ vec3 samplePlate(
     image,
     clamp(coverUv(uv, aspect, focal, pan, zoom), 0.002, 0.998)
   ).rgb;
-}
-
-// ---------------------------------------------------------------------------
-// Primer corte: la ventisca.
-//
-// La masa que oculta el cambio de Driftwood al asentamiento no es una capa de
-// opacidad. Tiene frentes y huecos, la luz de las ventanas se reparte dentro
-// de ella en lugar de recortarse contra su borde, y por delante cruzan copos
-// lo bastante cerca del objetivo como para ser trazos y no puntos.
-//
-// Lo que de verdad la convierte en montaje es que el corte viaja dentro del
-// frente: la máscara que decide qué fotografía se ve en cada punto se
-// construye con el mismo campo que la densidad, así que la nieve más espesa es
-// la que trae el asentamiento consigo. Donde queda un hueco siempre se ve una
-// sola imagen, nunca las dos superpuestas, que es exactamente lo que separa un
-// corte de un fundido encadenado.
-// ---------------------------------------------------------------------------
-
-/**
- * Copos cercanos, convertidos en trazo por su propia velocidad.
- *
- * Son pocos y grandes: a esta distancia del objetivo no hay copo que se lea
- * como un punto. Dan la escala que a la masa de niebla le falta —sin ellos no
- * hay forma de saber si la ventisca está a un metro o a cien— y su rejilla
- * vuelve a su sitio exactamente al reiniciarse la fase.
- */
-float flurry(vec2 uv, float scale, float lift) {
-  vec2 domain = vec2(uv.x * uPlaneAspect, uv.y) * scale;
-  domain += vec2(-uStormPhase * STORM_RATE * 2.0, uStormPhase * STORM_RATE * 0.5);
-
-  vec2 cell = floor(domain);
-  vec3 rnd = cellRandom(cell);
-  vec2 local = fract(domain) - 0.5 - (rnd.xy - 0.5) * vec2(0.14, 0.86);
-  local.y -= lift;
-
-  // Semiejes del trazo, en unidades de celda, con el calibre repartido por
-  // celda: todos iguales, la rejilla se lee como un estampado de topos. El
-  // copo se alarga mucho en la dirección del viento —a esta velocidad
-  // relativa el obturador no deja un punto, deja una raya— pero tiene que
-  // caber dentro de su celda con el desplazamiento incluido: si se sale, la
-  // rejilla lo recorta y lo que se dibuja es un rectángulo de bordes duros.
-  float grade = 0.4 + rnd.z * rnd.z * 1.1;
-  vec2 streak = vec2(0.38, 0.04) * grade;
-
-  return smoothstep(1.0, 0.05, length(local / streak))
-    * step(0.62, fract(rnd.z * 7.0))
-    * (0.55 + rnd.x * 0.45);
-}
-
-/**
- * Luz difusa del plano bajo la ventisca.
- *
- * La niebla no recorta las farolas: las reparte. Tres lecturas muy separadas
- * bastan para saber cuánta luz hay alrededor del punto, porque lo que se busca
- * es un halo y no una imagen. Se lee un solo plano —el que domina en ese
- * momento del cruce— porque el resultado acaba completamente disuelto dentro
- * de la masa y la diferencia entre uno y otro no llega a verse.
- */
-vec3 blizzardGlow(vec2 uv, float dither) {
-  vec3 sum = vec3(0.0);
-  float angle = dither * 6.2831853;
-
-  for (int tap = 0; tap < 3; tap++) {
-    angle += 2.3999632;
-    vec2 offset = vec2(cos(angle), sin(angle))
-      * (0.022 + float(tap) * 0.019)
-      * vec2(1.0 / uPlaneAspect, 1.0);
-
-    if (uSceneMix < 0.5) {
-      sum += samplePlate(uTextureA, uv + offset, uAspectA, uFocalA, uPanA, uZoomA);
-    } else {
-      sum += samplePlate(uTextureB, uv + offset, uAspectB, uFocalB, uPanB, uZoomB);
-    }
-  }
-
-  return sum / 3.0;
 }
 
 // ---------------------------------------------------------------------------
@@ -450,11 +373,9 @@ void main() {
 
   // El dominio está muy comprimido en X y estirado en Y: aparecen lenguas de
   // niebla arrastradas lateralmente, no una nube isotrópica ni copos repetidos.
-  // El sesgo en X las inclina: con los frentes horizontales, la ventisca se
-  // lee como un telón que sube y baja en lugar de como algo que cruza.
   vec2 windDomain = vec2(
     vUv.x * 1.18 - uDrift * 0.045,
-    vUv.y * 6.4 + vUv.x * 1.3
+    vUv.y * 6.4 + vUv.x * 0.42
   );
   float warp = fbm(windDomain * 0.58 + vec2(8.2, -3.4));
   float bands = fbm(windDomain + vec2(warp * 0.82, uDrift * 0.012));
@@ -463,12 +384,19 @@ void main() {
     (vUv.y + vUv.x * 0.075) * 21.0
   ));
 
-  // El frente de la ventisca. Un único campo decide dos cosas a la vez: dónde
-  // la nieve es más espesa y hasta dónde ha llegado el cambio de fotografía.
-  // Por eso el corte no se ve: ocurre siempre detrás del punto más denso.
-  float front = bands * 0.72 + warp * 0.5;
-  float threshold = mix(1.26, -0.06, uSceneMix);
-  float sceneMask = smoothstep(threshold - 0.1, threshold + 0.1, front);
+  // La máscara A → B queda corregida: 0 siempre es Driftwood y 1 el pueblo.
+  // El campo se deforma en la dirección del viento y el corte se esconde bajo
+  // el punto de máxima densidad del whiteout.
+  float transitionField = fbm(vec2(
+    vUv.x * 1.15 + warp * 0.18,
+    vUv.y * 2.35 - bands * 0.11
+  ));
+  float threshold = mix(1.15, -0.15, uSceneMix);
+  float sceneMask = smoothstep(
+    threshold - 0.14,
+    threshold + 0.14,
+    transitionField
+  );
 
   vec2 refraction = vec2(bands - 0.5, warp - 0.5)
     * uDisplacement
@@ -502,55 +430,23 @@ void main() {
   );
   color = mix(color, uFogColor, lowFog);
 
-  // La ventisca. Fuera de su ventana el bloque no se ejecuta: la condición
-  // depende de un uniform, así que no hay divergencia entre fragmentos.
-  if (uWhiteout > 0.002) {
-    // La densidad se construye sobre un suelo bajo y una variación ancha. Con
-    // el suelo alto que tenía antes, la masa alcanzaba su punto opaco de forma
-    // uniforme y lo que se veía era un fundido a blanco, no tiempo atmosférico.
-    // El mismo campo que lleva el corte decide la espesura, y con una ventana
-    // ancha: donde la ráfaga aprieta la masa es opaca y donde afloja se ve el
-    // fondo. El suelo tiene que quedar bajo o la nieve alcanza su punto ciego
-    // de forma uniforme y lo que se ve es un fundido a blanco, no una ventisca.
-    float gust = smoothstep(0.42, 0.86, front);
-    float density = clamp(uWhiteout * (0.08 + gust * 1.25), 0.0, 1.0);
+  // El whiteout es una masa con vacíos, refracción y filamentos. En su punto
+  // máximo oculta casi por completo el cambio de textura, como un corte de cine.
+  float gustCore = smoothstep(0.18, 0.94, bands + warp * 0.28);
+  float whiteDensity = uWhiteout * (0.68 + gustCore * 0.34);
+  whiteDensity += uWhiteout * smoothstep(0.7, 0.97, fineWind) * 0.13;
+  color = mix(color, uWhiteColor, clamp(whiteDensity, 0.0, 0.97));
 
-    // Gris frío de temporal, nunca blanco puro: el capítulo entero está
-    // construido sobre verdes apagados y una masa blanca lo perfora.
-    vec3 storm = mix(uFogColor, uWhiteColor, 0.76);
+  // Condensación irregular en los bordes de la lente durante el whiteout.
+  float edge = smoothstep(0.34, 0.76, length((vUv - 0.5) * vec2(0.82, 1.0)));
+  float condensation = edge
+    * smoothstep(0.4, 0.92, fbm(vUv * 4.2 + vec2(13.7, -5.1)))
+    * uWhiteout;
+  color = mix(color, uWhiteColor, condensation * 0.3);
 
-    // La luz de las ventanas se dispersa dentro de la masa en vez de
-    // recortarse contra ella, y la tiñe de su propio color.
-    if (uDetail > 0.5) {
-      vec3 glow = blizzardGlow(vUv, dither);
-      float halo = clamp(dot(glow, vec3(0.32, 0.56, 0.12)) * 2.4, 0.0, 1.0);
-      storm = mix(storm, uWhiteColor, halo * 0.8);
-      storm = mix(storm, glow, halo * 0.34);
-    }
-
-    color = mix(color, storm, density);
-
-    // Nieve barrida: filamentos que cruzan por delante de la masa, no dentro.
-    // Son lo que da dirección al viento cuando la densidad ya lo tapa todo.
-    float lash = smoothstep(0.58, 0.97, fineWind) * uWhiteout;
-    color = mix(color, storm * 1.12, lash * 0.3);
-
-    // Dos capas de copos cercanos a distinta escala y altura: la parallax es
-    // lo que convierte una cortina en un volumen por el que se está pasando.
-    float flakes = flurry(vUv, 4.3, 0.0) * 0.72;
-    if (uDetail > 0.5) flakes = max(flakes, flurry(vUv, 7.9, 0.41) * 0.44);
-    color = mix(color, uWhiteColor, flakes * uWhiteout);
-
-    // Condensación irregular en los bordes de la lente.
-    float edge = smoothstep(0.34, 0.76, length((vUv - 0.5) * vec2(0.82, 1.0)));
-    float condensation = edge
-      * smoothstep(0.4, 0.92, fbm(vUv * 4.2 + vec2(13.7, -5.1)))
-      * uWhiteout;
-    color = mix(color, storm, condensation * 0.32);
-  }
-
-  // El agua sobre el cristal. Se salta igual que la ventisca cuando no toca, y
-  // las dos ventanas no se solapan en ningún punto del recorrido.
+  // El agua sobre el cristal. Fuera de su ventana el bloque no se ejecuta: la
+  // condición depende de un uniform, así que no hay divergencia entre
+  // fragmentos y el resto del capítulo no paga ni una muestra de más.
   if (uRain > 0.004) {
     // Todo lo que el cristal añade se expresa como diferencia sobre el plano
     // que ya está compuesto y con niebla. Así el revelado hereda la gradación

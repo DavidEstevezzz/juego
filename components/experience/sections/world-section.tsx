@@ -149,7 +149,7 @@ export function WorldSection() {
         .to(meta, { autoAlpha: 1, y: 0, duration: 5 }, 8)
 
         // 02 — El nombre ocupa el encuadre; el material sigue siendo protagonista.
-        // La salida cae dentro de la subida de la tormenta (0.30–0.40): el texto
+        // La salida cae dentro de la subida de la tormenta (0.31–0.42): el texto
         // no se desvanece sobre la imagen limpia, se lo lleva la niebla.
         .to(lockup, { autoAlpha: 1, y: 0, duration: 8 }, 13)
         .to(premise, { autoAlpha: 1, y: 0, duration: 7 }, 20)

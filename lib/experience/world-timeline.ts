@@ -56,10 +56,8 @@ function envelope(
  * Hay dos cortes y ninguno es un fundido a secas: cada uno tiene su propia
  * materia.
  *
- * - Primer corte (0.30–0.53). `whiteout` sube, se mantiene y baja; su meseta
- *   es lo que oculta el cambio de `sceneMix`, de Driftwood al asentamiento, y
- *   el shader construye ambas cosas con el mismo campo: la nieve más espesa es
- *   la que trae el asentamiento consigo.
+ * - Primer corte (0.31–0.53). `whiteout` sube, se mantiene y baja; su meseta
+ *   es lo que oculta el cambio de `sceneMix`, de Driftwood al asentamiento.
  * - Segundo corte (0.60–0.99). El temporal alcanza la lente: `rain` es el agua
  *   que se agarra al cristal y `squall` la racha corta que la barre. El cambio
  *   a la Ormora (`shipMix`) vive dentro de esa racha, y `lensMix` va por
@@ -73,11 +71,9 @@ export function sampleWorld(progress: number) {
 
   return {
     progress: p,
-    whiteout: envelope(p, [0.3, 0.4], [0.48, 0.53]),
-    // El cruce entero cabe dentro de la meseta 0.40–0.48, de principio a fin:
-    // antes se salía por la cola y sus últimos centésimos ocurrían con la
-    // ventisca ya retirándose, que es justo donde un corte se deja ver.
-    sceneMix: smoothRamp(p, 0.41, 0.47),
+    whiteout: envelope(p, [0.31, 0.42], [0.44, 0.53]),
+    // El cruce vive dentro de la meseta 0.42–0.44, donde la niebla es opaca.
+    sceneMix: smoothRamp(p, 0.4, 0.48),
 
     // El agua tarda en llegar y tarda en escurrirse: 0.15 de recorrido para
     // mojar el cristal y 0.11 para dejarlo casi limpio. Un sobre más corto

@@ -28,8 +28,11 @@ const content = worldChapterContent;
  *
  * La tormenta funciona como montaje, no como decoración: la primera imagen se
  * abre dentro del negro, una masa de niebla oculta el cambio de plano y el
- * asentamiento aparece al retirarse. El progreso narrativo es reversible y se
- * comparte con el shader; no hay partículas DOM ni listeners por elemento.
+ * asentamiento aparece al retirarse. El segundo corte no repite la fórmula: el
+ * temporal alcanza la lente y el agua se agarra al cristal, de modo que la
+ * Ormora se ve primero refractada dentro de las gotas y solo después en el
+ * plano. El progreso narrativo es reversible y se comparte con el shader; no
+ * hay partículas DOM ni listeners por elemento.
  *
  * Todo el capítulo se mueve con un único reloj: un `playhead` que vive dentro
  * de la propia timeline con `scrub`. Las variables CSS, el shader y los tweens
@@ -106,6 +109,8 @@ export function WorldSection() {
         writer.set('--world-scene-mix', frame.sceneMix);
         writer.set('--world-ship-mix', frame.shipMix);
         writer.set('--world-whiteout', frame.whiteout);
+        writer.set('--world-rain', frame.rain);
+        writer.set('--world-squall', frame.squall);
       };
 
       const timeline = gsap.timeline({
@@ -144,7 +149,7 @@ export function WorldSection() {
         .to(meta, { autoAlpha: 1, y: 0, duration: 5 }, 8)
 
         // 02 — El nombre ocupa el encuadre; el material sigue siendo protagonista.
-        // La salida cae dentro de la subida de la tormenta (0.31–0.42): el texto
+        // La salida cae dentro de la subida de la tormenta (0.30–0.40): el texto
         // no se desvanece sobre la imagen limpia, se lo lleva la niebla.
         .to(lockup, { autoAlpha: 1, y: 0, duration: 8 }, 13)
         .to(premise, { autoAlpha: 1, y: 0, duration: 7 }, 20)
@@ -190,9 +195,19 @@ export function WorldSection() {
           </div>
         )}
 
-        <div className="world-ship" aria-hidden="true">
-          <WorldPicture image={media.images.ormora} />
-        </div>
+        {/*
+          El barco y el agua también salen del shader cuando este dibuja: si
+          se montaran siempre, el fallback taparía con una imagen plana el
+          plano que la capa WebGL está revelando bajo las gotas.
+        */}
+        {!webglMode && (
+          <>
+            <div className="world-ship" aria-hidden="true">
+              <WorldPicture image={media.images.ormora} />
+            </div>
+            <div aria-hidden="true" className="world-glass" />
+          </>
+        )}
 
         <div aria-hidden="true" className="world-veil" />
         <div aria-hidden="true" className="world-css-whiteout" />

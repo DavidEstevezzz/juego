@@ -15,23 +15,23 @@ export type MediaPlaneFrame = (
 ) => void;
 
 type MediaPlaneProps = {
-  /** Las dos texturas de la transición, en orden narrativo. */
-  sources: readonly [string, string];
-  /** Punto focal normalizado de cada imagen. */
-  focals: readonly [readonly [number, number], readonly [number, number]];
+  /** Las texturas del capítulo, en orden narrativo. Dos o tres. */
+  sources: readonly string[];
+  /** Punto focal normalizado de cada imagen, en el mismo orden. */
+  focals: readonly (readonly [number, number])[];
   /** Color de la niebla del capítulo. */
   fogColor: string;
   /** Escribe los uniforms en cada frame. Debe ser estable entre renders. */
   onFrame: MediaPlaneFrame;
-  /** Informa cuándo ambas texturas ya pueden sustituir al fallback DOM. */
+  /** Informa cuándo todas las texturas ya pueden sustituir al fallback DOM. */
   onReadyChange?: (ready: boolean) => void;
   /** Skip both the draw call and uniform work when another chapter is active. */
   isVisible?: () => boolean;
 };
 
 /**
- * Plano de medios reutilizable: mezcla dos texturas con el material de
- * transición y cubre siempre el viewport completo.
+ * Plano de medios reutilizable: mezcla las texturas del capítulo con el
+ * material de transición y cubre siempre el viewport completo.
  *
  * El material y las texturas se crean una sola vez y se liberan al desmontar;
  * nada se instancia dentro del bucle de render. El plano es una unidad y se
@@ -88,7 +88,31 @@ export function MediaPlane({
           return;
         }
 
+        // Las ranuras del material están numeradas, no nombradas de una en
+        // una: añadir un plano al capítulo es alargar esta lista y la del
+        // shader, no repetir la asignación con otro sufijo.
+        const slots = [
+          {
+            texture: material.uniforms.uTextureA,
+            aspect: material.uniforms.uAspectA,
+            focal: material.uniforms.uFocalA,
+          },
+          {
+            texture: material.uniforms.uTextureB,
+            aspect: material.uniforms.uAspectB,
+            focal: material.uniforms.uFocalB,
+          },
+          {
+            texture: material.uniforms.uTextureC,
+            aspect: material.uniforms.uAspectC,
+            focal: material.uniforms.uFocalC,
+          },
+        ];
+
         textures.forEach((texture, index) => {
+          const slot = slots[index];
+          if (!slot) return;
+
           texture.colorSpace = THREE.SRGBColorSpace;
           texture.wrapS = THREE.ClampToEdgeWrapping;
           texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -105,15 +129,9 @@ export function MediaPlane({
               : 16 / 9;
           const focal = focals[index] ?? [0.5, 0.5];
 
-          if (index === 0) {
-            material.uniforms.uTextureA.value = texture;
-            material.uniforms.uAspectA.value = aspect;
-            material.uniforms.uFocalA.value.set(focal[0], focal[1]);
-          } else {
-            material.uniforms.uTextureB.value = texture;
-            material.uniforms.uAspectB.value = aspect;
-            material.uniforms.uFocalB.value.set(focal[0], focal[1]);
-          }
+          slot.texture.value = texture;
+          slot.aspect.value = aspect;
+          slot.focal.value.set(focal[0], focal[1]);
         });
 
         setReady(true);
@@ -128,6 +146,7 @@ export function MediaPlane({
       cancelled = true;
       material.uniforms.uTextureA.value = null;
       material.uniforms.uTextureB.value = null;
+      material.uniforms.uTextureC.value = null;
       for (const texture of loaded) texture.dispose();
     };
   }, [sources, focals, material]);

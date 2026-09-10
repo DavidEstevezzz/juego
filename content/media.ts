@@ -35,6 +35,11 @@ export const media = {
     teaser: '/assets/media/video/teaser-1080p.mp4',
   },
   images: {
+    ormora: image(
+      'ormora-cinematic',
+      'AI recreation of the Ormora from the 2026 deck: a black whaling steamship looming through fog and fractured polar ice.',
+      [0.62, 0.55],
+    ),
     storage: image(
       'submarine-storage',
       'Original game capture: a lamp lights timber shelves, nets and barrels inside a ship’s storage compartment.',

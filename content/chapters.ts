@@ -25,8 +25,8 @@ export const chapters: readonly ExperienceChapter[] = [
   {
     id: 'world',
     index: '02',
-    navLabel: 'Driftwood',
-    title: 'The world: Driftwood',
+    navLabel: 'The World',
+    title: 'The World: Driftwood Bay & the Ormora',
     summary:
       'The era, the ice and the ship: the rules of the world Draga is trapped in.',
   },
@@ -56,8 +56,8 @@ export const chapters: readonly ExperienceChapter[] = [
   {
     id: 'production',
     index: '06',
-    navLabel: 'Production',
-    title: 'Production evidence',
+    navLabel: 'Team / Production',
+    title: 'Team / Production',
     summary:
       'Team, roadmap, opportunity and a direct path to continue the conversation.',
   },
@@ -111,7 +111,7 @@ export const chapterMap = Object.fromEntries(
 export const worldChapterContent = {
   deckLabel: 'Deck 02',
   premise:
-    'Driftwood sits at the edge of the ice, in an alternate 1900s where ancient gods and vessels of steam and steel share the same black water.',
+    'Driftwood Bay sits at the edge of the known world. The year is 1909, and the old gods are very much alive.',
   observations: [
     {
       index: '01',

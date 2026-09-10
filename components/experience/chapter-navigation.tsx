@@ -26,7 +26,7 @@ export function ChapterNavigation() {
       aria-label={siteContent.navLabel}
       className="sticky top-0 z-30 h-[var(--chapter-bar-height)] border-b border-[color:var(--border-subtle)] bg-[var(--surface-glass)] backdrop-blur-[2px]"
     >
-      <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-10 lg:px-16">
+      <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between gap-4 px-5 sm:px-10 lg:px-16">
         <a
           href="#hero"
           aria-label={siteContent.projectLabel}
@@ -42,7 +42,7 @@ export function ChapterNavigation() {
           </span>
         </a>
 
-        <ul className="flex min-w-0 items-center gap-0.5 sm:gap-1.5">
+        <ul className="flex min-w-0 items-center gap-0.5 sm:gap-1">
           {chapters.map((chapter) => {
             const isActive = chapter.id === activeChapter;
 

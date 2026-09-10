@@ -3,6 +3,8 @@
 @import 'shadcn/tailwind.css';
 @import './production.css';
 @import './signal.css';
+@import './team.css';
+@import './draga-transformation.css';
 
 @theme inline {
   --font-sans: var(--font-body);

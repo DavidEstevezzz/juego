@@ -52,6 +52,7 @@ export function sampleWorld(progress: number) {
     whiteout,
     // El cruce vive dentro de la meseta 0.42–0.44, donde la niebla es opaca.
     sceneMix: smoothRamp(p, 0.4, 0.48),
+    shipMix: smoothRamp(p, 0.78, 0.85),
     firstDolly: smoothRamp(p, 0.08, 0.38),
     secondDolly: smoothRamp(p, 0.5, 0.9),
     exitShadow: smoothRamp(p, 0.9, 1),

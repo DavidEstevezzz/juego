@@ -1,0 +1,139 @@
+.draga-transformation-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 7rem);
+  margin-top: 3rem;
+}
+.draga-transformation-layout .draga-copy {
+  grid-area: auto;
+  padding: 0;
+  margin: 0;
+}
+.draga-transform {
+  min-width: 0;
+  margin: 0;
+}
+.draga-transform__stage {
+  position: relative;
+  aspect-ratio: 4/5;
+  background: #080c0c;
+  overflow: hidden;
+  isolation: isolate;
+}
+.draga-transform__stage picture {
+  display: block;
+  height: 100%;
+}
+.draga-transform__stage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.draga-transform__infected {
+  position: absolute;
+  inset: 0;
+  clip-path: circle(0% at 24% 56%);
+  will-change: clip-path;
+}
+.draga-transform__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    0deg,
+    rgb(5 10 7 / 80%),
+    transparent 19%,
+    transparent 88%,
+    rgb(5 10 7 / 40%)
+  );
+  box-shadow: inset 0 0 100px
+    rgb(33 8 8 / calc(var(--infection-pressure, 0) * 0.5));
+}
+.draga-transform__state {
+  position: absolute;
+  inset: auto 1.2rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--ivory);
+}
+.draga-transform__state span:last-child {
+  color: var(--brass);
+}
+.draga-transform__controls {
+  padding: 1.5rem 0 0;
+  border-top: 1px solid var(--border-brass);
+}
+.draga-transform__instruction > p:last-child {
+  margin: 0.45rem 0 1.2rem;
+  color: var(--frost);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.draga-transform__actions {
+  min-height: 60px;
+}
+.draga-hold[data-slot='button'] {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border: 1px solid var(--border-brass);
+  border-radius: 0;
+  background: rgb(237 231 211 / 4%);
+  color: var(--ivory);
+  gap: 0.9rem;
+  font: 400 1rem/1.3 var(--font-system);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  overflow: hidden;
+}
+.draga-hold:hover {
+  background: rgb(237 231 211 / 8%);
+}
+.draga-hold__fill {
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  background: var(--scarlet);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.draga-transform[data-phase='holding'] .draga-hold {
+  border-color: var(--scarlet);
+}
+.draga-transform__credit {
+  margin-top: 1rem;
+  font: 400 0.75rem/1.5 var(--font-system);
+  color: var(--steel);
+}
+.draga-transformation-note {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 2rem;
+  margin-top: 2.5rem;
+  font: 400 clamp(1.4rem, 2.3vw, 2rem)/1.5 var(--font-display);
+}
+.draga-transformation-note span {
+  color: var(--steel);
+}
+@media (width < 760px) {
+  .draga-transformation-layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .draga-transformation-layout .draga-copy {
+    padding: 0;
+  }
+  .draga-transformation-layout .draga-copy h2 {
+    font-size: clamp(4rem, 20vw, 7rem);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .draga-transform__infected {
+    will-change: auto;
+  }
+}

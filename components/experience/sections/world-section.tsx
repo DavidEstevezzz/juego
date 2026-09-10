@@ -104,6 +104,7 @@ export function WorldSection() {
         setChapterProgress('world', { progress: frame.progress });
         writer.set('--world-progress', frame.progress);
         writer.set('--world-scene-mix', frame.sceneMix);
+        writer.set('--world-ship-mix', frame.shipMix);
         writer.set('--world-whiteout', frame.whiteout);
       };
 
@@ -189,6 +190,10 @@ export function WorldSection() {
           </div>
         )}
 
+        <div className="world-ship" aria-hidden="true">
+          <WorldPicture image={media.images.ormora} />
+        </div>
+
         <div aria-hidden="true" className="world-veil" />
         <div aria-hidden="true" className="world-css-whiteout" />
 
@@ -216,7 +221,7 @@ export function WorldSection() {
           <p className="world-kicker">The world</p>
           <h2 id="world-title" className="world-title">
             <span className="sr-only">The world: </span>
-            Driftwood
+            Driftwood Bay
           </h2>
         </div>
 

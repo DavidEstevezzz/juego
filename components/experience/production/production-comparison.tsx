@@ -1,11 +1,20 @@
 'use client';
 
-import { useEffect, useRef, useState, type Ref } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type Ref,
+} from 'react';
 import { Button } from '@/components/ui/button';
 import { productionChapterContent } from '@/content/chapters';
 import { media } from '@/content/media';
 import { createProductionReveal } from '@/lib/experience/production-reveal';
-import { useExperienceStore } from '@/lib/experience/store';
+import {
+  prefersReducedMotion,
+  subscribeReducedMotion,
+} from '@/lib/experience/motion-preferences';
 import type { ResponsiveImage } from '@/types/experience';
 
 const content = productionChapterContent.comparison;
@@ -61,12 +70,16 @@ export function ProductionComparison() {
   const [baseFailed, setBaseFailed] = useState(false);
   const [finalFailed, setFinalFailed] = useState(false);
   const [canvasFailed, setCanvasFailed] = useState(false);
-  const tier = useExperienceStore((state) => state.graphicsTier);
-  const reducedMotion = useExperienceStore((state) => state.reducedMotion);
+  // This route does not mount the homepage runtime. A local 2D canvas must
+  // not depend on its uninitialized WebGL tier or cached motion preference.
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    prefersReducedMotion,
+    () => true,
+  );
   const canExplore =
     finePointer &&
     !reducedMotion &&
-    tier !== 'c' &&
     !canvasFailed &&
     !baseFailed &&
     !finalFailed;
@@ -133,10 +146,10 @@ export function ProductionComparison() {
       surface.current,
       canvas.current,
       finished.current,
-      tier === 'a' ? 1600 : 1100,
+      1100,
       () => setCanvasFailed(true),
     );
-  }, [mode, canExplore, ready, finalDecoded, tier]);
+  }, [mode, canExplore, ready, finalDecoded]);
 
   return (
     <figure

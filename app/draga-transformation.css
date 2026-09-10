@@ -137,3 +137,8 @@
     will-change: auto;
   }
 }
+.draga-transform {
+  width: 100%;
+  max-width: clamp(280px, calc((100svh - 260px) * 0.8), 560px);
+  justify-self: center;
+}

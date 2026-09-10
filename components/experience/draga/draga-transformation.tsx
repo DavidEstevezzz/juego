@@ -14,7 +14,7 @@ import {
   subscribeReducedMotion,
 } from '@/lib/experience/motion-preferences';
 import {
-  advanceInfection,
+  runInfectionFrames,
   infectionContour,
 } from '@/lib/experience/draga-transformation';
 
@@ -70,28 +70,7 @@ export function DragaTransformation() {
   }, [paint]);
 
   const animate = useCallback(() => {
-    cancelAnimationFrame(runtime.current.frame);
-    runtime.current.last = performance.now();
-    function tick(now: number) {
-      const state = runtime.current;
-      state.progress = advanceInfection(
-        state.progress,
-        now - state.last,
-        state.phase === 'holding',
-      );
-      state.last = now;
-      paint(state.progress);
-      if (state.progress >= 1) {
-        complete();
-        return;
-      }
-      if (state.progress <= 0 && state.phase !== 'holding') {
-        reset();
-        return;
-      }
-      state.frame = requestAnimationFrame(tick);
-    }
-    runtime.current.frame = requestAnimationFrame(tick);
+    runInfectionFrames(runtime.current, paint, complete, reset);
   }, [paint, complete, reset]);
 
   const start = () => {
@@ -166,7 +145,11 @@ export function DragaTransformation() {
           <img
             ref={human}
             src="/assets/media/images/draga-human-expanded-1600.webp"
-            alt="Draga in his human form, wearing his weathered sailor’s clothes."
+            alt={
+              phase === 'infected'
+                ? ''
+                : 'Draga in his human form, wearing his weathered sailor’s clothes.'
+            }
             width={1280}
             height={1600}
             loading="lazy"
@@ -192,7 +175,7 @@ export function DragaTransformation() {
               alt="Draga transformed: fleshy tentacles extend from his infected arm."
               width={1280}
               height={1600}
-              loading="lazy"
+              loading={loaded.human ? 'eager' : 'lazy'}
               onLoad={() => setLoaded((s) => ({ ...s, infected: true }))}
               onError={() => setFailed(true)}
             />
@@ -228,12 +211,18 @@ export function DragaTransformation() {
         </div>
         <div className="draga-transform__actions">
           {phase === 'infected' ? (
-            <Button variant="ghost" className="draga-hold" onClick={reset}>
+            <Button
+              key="reset"
+              variant="ghost"
+              className="draga-hold"
+              onClick={reset}
+            >
               <RotateCcw aria-hidden="true" />
               Return to human
             </Button>
           ) : (
             <Button
+              key="hold"
               variant="ghost"
               className="draga-hold"
               disabled={!ready}
@@ -288,9 +277,7 @@ export function DragaTransformation() {
               ? 'Draga is human.'
               : ''}
         </output>
-        <p className="draga-transform__credit">
-          AI-expanded portraits from original game imagery
-        </p>
+        
       </figcaption>
     </figure>
   );

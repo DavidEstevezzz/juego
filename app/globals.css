@@ -275,6 +275,9 @@ body {
   --world-progress: 0;
   --world-scene-mix: 0;
   --world-whiteout: 0;
+  --world-ship-mix: 0;
+  --world-rain: 0;
+  --world-squall: 0;
 
   position: sticky;
   top: var(--chapter-bar-height);
@@ -380,6 +383,183 @@ body {
 
 .world-stage[data-webgl] .world-css-whiteout {
   display: none;
+}
+
+/*
+ * Segundo corte — la Ormora bajo el agua.
+ *
+ * El plano del barco entra por debajo del cristal batido, no por encima: es la
+ * racha la que tapa el cambio, igual que la ventisca tapaba el primero.
+ */
+.world-ship {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  opacity: var(--world-ship-mix);
+  background: var(--void);
+  will-change: opacity;
+}
+
+.world-ship picture {
+  display: block;
+  height: 100%;
+}
+
+.world-ship img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * Cristal batido — versión DOM del temporal contra la lente.
+ *
+ * Sin WebGL no hay refracción posible: una gota de CSS no puede muestrear lo
+ * que tiene detrás, así que imitar el shader solo produciría una calcomanía.
+ * Esta versión cuenta lo mismo con lo que el compositor sí sabe hacer barato
+ * —agua adherida al vidrio, estelas que suben abriéndose y una racha que barre
+ * el encuadre—, y deja que la racha tape el cambio de plano en el mismo punto
+ * del recorrido. Son dos capas y ambas se mueven solo con `transform`.
+ *
+ * La máscara del contenedor concentra el agua abajo y al centro, que es donde
+ * se acumula en cualquier cristal batido de frente, y evita que el patrón se
+ * lea como una retícula al llegar a los bordes.
+ */
+.world-glass {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  overflow: hidden;
+  opacity: var(--world-rain);
+  pointer-events: none;
+  background:
+    /* Pulverización fina: se agarra al vidrio y no se mueve de ahí. */
+    radial-gradient(
+      circle at 34% 41%,
+      rgb(232 241 238 / 26%) 0 0.5px,
+      rgb(5 11 10 / 15%) 0.9px 1.3px,
+      transparent 1.5px
+    ),
+    /*
+     * Velo de la racha. Cumple aquí el papel que la ventisca cumple en el
+     * primer corte: sube con --world-squall justo donde el barco cruza la
+     * mitad de su fundido y se retira al pasar, de modo que el cambio de plano
+     * ocurre detrás del agua y no a la vista.
+     */
+    linear-gradient(
+      to top,
+      rgb(146 164 170 / calc(var(--world-squall) * 40%)) 0%,
+      rgb(168 184 190 / calc(var(--world-squall) * 54%)) 54%,
+      rgb(146 164 170 / calc(var(--world-squall) * 36%)) 100%
+    ),
+    /* El agua enfría y apaga el plano antes de que se vea una sola gota. */
+    linear-gradient(
+      to top,
+      rgb(9 20 26 / 36%) 0%,
+      rgb(12 24 30 / 14%) 48%,
+      rgb(9 18 24 / 28%) 100%
+    );
+  background-size:
+    41px 67px,
+    100% 100%,
+    100% 100%;
+  mask-image: radial-gradient(
+    135% 108% at 50% 116%,
+    #000 22%,
+    rgb(0 0 0 / 58%) 62%,
+    transparent 96%
+  );
+  will-change: opacity;
+}
+
+/*
+ * Gotas adheridas. Cada degradado resuelve una gota entera —brillo arriba a la
+ * izquierda, cuerpo y anillo de contacto oscuro—, que es lo mínimo para que el
+ * agua tenga volumen y no se lea como un punto pegado. Las dos rejillas
+ * comparten alto para que un solo desplazamiento las devuelva a su sitio.
+ */
+.world-glass::before {
+  content: '';
+  position: absolute;
+  inset: -20% 0;
+  background-image:
+    radial-gradient(
+      circle at 40% 34%,
+      rgb(240 246 244 / 60%) 0 0.7px,
+      rgb(196 212 208 / 26%) 1.1px 2.6px,
+      rgb(4 10 9 / 34%) 2.9px 3.6px,
+      transparent 3.9px
+    ),
+    radial-gradient(
+      circle at 68% 62%,
+      rgb(238 245 242 / 44%) 0 0.5px,
+      rgb(196 212 208 / 18%) 0.8px 1.7px,
+      rgb(4 10 9 / 26%) 1.9px 2.4px,
+      transparent 2.6px
+    );
+  background-position:
+    0 0,
+    31px 74px;
+  background-size:
+    149px 179px,
+    83px 179px;
+  animation: world-glass-creep 13s linear infinite;
+}
+
+/*
+ * Estelas. El abanico sale de un punto por debajo del encuadre, así que el
+ * agua no cae: sube abriéndose hacia los lados, que es lo que hace sobre un
+ * parabrisas a velocidad de autovía. La máscara la trocea en tramos y el
+ * desplazamiento los lanza hacia arriba; el abanico en sí no se mueve.
+ */
+.world-glass::after {
+  content: '';
+  position: absolute;
+  inset: -20% 0;
+  opacity: calc(0.3 + var(--world-squall) * 0.7);
+  background-image: repeating-conic-gradient(
+    from 172deg at 50% 128%,
+    transparent 0deg 0.34deg,
+    rgb(216 227 223 / 5%) 0.38deg 0.46deg,
+    transparent 0.5deg 0.86deg
+  );
+  mask-image: repeating-linear-gradient(
+    to top,
+    transparent 0 22px,
+    #000 34px 62px,
+    transparent 74px
+  );
+  animation: world-glass-stream 1.9s linear infinite;
+}
+
+@keyframes world-glass-creep {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, -179px, 0);
+  }
+}
+
+@keyframes world-glass-stream {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, -74px, 0);
+  }
+}
+
+@media (width < 900px) {
+  /* La silueta entera del barco vale más que el encuadre: recortarla a cover
+     en una pantalla estrecha deja fuera la proa o la chimenea. El punto focal
+     llega en el atributo `style`, así que hace falta ganarle en la cascada. */
+  .world-ship img {
+    object-fit: contain;
+    object-position: 50% 30% !important;
+  }
 }
 
 /* Dos placas negras abren una rendija horizontal hacia el exterior. */
@@ -2406,6 +2586,22 @@ body {
   .world-progress,
   .world-outro {
     display: none;
+  }
+
+  .world-glass {
+    display: none;
+  }
+
+  .world-ship {
+    position: static;
+    margin-top: 1rem;
+    opacity: 1;
+  }
+
+  .world-ship img {
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
   }
 
   .world-meta,

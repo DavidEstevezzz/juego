@@ -9,10 +9,17 @@ const IMAGES = '/assets/media/images';
  * través de `<img>` y WebP está disponible en todos los navegadores objetivo;
  * el `<picture>` del DOM sí aprovecha AVIF cuando el navegador lo soporta.
  */
+/**
+ * Filo de captura. Las tomas del juego traen un borde de un par de píxeles que
+ * no pertenece a la imagen; recortar medio punto por lado lo quita en todas.
+ */
+const CAPTURE_EDGE = 0.005;
+
 function image(
   name: string,
   alt: string,
   focal: readonly [number, number] = [0.5, 0.45],
+  trim: number = CAPTURE_EDGE,
 ): ResponsiveImage {
   return {
     avif: {
@@ -25,6 +32,7 @@ function image(
     },
     alt,
     focal,
+    trim,
   };
 }
 
@@ -61,6 +69,8 @@ export const media = {
       },
       alt: 'AI-recreated blockout of the storage compartment: grey clay surfaces and fine wireframe edges. Not an original development capture.',
       focal: [0.5, 0.5],
+      // Render propio, no una captura: no trae filo que recortar.
+      trim: 0,
     },
     world: image(
       'driftwood-outskirts',
@@ -96,10 +106,20 @@ export const media = {
       'izzy-protagonist',
       'Izzy watches a ritual scene lit by candles.',
     ),
+    /*
+     * Esta toma llegó apaisada: bajo el filo de captura tiene unas barras
+     * negras de unos 37 px por lado sobre 1920 —el 1,9 %— que el recorte
+     * normal no alcanza. En una ventana más ancha que 1,75:1 el encuadre deja
+     * de recortar a lo ancho, y entonces la barra derecha aparecía como un
+     * margen vertical junto al borde de la pantalla. Se recorta el 2,1 %, que
+     * la cubre con holgura. El arreglo de verdad es reexportar el original sin
+     * las barras; mientras tanto, ningún píxel negro llega a verse.
+     */
     growth: image(
       'organic-growth',
       'Draga faces an immense organic mass inside the ship.',
       [0.66, 0.52],
+      0.021,
     ),
     blubberRoom: image(
       'blubber-room',

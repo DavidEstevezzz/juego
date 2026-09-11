@@ -62,6 +62,12 @@ export type ResponsiveImage = {
   webp: { small: string; large: string };
   alt: string;
   focal: readonly [number, number];
+  /**
+   * Fracción de cada lado que es borde de captura y no debe verse nunca.
+   * Se recorta por igual en los cuatro lados, así que la proporción de la
+   * imagen no cambia y el encuadre `cover` sigue calculándose igual.
+   */
+  trim: number;
 };
 
 /** Media slot shared by character layouts. Extend the union when a GLB exists. */

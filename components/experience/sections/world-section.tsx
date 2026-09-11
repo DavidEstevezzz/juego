@@ -23,6 +23,12 @@ import type { ResponsiveImage } from '@/types/experience';
 const chapter = chapterMap.world;
 const content = worldChapterContent;
 
+/** Total de observaciones, con el mismo formato de placa que la cubierta. */
+const observationCountLabel = String(content.observations.length).padStart(
+  2,
+  '0',
+);
+
 /**
  * Capítulo 02 — Driftwood.
  *
@@ -251,10 +257,10 @@ export function WorldSection() {
               data-world-note
               className="world-observation"
             >
-              <p className="world-observation__label">
-                <span aria-hidden="true">{observation.index}</span>
-                {observation.label}
+              <p className="world-observation__index" aria-hidden="true">
+                {observation.index} / {observationCountLabel}
               </p>
+              <h3 className="world-observation__title">{observation.label}</h3>
               <p className="world-observation__copy">{observation.text}</p>
             </li>
           ))}

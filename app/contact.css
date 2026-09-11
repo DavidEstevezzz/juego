@@ -1,0 +1,490 @@
+/*
+ * Pestaña y tarjeta de contacto.
+ *
+ * Es lo único del sitio que acompaña los siete capítulos, así que no puede
+ * pertenecer a la dirección visual de ninguno: se trata como una pieza del
+ * barco. Chapa remachada al casco, filo `scarlet` a la izquierda —el mismo
+ * acento estructural que marca el capítulo activo en la barra—, latón para el
+ * detalle naval y `ember` como calor al acercarse. Ni un color nuevo: todo sale
+ * de los tokens de docs/VISUAL-DIRECTION.md.
+ */
+
+.contact-rail {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  /* Por debajo de los diálogos (z 50) y por encima del documento (z 10). */
+  z-index: 40;
+  transform: translateY(-50%);
+}
+
+.contact-rail__plate {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+}
+
+/*
+ * El fondo va en una capa propia para que el desenfoque y los remaches no
+ * recorten las placas de texto, que salen por fuera de la chapa.
+ */
+.contact-rail__plate::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border: 1px solid var(--border-brass);
+  border-right: 0;
+  background:
+    /* Remaches: cuatro puntos de latón en las esquinas de la chapa. */
+    radial-gradient(circle at 9px 9px, rgb(184 152 64 / 34%) 1px, #0000 1.6px),
+    radial-gradient(
+      circle at calc(100% - 9px) 9px,
+      rgb(184 152 64 / 34%) 1px,
+      #0000 1.6px
+    ),
+    radial-gradient(
+      circle at 9px calc(100% - 9px),
+      rgb(184 152 64 / 34%) 1px,
+      #0000 1.6px
+    ),
+    radial-gradient(
+      circle at calc(100% - 9px) calc(100% - 9px),
+      rgb(184 152 64 / 34%) 1px,
+      #0000 1.6px
+    ),
+    /* Óxido: la chapa está más comida por abajo, donde da el agua. */
+    radial-gradient(120% 60% at 50% 118%, rgb(108 56 40 / 34%) 0%, #0000 100%),
+    linear-gradient(180deg, rgb(13 22 19 / 92%) 0%, rgb(5 10 7 / 94%) 100%);
+  box-shadow: var(--shadow-deep);
+  content: '';
+  backdrop-filter: blur(3px);
+}
+
+/* Filo encendido: se apaga en los extremos para que no parezca un borde. */
+.contact-rail__plate::after {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  left: 0;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    #a8202400 0%,
+    var(--scarlet) 22%,
+    var(--scarlet) 78%,
+    #a8202400 100%
+  );
+  content: '';
+}
+
+.contact-rail__channels {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-rail__channels li + li .contact-rail__link {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.contact-rail__link,
+.contact-rail__trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  color: var(--steel);
+  transition:
+    color 220ms ease,
+    background-color 220ms ease;
+}
+
+.contact-rail__link {
+  min-height: 3rem;
+}
+
+.contact-rail__mark {
+  width: 1.15rem;
+  height: 1.15rem;
+  /* Grabado: la marca se hunde un pelo en la chapa en vez de flotar. */
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 70%));
+  transition: transform 220ms cubic-bezier(0.2, 0.72, 0.16, 1);
+}
+
+.contact-rail__link:hover,
+.contact-rail__link:focus-visible,
+.contact-rail__trigger:hover,
+.contact-rail__trigger:focus-visible {
+  background-color: rgb(108 56 40 / 26%);
+  color: var(--ember);
+}
+
+.contact-rail__link:hover .contact-rail__mark,
+.contact-rail__link:focus-visible .contact-rail__mark {
+  transform: scale(1.12);
+}
+
+/* Placa auxiliar con el nombre de la red. */
+.contact-rail__tip {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 0.6rem);
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border-brass);
+  background: var(--surface-glass);
+  color: var(--ivory);
+  font-family: var(--font-system);
+  font-size: var(--font-system-compact);
+  letter-spacing: var(--tracking-system-tight);
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(0.4rem, -50%);
+  transition:
+    opacity 200ms ease,
+    transform 260ms cubic-bezier(0.2, 0.72, 0.16, 1);
+  pointer-events: none;
+}
+
+.contact-rail__link:hover .contact-rail__tip,
+.contact-rail__link:focus-visible .contact-rail__tip {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.contact-rail__trigger {
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.9rem 0 1rem;
+  border-top: 1px solid var(--border-scarlet);
+  background-color: rgb(168 32 36 / 16%);
+  color: var(--ivory);
+}
+
+.contact-rail__word {
+  font-family: var(--font-system);
+  font-size: var(--font-system-compact);
+  letter-spacing: var(--tracking-system-wide);
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+}
+
+.contact-rail__link:focus-visible,
+.contact-rail__trigger:focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: -3px;
+}
+
+/*
+ * Sin puntero fino no hay estado intermedio: la placa auxiliar solo estorbaría
+ * al dedo que ya ha pulsado. El rótulo vertical también sobra en una chapa que
+ * se estrecha, así que la pestaña se queda en marcas.
+ */
+@media (pointer: coarse), (width < 760px) {
+  .contact-rail__tip {
+    display: none;
+  }
+}
+
+@media (width < 760px), (height < 600px) {
+  .contact-rail__link,
+  .contact-rail__trigger {
+    width: 2.75rem;
+  }
+
+  .contact-rail__link {
+    min-height: 2.75rem;
+  }
+
+  .contact-rail__word {
+    display: none;
+  }
+
+  .contact-rail__trigger {
+    padding: 0.85rem 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-rail__link,
+  .contact-rail__trigger,
+  .contact-rail__mark,
+  .contact-rail__tip {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------- tarjeta */
+
+.contact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  padding: clamp(1.5rem, 4vw, 2.4rem);
+  background:
+    radial-gradient(90% 60% at 12% 0%, rgb(122 21 21 / 20%) 0%, #0000 100%),
+    radial-gradient(70% 50% at 100% 100%, rgb(108 56 40 / 22%) 0%, #0000 100%);
+}
+
+.contact-card__eyebrow,
+.contact-card__label {
+  margin: 0;
+  color: var(--brass);
+  font-family: var(--font-system);
+  font-size: var(--font-system-compact);
+  letter-spacing: var(--tracking-system);
+  text-transform: uppercase;
+}
+
+.contact-card__title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.35em;
+  margin: -0.4rem 0 0;
+  color: var(--ivory);
+  font-family: var(--font-display);
+  font-size: var(--text-display-scaffold);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.contact-card__title:focus-visible {
+  outline: none;
+}
+
+.contact-card__title > span {
+  color: var(--steel);
+}
+
+.contact-card__introduction {
+  max-width: var(--measure-narrow);
+  margin: 0;
+  color: var(--frost);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body);
+}
+
+.contact-card__address {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.contact-card__address-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  justify-content: space-between;
+}
+
+.contact-card__email {
+  color: var(--ivory);
+  font-family: var(--font-system);
+  /* La dirección es el dato que se viene a buscar: se le da el peso de un
+     titular pequeño y se deja partir, que en móvil no cabe en una línea. */
+  font-size: clamp(0.95rem, 2.6vw, 1.15rem);
+  /* Una dirección no es una placa: el tracking de sistema la ensancha hasta
+     partirla a mitad de palabra en móvil, y además se lee peor letra a letra. */
+  letter-spacing: 0.02em;
+  text-decoration: underline;
+  text-decoration-color: var(--border-scarlet);
+  text-underline-offset: 0.35em;
+  overflow-wrap: anywhere;
+  transition: text-decoration-color 200ms ease;
+}
+
+.contact-card__email:hover,
+.contact-card__email:focus-visible {
+  text-decoration-color: var(--ember);
+}
+
+.contact-card__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--border-brass);
+  color: var(--steel);
+  font-family: var(--font-system);
+  font-size: var(--font-system-compact);
+  letter-spacing: var(--tracking-system-tight);
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.contact-card__copy:hover,
+.contact-card__copy:focus-visible {
+  border-color: var(--brass);
+  color: var(--ivory);
+}
+
+.contact-card__copy[data-state='done'] {
+  border-color: var(--border-scarlet);
+  color: var(--ember);
+}
+
+.contact-card__channels ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  /* La rejilla enseña el fondo por las juntas: una cuadrícula de remaches sin
+     un borde por celda, que a 1px se duplicarían y engordarían la línea. */
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  list-style: none;
+}
+
+.contact-card__channels a {
+  position: relative;
+  display: grid;
+  grid-template-areas:
+    'mark name'
+    'mark handle';
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0 0.7rem;
+  height: 100%;
+  padding: 0.85rem 1.9rem 0.85rem 0.9rem;
+  background: var(--void);
+  color: var(--steel);
+  transition:
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
+.contact-card__channels a:hover,
+.contact-card__channels a:focus-visible {
+  background-color: rgb(108 56 40 / 24%);
+  color: var(--ember);
+}
+
+.contact-card__mark {
+  grid-area: mark;
+  width: 1.35rem;
+  height: 1.35rem;
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 70%));
+}
+
+.contact-card__channel-name {
+  grid-area: name;
+  color: var(--ivory);
+  font-family: var(--font-system);
+  font-size: var(--font-system-label);
+  letter-spacing: var(--tracking-system-tight);
+  text-transform: uppercase;
+}
+
+/*
+ * El identificador se parte antes que recortarse: en dos columnas, un nombre
+ * de estudio entero no cabe en una línea, y unos puntos suspensivos donde
+ * debería estar la cuenta no dicen a dónde lleva el enlace. Las dos celdas de
+ * la fila crecen juntas, así que la rejilla no se descuadra.
+ */
+.contact-card__handle {
+  grid-area: handle;
+  color: var(--steel);
+  font-family: var(--font-system);
+  font-size: var(--font-system-compact);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+/* Fuera de la rejilla: dentro se comía el ancho del identificador, que en dos
+   columnas ya iba justo y acababa recortado con puntos suspensivos. */
+.contact-card__arrow {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.7rem;
+  opacity: 0.5;
+  transition: opacity 220ms ease;
+}
+
+.contact-card__channels a:hover .contact-card__arrow,
+.contact-card__channels a:focus-visible .contact-card__arrow {
+  opacity: 1;
+}
+
+.contact-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem 1rem;
+  justify-content: space-between;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.contact-card__footer p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.contact-card__studio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--ivory);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  transition: color 200ms ease;
+}
+
+.contact-card__studio:hover,
+.contact-card__studio:focus-visible {
+  color: var(--ember);
+}
+
+.contact-card__close {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--border-scarlet);
+  color: var(--ivory);
+  font-family: var(--font-system);
+  font-size: var(--font-system-compact);
+  letter-spacing: var(--tracking-system-tight);
+  text-transform: uppercase;
+  transition: background-color 200ms ease;
+}
+
+.contact-card__close:hover,
+.contact-card__close:focus-visible {
+  background-color: var(--scarlet);
+}
+
+.contact-card :is(a, button):focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: 2px;
+}
+
+@media (width < 560px) {
+  .contact-card__channels ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-card :is(a, button, svg) {
+    transition: none;
+  }
+}

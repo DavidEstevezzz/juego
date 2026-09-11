@@ -5,6 +5,7 @@ import { siteContent } from '@/content/site-content';
 import { useChapterObserver } from '@/lib/experience/use-chapter-observer';
 import { useExperienceRuntime } from '@/lib/experience/use-experience-runtime';
 import { ChapterNavigation } from './chapter-navigation';
+import { ContactRail } from './contact/contact-rail';
 import { ExperienceCanvas } from './experience-canvas';
 import { DragaSection } from './sections/draga-section';
 import { FinalSignalSection } from './sections/final-signal-section';
@@ -41,6 +42,9 @@ export function ExperienceShell() {
 
       <ExperienceCanvas />
       <ChapterNavigation />
+      {/* Acompaña los siete capítulos: es `fixed` y vive fuera del `main`, así
+          que no entra en el flujo ni en el cálculo del capítulo activo. */}
+      <ContactRail />
 
       <main
         id="experience-main"

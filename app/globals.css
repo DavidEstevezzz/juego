@@ -5,6 +5,7 @@
 @import './signal.css';
 @import './team.css';
 @import './draga-transformation.css';
+@import './contact.css';
 
 @theme inline {
   --font-sans: var(--font-body);

@@ -1,16 +1,29 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import { AdaptiveDpr, PerformanceMonitor } from '@react-three/drei';
-import { Canvas, useThree } from '@react-three/fiber';
+import { AdaptiveDpr } from '@react-three/drei';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import type { WebGLRenderer } from 'three';
+import type { GraphicsTier } from '@/types/experience';
+import { createFrameHealth } from '@/lib/experience/frame-health';
 import { subscribeScrollMetrics } from '@/lib/experience/scroll-metrics';
 import { useExperienceStore } from '@/lib/experience/store';
 import { WorldScene } from './world-scene';
 import { InfectionScene } from './infection-scene';
 
-/** Espera mínima entre degradaciones para no saltarse un escalón por un bache. */
-const DECLINE_COOLDOWN_MS = 4000;
+/**
+ * Espera mínima entre degradaciones, por tier de salida.
+ *
+ * El primer escalón (A → B) solo baja el detalle del shader y el DPR: la
+ * secuencia sigue siendo la misma y equivocarse cuesta poco. El segundo (B → C)
+ * desmonta la capa WebGL y cambia el capítulo por su respaldo en CSS, que es un
+ * salto visible y sin vuelta atrás en toda la sesión. Ese merece mucha más
+ * evidencia: cinco veces más tiempo dibujando mal antes de decidirlo.
+ */
+const DECLINE_COOLDOWN_MS: Partial<Record<GraphicsTier, number>> = {
+  a: 4000,
+  b: 20000,
+};
 
 /**
  * Escena persistente de la experiencia.
@@ -33,7 +46,10 @@ export default function ExperienceScene() {
    */
   const handleDecline = useCallback(() => {
     const now = performance.now();
-    if (now - lastDeclineRef.current < DECLINE_COOLDOWN_MS) return;
+    const tier = useExperienceStore.getState().graphicsTier;
+    const cooldown = DECLINE_COOLDOWN_MS[tier];
+    if (cooldown === undefined) return;
+    if (now - lastDeclineRef.current < cooldown) return;
     lastDeclineRef.current = now;
     useExperienceStore.getState().degradeGraphicsTier();
   }, []);
@@ -55,14 +71,36 @@ export default function ExperienceScene() {
       // scroll, así que R3F no necesita su propio listener de scroll.
       resize={{ scroll: false }}
     >
-      <PerformanceMonitor onDecline={handleDecline}>
-        <AdaptiveDpr pixelated />
-        <SceneDriver />
-        <WorldScene />
-        <InfectionScene />
-      </PerformanceMonitor>
+      <AdaptiveDpr pixelated />
+      <FrameHealthWatch onDecline={handleDecline} />
+      <SceneDriver />
+      <WorldScene />
+      <InfectionScene />
     </Canvas>
   );
+}
+
+/**
+ * Vigilancia de rendimiento adaptada al bucle bajo demanda.
+ *
+ * Ver `frame-health.ts`: solo cuentan los fotogramas consecutivos, así que las
+ * pausas del visitante —que con el monitor de drei se leían como 1 fps— ya no
+ * degradan nada. El contador se reinicia al cambiar de tier, porque recargar
+ * las texturas en la nueva resolución produce su propio tirón.
+ */
+function FrameHealthWatch({ onDecline }: { onDecline: () => void }) {
+  const graphicsTier = useExperienceStore((state) => state.graphicsTier);
+  const health = useRef(createFrameHealth());
+
+  useEffect(() => {
+    health.current.reset();
+  }, [graphicsTier]);
+
+  useFrame(() => {
+    if (health.current.sample(performance.now())) onDecline();
+  });
+
+  return null;
 }
 
 /**
@@ -78,7 +116,15 @@ function SceneDriver() {
   useEffect(() => {
     const canvas = gl.domElement;
     const restoreShaderDebug = attachShaderFallback(gl);
-    const handleContextLost = () => {
+    /*
+     * Perder el contexto no es un veredicto sobre el equipo: los navegadores
+     * con limitador de memoria —Opera GX y su GX Control, por ejemplo— lo
+     * retiran a mitad de sesión para liberar la GPU. `preventDefault` es lo que
+     * le pide al navegador que lo restaure en vez de darlo por muerto; el
+     * reintento acotado vive en `ExperienceCanvas`, que es quien monta la capa.
+     */
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
       useExperienceStore.getState().setWebglAvailable(false);
     };
 

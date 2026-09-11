@@ -14,6 +14,7 @@ uniform sampler2D uGrowth;
 uniform sampler2D uRoom;
 uniform sampler2D uVessel;
 uniform vec3 uAspects;
+uniform vec3 uTrims;
 uniform vec2 uFocalA;
 uniform vec2 uFocalB;
 uniform vec2 uFocalC;
@@ -50,12 +51,17 @@ float fbm(vec2 p) {
   }
   return value / weight;
 }
-vec2 cover(vec2 uv, float aspect, vec2 focal) {
+/*
+ * El recorte es la fracción de cada lado que es borde de captura. Se descuenta
+ * por igual en los cuatro, así que la porción que queda conserva la proporción
+ * de la imagen y el ajuste de arriba sigue siendo el correcto.
+ */
+vec2 cover(vec2 uv, float aspect, vec2 focal, float trim) {
   float stageAspect = uBounds.z / uBounds.w;
   vec2 scale = stageAspect > aspect
     ? vec2(1.0, aspect / stageAspect) : vec2(stageAspect / aspect, 1.0);
   vec2 fitted = uv * scale + focal * (1.0 - scale);
-  return clamp(0.5 + (fitted - 0.5) / 1.01, 0.002, 0.998);
+  return clamp(0.5 + (fitted - 0.5) * (1.0 - 2.0 * trim), 0.002, 0.998);
 }
 float reveal(float field, float progress) {
   // The extended threshold makes both endpoints exact, independent of noise.
@@ -75,7 +81,7 @@ void main() {
   float fieldAB = clamp((1.0 - uv.x) * 0.59 + (1.0 - uv.y) * 0.17 + organic * 0.22, 0.0, 1.0);
   float mixAB = reveal(fieldAB, uRoomMix);
 
-  vec2 vesselUv = cover(uv, uAspects.z, uFocalC);
+  vec2 vesselUv = cover(uv, uAspects.z, uFocalC, uTrims.z);
   // Separate origins find eyes, mouth and shoulders in the original image.
   float eyes = min(length((vesselUv - vec2(0.42, 0.77)) * vec2(1.1, 1.0)),
                    length((vesselUv - vec2(0.50, 0.75)) * vec2(1.1, 1.0)));
@@ -94,9 +100,9 @@ void main() {
   vec2 distortion = flow * (12.0 * uTension) / uBounds.zw;
   float faceProtection = 1.0 - smoothstep(0.09, 0.24, eyes);
 
-  vec3 growth = texture2D(uGrowth, cover(uv + distortion, uAspects.x, uFocalA)).rgb;
-  vec3 room = texture2D(uRoom, cover(uv - distortion * 0.7, uAspects.y, uFocalB)).rgb;
-  vec3 vessel = texture2D(uVessel, cover(uv + distortion * (1.0 - faceProtection) * 0.6, uAspects.z, uFocalC)).rgb;
+  vec3 growth = texture2D(uGrowth, cover(uv + distortion, uAspects.x, uFocalA, uTrims.x)).rgb;
+  vec3 room = texture2D(uRoom, cover(uv - distortion * 0.7, uAspects.y, uFocalB, uTrims.y)).rgb;
+  vec3 vessel = texture2D(uVessel, cover(uv + distortion * (1.0 - faceProtection) * 0.6, uAspects.z, uFocalC, uTrims.z)).rgb;
   vec3 interior = mix(growth, room, mixAB);
   interior *= mix(vec3(0.83, 0.94, 0.98), vec3(1.0), uRed);
   vec3 color = mix(interior, vessel, mixBC);
@@ -124,6 +130,8 @@ export function createInfectionMaterial() {
       uAspects: {
         value: new THREE.Vector3(1920 / 1049, 1920 / 1049, 1920 / 935),
       },
+      // Lo fija la escena desde `media.ts`, una entrada por textura.
+      uTrims: { value: new THREE.Vector3(0.005, 0.005, 0.005) },
       uFocalA: { value: new THREE.Vector2(0.66, 0.48) },
       uFocalB: { value: new THREE.Vector2(0.58, 0.5) },
       uFocalC: { value: new THREE.Vector2(0.47, 0.7) },

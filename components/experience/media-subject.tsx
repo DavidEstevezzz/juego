@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import type { MediaSubjectSource } from '@/types/experience';
 
 type MediaSubjectProps = {
@@ -19,7 +20,12 @@ export function MediaSubject({
   const { image, width, height } = source;
 
   return (
-    <picture className={`media-subject ${className}`}>
+    /* El recorte se publica como variable para que lo lea el CSS: así vive una
+       sola vez, junto al asset que lo necesita, y no repetido en la hoja. */
+    <picture
+      className={`media-subject ${className}`}
+      style={{ '--media-trim': image.trim } as CSSProperties}
+    >
       <source
         type="image/avif"
         srcSet={`${image.avif.small} 960w, ${image.avif.large} 1920w`}

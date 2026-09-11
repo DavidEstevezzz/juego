@@ -120,6 +120,12 @@ function InfectionPlane() {
       instance.uniforms.uGrowth.value = a;
       instance.uniforms.uRoom.value = b;
       instance.uniforms.uVessel.value = c;
+      // El recorte de captura lo declara cada imagen; el DOM lee el mismo dato.
+      instance.uniforms.uTrims.value.set(
+        images[0].trim,
+        images[1].trim,
+        images[2].trim,
+      );
       loaded.current = true;
       if (getInfectionFrame().visible) invalidate();
     });

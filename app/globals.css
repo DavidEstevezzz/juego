@@ -2221,8 +2221,12 @@ body {
 }
 
 .infection-frame__image img {
-  /* Trim the thin capture border; no generated replacement artwork. */
-  transform: scale(1.01);
+  /*
+   * Trim the capture border; no generated replacement artwork. How much is a
+   * property of each capture, published by `MediaSubject` from `media.ts`: one
+   * of the three plates arrived with black bars far wider than the rest.
+   */
+  transform: scale(calc(1 / (1 - 2 * var(--media-trim, 0.005))));
 }
 
 .infection-frame__caption {

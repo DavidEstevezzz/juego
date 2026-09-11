@@ -56,9 +56,14 @@ content/
 5. **El canvas es opcional.** Es `fixed`, decorativo y `aria-hidden`; el DOM es
    completo y legible si no llega a montarse. No se monta sin WebGL, en tier C,
    con movimiento reducido ni antes de que el hilo principal esté libre.
-   `PerformanceMonitor` degrada un escalón por caída sostenida (A → B → C); al
+   `frame-health.ts` degrada un escalón por caída sostenida (A → B → C); al
    llegar a C la capa WebGL se desmonta y el tier no vuelve a subir en toda la
-   sesión.
+   sesión. Solo mide fotogramas consecutivos: con `frameloop="demand"` las
+   pausas del visitante no son fotogramas lentos, y el `PerformanceMonitor` de
+   drei —que mide contra el reloj de pared— las leía como caídas y degradaba a
+   quien se paraba a leer. El salto a C, el único visible, pide cinco veces más
+   evidencia que el primero. Perder el contexto WebGL tampoco es definitivo: se
+   reintenta un par de veces con un canvas limpio antes de aceptar el DOM.
 6. **Pausa por visibilidad.** Al ocultar la pestaña el canvas pasa a
    `frameloop="never"` y el driver de scroll cancela su `requestAnimationFrame`.
 7. **Los tokens visuales mandan.** La jerarquía negro-rojo de

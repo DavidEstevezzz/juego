@@ -1,12 +1,17 @@
 'use client';
 
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { subscribeScrollMetrics } from '@/lib/experience/scroll-metrics';
 import { useExperienceStore } from '@/lib/experience/store';
 
 // La escena y todo Three.js se cargan en un chunk aparte: nunca entran en el
 // paquete crítico ni bloquean el primer render del contenido.
 const ExperienceScene = lazy(() => import('./webgl/experience-scene'));
+
+/** Espera antes de volver a montar la capa tras perder el contexto WebGL. */
+const RECOVERY_DELAY_MS = 1500;
+/** Reintentos máximos por sesión. Si el contexto no vuelve, gana el DOM. */
+const MAX_RECOVERIES = 2;
 
 type IdleWindow = Window & {
   requestIdleCallback?: (
@@ -35,6 +40,9 @@ export function ExperienceCanvas() {
   const chapter = useExperienceStore((state) => state.chapter);
   const [deferred, setDeferred] = useState(false);
   const [descentStarted, setDescentStarted] = useState(false);
+  const [recoveryKey, setRecoveryKey] = useState(0);
+  const mountedOnce = useRef(false);
+  const recoveries = useRef(0);
 
   useEffect(() => {
     const idleWindow = window as IdleWindow;
@@ -66,12 +74,41 @@ export function ExperienceCanvas() {
     graphicsTier !== 'c' &&
     !reducedMotion;
 
+  /*
+   * Recuperación tras perder el contexto WebGL.
+   *
+   * Un contexto retirado —lo hacen los navegadores con limitador de memoria,
+   * como Opera GX con GX Control activo— apagaba la capa para el resto de la
+   * sesión: los capítulos 02 y 05 se quedaban en su respaldo de CSS aunque el
+   * equipo estuviera perfectamente. Se reintenta un par de veces con un canvas
+   * limpio, y solo después se acepta el respaldo. El resto de motivos por los
+   * que la capa no se monta —tier C, movimiento reducido, ausencia de WebGL—
+   * no son accidentes y no se reintentan.
+   */
+  useEffect(() => {
+    if (enabled) {
+      mountedOnce.current = true;
+      return;
+    }
+    if (!mountedOnce.current || webglAvailable) return;
+    if (graphicsTier === 'c' || reducedMotion) return;
+    if (recoveries.current >= MAX_RECOVERIES) return;
+
+    recoveries.current += 1;
+    const timeout = window.setTimeout(() => {
+      setRecoveryKey((key) => key + 1);
+      useExperienceStore.getState().setWebglAvailable(true);
+    }, RECOVERY_DELAY_MS);
+    return () => window.clearTimeout(timeout);
+  }, [enabled, webglAvailable, graphicsTier, reducedMotion]);
+
   if (!enabled) return null;
 
   return (
     <div className="experience-canvas-layer" aria-hidden="true">
       <Suspense fallback={null}>
-        <ExperienceScene />
+        {/* La clave fuerza un canvas nuevo: el contexto perdido no se reusa. */}
+        <ExperienceScene key={recoveryKey} />
       </Suspense>
     </div>
   );

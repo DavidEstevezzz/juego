@@ -444,12 +444,6 @@
   color: var(--ivory);
   font-family: var(--font-display);
   font-size: 1.05rem;
-  transition: color 200ms ease;
-}
-
-.contact-card__studio:hover,
-.contact-card__studio:focus-visible {
-  color: var(--ember);
 }
 
 .contact-card__close {

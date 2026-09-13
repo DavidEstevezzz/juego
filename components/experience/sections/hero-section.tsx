@@ -48,17 +48,17 @@ export function HeroSection() {
         transformOrigin: 'left center',
         duration: 0.7,
       })
-      .from('[data-hero-deck]', { autoAlpha: 0, y: 12, duration: 0.7 }, 0.1)
       // Revelado por máscara vertical: el contenedor recorta y la línea sube.
+      // La placa va primero porque ahora está arriba; el nombre grande, después.
       .from(
-        '[data-hero-line="primary"]',
-        { yPercent: 118, letterSpacing: '0em', duration: 1.1 },
-        0.15,
+        '[data-hero-line="brand"]',
+        { yPercent: 118, letterSpacing: '0em', duration: 1 },
+        0.12,
       )
       .from(
-        '[data-hero-line="secondary"]',
-        { yPercent: 118, letterSpacing: '0em', duration: 1 },
-        0.38,
+        '[data-hero-line="title"]',
+        { yPercent: 118, letterSpacing: '0em', duration: 1.1 },
+        0.3,
       )
       .from('[data-hero-genre]', { autoAlpha: 0, y: 14, duration: 0.8 }, 0.74)
       .from(
@@ -171,29 +171,23 @@ export function HeroSection() {
         <div data-hero-copy>
           <div data-hero-rule aria-hidden="true" className="signal-rule mb-5" />
 
-          <p
-            data-hero-deck
-            className="font-system mb-6 text-[var(--font-system-label)] uppercase tracking-[var(--tracking-system-wide)] text-brass"
-          >
-            {hero.deckLabel}
-          </p>
-
+          {/* El nombre del juego manda sobre el de la saga: «Black Tides»
+              queda en la placa, pequeño y arriba, y «Draga’s Wake» ocupa la
+              línea de display. El rojo sigue siendo estructura, no texto. */}
           <h1 id="hero-title" className="mb-6">
-            <span className="-mb-[0.14em] block overflow-hidden pb-[0.14em]">
+            <span className="block overflow-hidden pb-[0.1em]">
               <span
-                data-hero-line="primary"
-                className="font-display block whitespace-nowrap text-[length:var(--text-display-hero)] leading-[0.92] tracking-[0.04em] text-ivory uppercase"
+                data-hero-line="brand"
+                className="font-system inline-block bg-scarlet px-3 py-1.5 text-[clamp(0.8rem,2.2vw,1.2rem)] leading-none tracking-[0.22em] text-ivory uppercase shadow-[var(--glow-red)]"
               >
                 {hero.titlePrimary}
               </span>
             </span>
 
-            {/* Placa roja: el rojo pesa en el título sin llevarse el texto a un
-                contraste insuficiente (marfil sobre scarlet = 5,86:1). */}
-            <span className="mt-4 block overflow-hidden pb-[0.1em]">
+            <span className="-mb-[0.14em] mt-3 block overflow-hidden pb-[0.14em]">
               <span
-                data-hero-line="secondary"
-                className="font-system inline-block bg-scarlet px-3 py-1.5 text-[clamp(0.9rem,2.7vw,1.45rem)] leading-none tracking-[0.2em] text-ivory uppercase shadow-[var(--glow-red)]"
+                data-hero-line="title"
+                className="font-display block whitespace-nowrap text-[length:var(--text-display-hero)] leading-[0.92] tracking-[0.04em] text-ivory uppercase"
               >
                 {hero.titleSecondary}
               </span>
@@ -202,10 +196,13 @@ export function HeroSection() {
 
           <p
             data-hero-genre
-            className="font-system mb-5 flex max-w-[46rem] flex-wrap items-center gap-x-3 gap-y-2 text-[var(--font-system-label)] uppercase tracking-[var(--tracking-system)] text-steel"
+            className="font-system mb-5 flex max-w-[56rem] flex-wrap items-center gap-x-3 gap-y-2 text-[var(--font-system-label)] uppercase tracking-[var(--tracking-system)] text-steel"
           >
             {hero.genre}
-            <span className="border border-[color:var(--border-brass)] px-2 py-1 text-[var(--font-system-compact)] tracking-[var(--tracking-system-tight)] text-brass">
+            <span className="border border-brass bg-[color:var(--brass-wash)] px-2.5 py-1 text-[var(--font-system-label)] tracking-[var(--tracking-system-tight)] text-brass">
+              {hero.publishingStatus}
+            </span>
+            <span className="text-[var(--font-system-compact)] tracking-[var(--tracking-system-tight)] text-steel">
               {hero.genreStatus}
             </span>
           </p>

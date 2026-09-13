@@ -57,6 +57,8 @@
   --border-subtle: rgb(237 231 211 / 14%);
   --border-scarlet: rgb(168 32 36 / 58%);
   --border-brass: rgb(184 152 64 / 28%);
+  /* Relleno mínimo para placas de latón: da cuerpo sin tocar el contraste. */
+  --brass-wash: rgb(184 152 64 / 10%);
   --glow-red: 0 0 64px rgb(168 32 36 / 24%);
   --shadow-deep: 0 32px 90px rgb(0 0 0 / 58%);
 

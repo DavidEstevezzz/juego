@@ -240,79 +240,6 @@
   font-size: var(--text-body);
   line-height: var(--leading-body);
 }
-.production-gallery {
-  display: grid;
-  grid-template-columns: 1fr 2.05fr;
-  align-items: start;
-  gap: clamp(2rem, 4.5vw, 6rem);
-  border-top: 1px solid var(--border-subtle);
-  padding: 2.5rem 0 clamp(3rem, 6vw, 7rem);
-}
-.production-gallery > header h3 {
-  margin: 1.25rem 0;
-  max-width: 13ch;
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 3.8vw, 4.25rem);
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-}
-.production-gallery > header > p:last-child {
-  max-width: 28ch;
-  font-size: var(--text-body);
-  line-height: var(--leading-body);
-  color: var(--steel);
-}
-.production-gallery__carousel {
-  min-width: 0;
-}
-.production-gallery__image {
-  aspect-ratio: 1920 / 1049;
-  background: var(--hull);
-}
-.production-gallery__image img {
-  object-fit: contain;
-}
-.production-gallery figure {
-  margin: 0;
-}
-.production-gallery figcaption {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-top: 1rem;
-  font-size: var(--text-body-sm);
-}
-.production-gallery figcaption > :last-child {
-  text-align: right;
-  font-size: var(--font-system-compact);
-}
-.production-gallery__controls {
-  display: flex;
-  align-items: center;
-  justify-content: end;
-  gap: 0.6rem;
-  margin-top: 1.5rem;
-}
-.production-gallery__controls p {
-  margin-right: auto;
-}
-.production-gallery__arrow {
-  position: static;
-  inset: auto;
-  width: 48px;
-  height: 48px;
-  margin: 0;
-  transform: none;
-  border-radius: 0;
-  border-color: var(--border-brass);
-  color: var(--ivory);
-  background: transparent;
-}
-.production-gallery__arrow:hover {
-  background: var(--hull);
-  color: var(--ivory);
-}
 .production-studio {
   display: grid;
   grid-template-columns: 1.45fr 1fr;
@@ -399,15 +326,6 @@
   .production-notes .production-label {
     min-height: 2.8em;
   }
-  .production-gallery {
-    grid-template-columns: 1fr;
-  }
-  .production-gallery > header h3 {
-    max-width: none;
-  }
-  .production-gallery > header > p:last-child {
-    max-width: none;
-  }
   .production-studio {
     grid-template-columns: 1fr;
   }
@@ -463,13 +381,6 @@
   }
   .production-notes__text {
     max-width: none;
-  }
-  .production-gallery figcaption {
-    flex-direction: column;
-    gap: 0.35rem;
-  }
-  .production-gallery figcaption > :last-child {
-    text-align: left;
   }
 }
 @media (prefers-reduced-motion: reduce) {

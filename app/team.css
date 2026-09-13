@@ -121,6 +121,30 @@
 .team-founder__eyebrow span:last-child {
   color: var(--brass);
 }
+/*
+ * La voz de Draga se presenta como el fundador —mismo retrato, misma
+ * tipografía— pero espejada, para que la página no repita el mismo encuadre
+ * dos veces seguidas. El retrato es el propio personaje: quien pone la voz no
+ * tiene fotografía cedida por el estudio.
+ */
+.team-founder--voice {
+  grid-template-columns: 1.1fr 0.8fr 0.15fr;
+}
+.team-founder--voice .team-founder__bio {
+  grid-column: 1;
+  grid-row: 2;
+}
+.team-founder--voice .team-founder__portrait {
+  grid-column: 2;
+  grid-row: 2;
+}
+.team-founder--voice .team-founder__portrait::before {
+  content: 'SCF / 02';
+}
+.team-founder--voice .team-founder__portrait img {
+  object-position: 34% 36%;
+  filter: grayscale(0.55) contrast(1.05);
+}
 .team-founder__portrait {
   position: relative;
   grid-column: 2;
@@ -214,47 +238,82 @@
   font-size: 1.0625rem;
   line-height: 1.8;
 }
-.team-roster ul {
+/*
+ * Rollo de créditos. Los nombres suben despacio dentro de una ventana con los
+ * bordes difuminados, como el cierre de una película: están, se leen, y no
+ * compiten con las secciones que sí tienen que pesar. La pista se duplica para
+ * que el bucle no muestre un hueco; la copia va con `aria-hidden`.
+ */
+.team-roll {
+  border-block: 1px solid var(--border-subtle);
+  padding: 1.5rem 0;
+}
+.team-roll__viewport {
+  position: relative;
+  height: 17rem;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    180deg,
+    transparent,
+    #000 22%,
+    #000 78%,
+    transparent
+  );
+}
+.team-roll__track {
   list-style: none;
-  padding: 0;
   margin: 0;
-}
-.team-roster li {
+  padding: 0;
   display: grid;
-  grid-template-columns: 1fr 1.25fr 0.75fr;
-  gap: 2rem;
-  align-items: center;
-  padding: 1.6rem 0;
-  border-top: 1px solid var(--border-subtle);
-  transition:
-    background 0.3s,
-    padding 0.3s;
+  gap: 1.6rem;
+  padding-bottom: 1.6rem;
+  animation: team-roll 34s linear infinite;
+  will-change: transform;
 }
-.team-roster li:hover {
-  background: rgb(237 231 211 / 3%);
-  padding-inline: 1rem;
+.team-roll:hover .team-roll__track,
+.team-roll:focus-within .team-roll__track {
+  animation-play-state: paused;
 }
-.team-roster h3 {
-  font: 400 clamp(1.4rem, 2.25vw, 2.2rem)/1.3 var(--font-display);
+.team-roll li {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+  text-align: center;
 }
-.team-roster li > p {
-  font-size: 1rem;
+.team-roll__name {
+  font: 400 clamp(1.1rem, 1.6vw, 1.45rem)/1.3 var(--font-display);
+  color: var(--ivory);
+}
+.team-roll .production-label {
   color: var(--steel);
-  text-align: right;
 }
-.team-voice {
-  display: grid;
-  grid-template-columns: 1fr 1.25fr 0.75fr;
-  align-items: center;
-  gap: 2rem;
-  margin-top: 1.2rem;
-  border-top: 1px solid var(--border-brass);
-  padding: 2rem 0 0;
+.team-roll__tail {
+  padding-top: 0.6rem;
 }
-.team-voice > p:last-child {
-  color: var(--frost);
-  font-size: 1rem;
-  line-height: 1.7;
+.team-roll__tail .production-label {
+  color: var(--brass);
+}
+@keyframes team-roll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+/* Sin movimiento —o sin JS— el rollo es una lista quieta y completa. */
+@media (prefers-reduced-motion: reduce), (scripting: none) {
+  .team-roll__viewport {
+    height: auto;
+    overflow: visible;
+    mask-image: none;
+  }
+  .team-roll__track {
+    animation: none;
+  }
+  .team-roll__track[aria-hidden='true'] {
+    display: none;
+  }
 }
 .team-credits::before {
   content: '';
@@ -317,26 +376,6 @@
 .credit-shelf figcaption span {
   color: var(--brass);
   font-family: var(--font-system);
-}
-.team-facts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin: 4rem 0;
-  padding: 2rem 0;
-  border-block: 1px solid var(--border-subtle);
-}
-.team-facts > div {
-  padding-left: 1.4rem;
-  border-left: 1px solid var(--border-brass);
-}
-.team-facts dd {
-  font: 400 clamp(3rem, 6vw, 6rem)/1.1 var(--font-display);
-}
-.team-facts dt {
-  margin-top: 0.8rem;
-  font: 400 0.9rem/1.5 var(--font-system);
-  color: var(--steel);
 }
 .team-method {
   display: grid;
@@ -535,15 +574,13 @@
     width: 100%;
     margin-left: 0;
   }
-  .team-roster li {
-    grid-template-columns: 2rem 1fr 1fr;
-    gap: 1rem;
+  .team-founder--voice {
+    grid-template-columns: 0.8fr 1fr;
   }
-  .team-voice {
-    grid-template-columns: 1fr 1fr;
-  }
-  .team-voice > p:first-child {
-    grid-column: 1/-1;
+  .team-founder--voice .team-founder__bio,
+  .team-founder--voice .team-founder__portrait {
+    grid-column: auto;
+    grid-row: auto;
   }
 
   .team-teaser__body {
@@ -605,34 +642,12 @@
   .team-production {
     padding: 3rem 0 4rem;
   }
-  .team-roster li {
-    grid-template-columns: 2rem 1fr;
-    gap: 0.6rem;
-  }
-  .team-roster li > p {
-    grid-column: 2;
-    text-align: left;
-  }
-  .team-voice,
   .team-method {
     grid-template-columns: 1fr;
-    gap: 1.2rem;
-  }
-  .team-method {
     gap: 2rem;
   }
-  .team-facts {
-    gap: 0.5rem;
-    margin: 2.5rem 0;
-  }
-  .team-facts > div {
-    padding-left: 0.6rem;
-  }
-  .team-facts dd {
-    font-size: 2.5rem;
-  }
-  .team-facts dt {
-    font-size: 0.8rem;
+  .team-roll__viewport {
+    height: 14rem;
   }
   .credit-shelf .credit-shelf__slide {
     flex-basis: 152px;
@@ -651,7 +666,6 @@
 }
 @media (prefers-reduced-motion: reduce), (scripting: none) {
   .team-portal,
-  .team-roster li,
   .credit-shelf img {
     transition: none;
   }

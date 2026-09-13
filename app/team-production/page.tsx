@@ -2,10 +2,16 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { CreditCarousel } from '@/components/experience/production/credit-carousel';
+import { contactContent } from '@/content/contact';
 import { media } from '@/content/media';
-import { team, gameCredits, screenCredits } from '@/content/team';
+import {
+  team,
+  gameCredits,
+  screenCredits,
+  voiceOfDraga,
+  creditRollTail,
+} from '@/content/team';
 import { ProductionComparison } from '@/components/experience/production/production-comparison';
-import { ProductionGallery } from '@/components/experience/production/production-gallery';
 
 export const metadata: Metadata = {
   title: 'Team / Production — Black Tides: Draga’s Wake',
@@ -41,7 +47,7 @@ export default function TeamProductionPage() {
           </div>
           <div className="team-hero__content">
             <p className="production-label team-eyebrow">
-              Strange Creature Factory / The studio
+              Strange Creature Factory Ltd / The studio
             </p>
             <h1>
               Strange minds.
@@ -102,9 +108,43 @@ export default function TeamProductionPage() {
             </p>
           </div>
         </section>
+        <section
+          className="team-founder team-founder--voice"
+          aria-labelledby="voice-title"
+        >
+          <div className="team-founder__eyebrow production-label">
+            <span>02 / {voiceOfDraga.role}</span>
+            <span>A voice you already know.</span>
+          </div>
+          <figure className="team-founder__portrait">
+            {/* oxlint-disable-next-line next/no-img-element */}
+            <img
+              src={media.images.draga.webp.large}
+              alt={media.images.draga.alt}
+              width={1920}
+              height={1049}
+              loading="lazy"
+            />
+            <figcaption className="production-label">
+              {voiceOfDraga.portraitCaption}
+            </figcaption>
+          </figure>
+          <div className="team-founder__bio">
+            <p className="production-label">{voiceOfDraga.role}</p>
+            <h2 id="voice-title">{voiceOfDraga.name}</h2>
+            {voiceOfDraga.biography.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+            <p className="team-founder__statement">
+              {voiceOfDraga.statement[0]}
+              <br />
+              {voiceOfDraga.statement[1]}
+            </p>
+          </div>
+        </section>
         <section className="team-roster" aria-labelledby="roster-title">
           <div className="team-section-heading">
-            <p className="production-label">02 / The people</p>
+            <p className="production-label">03 / The people</p>
             <h2 id="roster-title">
               Many disciplines.
               <br />
@@ -113,31 +153,43 @@ export default function TeamProductionPage() {
           </div>
           <p className="team-section-copy">
             18 contributors across art, gameplay, animation, lighting,
-            cinematics and technical production. Meet the core team.
+            cinematics and technical production.
           </p>
-          <ul>
-            {team.map((person, index) => (
-              <li key={person.name}>
-                <span className="production-label">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <h3>{person.name}</h3>
-                <p>{person.role}</p>
-              </li>
-            ))}
-          </ul>
-          <aside className="team-voice">
-            <p className="production-label">The voice of Draga</p>
-            <h3>Dominik Diamond</h3>
-            <p>
-              The Scottish broadcaster, writer and original GamesMaster host
-              brings his voice to Draga.
-            </p>
-          </aside>
+          {/*
+            Rollo de créditos: los nombres pasan como al final de una película,
+            presentes pero sin reclamar el foco. Sin animación —o sin JS— la
+            lista se lee entera, quieta, y la copia duplicada se oculta.
+          */}
+          <div className="team-roll">
+            <div className="team-roll__viewport">
+              <ul className="team-roll__track">
+                {team.map((person) => (
+                  <li key={person.name}>
+                    <span className="team-roll__name">{person.name}</span>
+                    <span className="production-label">{person.role}</span>
+                  </li>
+                ))}
+                <li className="team-roll__tail">
+                  <span className="production-label">{creditRollTail}</span>
+                </li>
+              </ul>
+              <ul className="team-roll__track" aria-hidden="true">
+                {team.map((person) => (
+                  <li key={person.name}>
+                    <span className="team-roll__name">{person.name}</span>
+                    <span className="production-label">{person.role}</span>
+                  </li>
+                ))}
+                <li className="team-roll__tail">
+                  <span className="production-label">{creditRollTail}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </section>
         <section className="team-credits" aria-labelledby="credits-title">
           <div className="team-section-heading">
-            <p className="production-label">03 / Previous work</p>
+            <p className="production-label">04 / Previous work</p>
             <h2 id="credits-title">
               You’ve seen
               <br />
@@ -155,23 +207,9 @@ export default function TeamProductionPage() {
         </section>
         <section className="team-production" aria-labelledby="craft-title">
           <div className="team-section-heading">
-            <p className="production-label">04 / Production</p>
+            <p className="production-label">05 / Production</p>
             <h2 id="craft-title">From vision to vessel.</h2>
           </div>
-          <dl className="team-facts">
-            <div>
-              <dd>18</dd>
-              <dt>Contributors</dt>
-            </div>
-            <div>
-              <dd>12</dd>
-              <dt>Months to first demo</dt>
-            </div>
-            <div>
-              <dd>UE5</dd>
-              <dt>Built in Unreal Engine 5</dt>
-            </div>
-          </dl>
           <div className="team-method">
             <article>
               <h3>Built together before</h3>
@@ -200,18 +238,17 @@ export default function TeamProductionPage() {
             </article>
           </div>
           <ProductionComparison />
-          <ProductionGallery />
         </section>
         <footer className="team-footer">
           <div>
-            <p className="production-label">Strange Creature Factory</p>
+            <p className="production-label">Strange Creature Factory Ltd</p>
             <h2>Let’s talk Black Tides.</h2>
           </div>
           <a
-            href="https://strangecreaturefactory.com/"
+            href={`mailto:${contactContent.email}`}
             className="team-link focus-ring"
           >
-            Visit the studio <ArrowUpRight size={18} aria-hidden="true" />
+            {contactContent.email} <ArrowUpRight size={18} aria-hidden="true" />
           </a>
           <Link href="/#production" className="team-link focus-ring">
             <ArrowLeft size={18} aria-hidden="true" /> Return to Black Tides

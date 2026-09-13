@@ -22,10 +22,15 @@ export const siteContent = {
    * tripulación— y no añaden mecánicas, plataformas ni fechas sin confirmar.
    */
   hero: {
-    deckLabel: 'Deck 01',
     titlePrimary: 'Black Tides',
     titleSecondary: 'Draga’s Wake',
     genre: 'Third-person action horror',
+    /**
+     * Estado del proyecto. `publishingStatus` es el dato que el estudio quiere
+     * delante: ocupa la placa de latón que antes llevaba el desarrollo, y «In
+     * development» queda a su derecha, un escalón por debajo, como nota.
+     */
+    publishingStatus: 'Seeking publishing partner',
     genreStatus: 'In development',
     synopsis:
       'An alternate 1900s, where ancient gods and vessels of steam and steel meet in the same black water. Stranded aboard the Ormora, Draga fights the horrors below deck to regroup his crew and find out what is waking inside the hull.',

@@ -48,8 +48,8 @@ export const chapters: readonly ExperienceChapter[] = [
   {
     id: 'infection',
     index: '05',
-    navLabel: 'Infection',
-    title: 'The infection',
+    navLabel: 'Vessels',
+    title: 'The vessels',
     summary:
       'Deliver the site’s major visual turn as a continuous sequence, not a gallery.',
   },
@@ -198,8 +198,8 @@ export const dragaChapterContent = {
 /** Descriptions of the supplied images, not new lore or gameplay claims. */
 export const infectionChapterContent = {
   category: 'Horror within',
-  title: 'The infection',
-  continueLabel: 'Beyond the infection',
+  title: 'The vessels',
+  continueLabel: 'Beyond the vessels',
   phases: [
     {
       id: 'growth',
@@ -273,40 +273,10 @@ export const productionChapterContent = {
       text: 'A pool of warmth draws the eye. The darkness around it leaves a question. Atmosphere lives in the distance between the two.',
     },
   ],
-  gallery: {
-    label: 'Selected frames',
-    title: 'A world in the details.',
-    description: 'Original game captures. Explore at your own pace.',
-    frames: [
-      {
-        media: 'cabin',
-        title: 'A room with a history',
-        caption: 'The captain’s cabin',
-        width: 1920,
-        height: 1049,
-      },
-      {
-        media: 'atrium',
-        title: 'The scale of the hull',
-        caption: 'Inside the ship',
-        width: 1920,
-        height: 1080,
-      },
-      {
-        media: 'corridor',
-        title: 'Beyond the light',
-        caption: 'Below deck',
-        width: 1920,
-        height: 1049,
-      },
-    ],
-  },
   studio: {
     label: 'The people behind the world',
-    name: 'Strange Creature Factory',
+    name: 'Strange Creature Factory Ltd',
     text: 'A closer look at Black Tides: Draga’s Wake starts here. For a conversation about the project, meet the studio behind it.',
-    url: 'https://strangecreaturefactory.com/',
-    cta: 'Visit the studio',
     facts: [
       { label: 'Production stage', value: 'Pending studio approval' },
       { label: 'Target platforms', value: 'Pending studio approval' },
@@ -324,13 +294,11 @@ export const finalSignalContent = {
   cta: 'Wishlist on Steam',
   ctaNote: 'Opens the game’s Steam page',
   studioLabel: 'A game by',
-  studioName: 'Strange Creature Factory',
-  studioUrl: 'https://strangecreaturefactory.com/',
-  studioCta: 'Meet the studio',
+  studioName: 'Strange Creature Factory Ltd',
   backToTop: 'Return to the surface',
   chapterNavLabel: 'Revisit a chapter',
   endLabel: 'End of transmission',
-  credits: 'Black Tides: Draga’s Wake · Strange Creature Factory',
+  credits: 'Black Tides: Draga’s Wake · Strange Creature Factory Ltd',
   privacyPending: 'Privacy policy · Pending studio approval',
   accessibility: {
     trigger: 'Accessibility',

@@ -10,7 +10,8 @@
  *   estudio publica (`strange-creature-factory`). Es el único enlace sin
  *   confirmar contra la propia página, que exige sesión iniciada; queda
  *   marcado para revisión y se cambia en una línea si el estudio da otro.
- * - Sitio del estudio: el mismo que ya enlaza el capítulo 07.
+ * - Sitio del estudio: ya no existe. El nombre del estudio se queda como
+ *   texto, sin enlace, a petición del propio estudio.
  *
  * Aquí no se inventan cargos, plazos ni promesas de respuesta: la tarjeta dice
  * a dónde escribir y quién hay al otro lado, nada más.
@@ -73,14 +74,12 @@ export const contactContent = {
   introduction:
     'Strange Creature Factory is a small studio: the people who make Black Tides read this inbox themselves.',
   emailLabel: 'Write to the studio',
-  email: 'strangecreaturefactory@gmail.com',
+  email: 'gregorystrangis@strangecreaturefactory.ca',
   copyLabel: 'Copy address',
   copiedLabel: 'Address copied',
   copyFailedLabel: 'Copy it by hand',
   channelsLabel: 'Follow the wake',
   studioLabel: 'A game by',
-  studioName: 'Strange Creature Factory',
-  studioUrl: 'https://strangecreaturefactory.com/',
-  studioCta: 'Studio site',
+  studioName: 'Strange Creature Factory Ltd',
   close: 'Close the channel',
 } as const;

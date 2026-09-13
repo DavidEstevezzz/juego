@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { ArrowUp, ArrowUpRight, MoveUpRight } from 'lucide-react';
+import { ArrowUp, MoveUpRight } from 'lucide-react';
 import {
   chapterCountLabel,
   chapterMap,
@@ -155,11 +155,8 @@ export function FinalSignalSection() {
           <div className="signal-footer__lead">
             <div>
               <p className="signal-label">{content.studioLabel}</p>
-              <a className="signal-studio focus-ring" href={content.studioUrl}>
-                {content.studioName}
-                <ArrowUpRight size={21} aria-hidden="true" />
-                <span className="sr-only"> — {content.studioCta}</span>
-              </a>
+              {/* Firma, no enlace: el estudio ya no mantiene sitio propio. */}
+              <p className="signal-studio">{content.studioName}</p>
             </div>
             <a href="#hero" className="signal-return signal-label focus-ring">
               {content.backToTop}

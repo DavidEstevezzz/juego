@@ -6,11 +6,10 @@ Source: user-supplied `Saber_2026_DECK.pdf` (2026).
 - Page 23, embedded image 446: Greg Strangis portrait. No other team portraits are included.
 - Page 25: game, film and television covers extracted into `public/assets/team/`. These are presented as team members' previous project credits, not as studio releases or partnerships.
 - Pages 23–25: core team names, roles, Greg's biography, contributor count and production approach.
-- Page 16: Dominik Diamond's voice role.
+- Page 16: Dominik Diamond's voice role and biography, used verbatim in substance for the studio page's "The voice of Draga" section.
 - Pages 18–19: funding-dependent production goals, described as future plans.
 
 The deck alternates between five and six countries; the website avoids stating a country count. A November 2026 event is not described as already completed. Financial terms, plot spoilers and publisher-specific pitch copy have not been added to this team page.
-
 
 ## Design revision
 
@@ -30,3 +29,12 @@ Lighting/mood: sinister and oppressive but beautifully readable, cold rim light 
 Color palette: desaturated cold teal, charcoal, steel gray, sparse muted amber.
 Materials: weathered black riveted iron, frost, snow, damp wood, restrained salt and rust wear; detailed believable cinematic realism.
 Constraints: one ship only, no text or lettering or logos or watermark, no fantasy tentacles, no monsters, no modern cruise liner, no extra fantasy towers, no bright saturated blue, no decorative border. Keep the ship's recognizable identity from the reference. Output only one polished image.
+
+## Studio revision (requested by the studio)
+
+- The studio has no public website any more: every link to `strangecreaturefactory.com` is gone. The name stays as plain text and carries the legal suffix, `Strange Creature Factory Ltd`.
+- Contact address: `gregorystrangis@strangecreaturefactory.ca`, supplied by the studio. It replaces the previous Gmail address and is also the only outbound action in the studio page footer.
+- The named roster is now a film-style credit roll: the five names from page 23, plus the remaining contributor count from page 24. No names were added; nothing beyond the deck is claimed.
+- Dominik Diamond gets his own section, built like the founder's. There is no portrait of him in the deck, so the section uses the original Draga capture, captioned as the character, not the person.
+- The contributor/demo/engine figure bar and the "Selected frames" carousel were removed from the studio page at the studio's request.
+- `The Creator` was removed from the credit shelf and its cover deleted. The shelf order now leads with Scary Stories to Tell in the Dark and Antlers; the games list leads with Intergalactic: The Heretic Prophet and For Honor, which are also what the homepage portal previews.

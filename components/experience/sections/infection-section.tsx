@@ -268,7 +268,7 @@ export function InfectionSection() {
           </div>
           <p className="infection-heading__category">{content.category}</p>
           <h2 id="infection-title">
-            <span>The</span> infection
+            <span>The</span> vessels
           </h2>
         </header>
 

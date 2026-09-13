@@ -32,7 +32,7 @@ export function ProductionSection() {
         <div className="production-masthead production-label">
           <span>Deck {chapter.index}</span>
           <span>Team / Production</span>
-          <span>Strange Creature Factory</span>
+          <span>Strange Creature Factory Ltd</span>
         </div>
         <div className="team-teaser__body">
           <div>
@@ -46,7 +46,7 @@ export function ProductionSection() {
             </h2>
             <p className="team-teaser__copy">
               18 contributors. A history in games and film. One unsettling world
-              brought to life by Strange Creature Factory.
+              brought to life by Strange Creature Factory Ltd.
             </p>
             <Link className="team-portal focus-ring" href="/team-production">
               <span className="team-portal__label">

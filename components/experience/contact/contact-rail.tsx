@@ -216,16 +216,9 @@ function ContactCard({
       <footer className="contact-card__footer">
         <p>
           <span className="contact-card__label">{content.studioLabel}</span>
-          <a
-            href={content.studioUrl}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="contact-card__studio"
-          >
-            {content.studioName}
-            <ArrowUpRight size={14} aria-hidden="true" />
-            <span className="sr-only">{content.studioCta}</span>
-          </a>
+          {/* El estudio ya no tiene sitio propio: el nombre se queda como
+              firma, sin enlace ni flecha que prometa un destino. */}
+          <span className="contact-card__studio">{content.studioName}</span>
         </p>
         <DialogClose
           render={

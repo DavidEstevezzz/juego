@@ -293,9 +293,13 @@ export const finalSignalContent = {
   /**
    * Website authorship. It sits one step below the studio signature above:
    * the studio made the game, this line only credits the site around it.
+   *
+   * The wording stays scoped to the site on purpose. On a game's own page,
+   * crediting someone with having designed or built it reads as a claim over
+   * the game itself, which is the studio's.
    */
   siteCredit: {
-    prefix: 'Designed & built by',
+    prefix: 'Site by',
     name: 'David Estévez',
     url: 'https://estevezmartinez.es',
   },

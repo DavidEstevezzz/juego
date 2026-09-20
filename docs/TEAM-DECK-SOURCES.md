@@ -2,7 +2,7 @@
 
 Source: user-supplied `Saber_2026_DECK.pdf` (2026).
 
-- Page 10, embedded image 215: original Ormora exterior, extracted without slide labels. Optimized AVIF/WebP variants in `public/assets/media/images/ormora-*`. Preserved as the original reference. The active website now uses the user-requested AI recreation `ormora-cinematic-*`, generated with built-in ImageGen from that reference.
+- Page 10, embedded image 215: original Ormora exterior, extracted without slide labels. Optimized AVIF/WebP variants in `public/assets/media/images/ormora-*`; the AI recreation made from it is `ormora-cinematic-*`. Both are kept as references only. The active website uses `ormora-original-*`, regenerated from a higher-quality 2000×1125 capture of the same frame supplied by the studio, which supersedes the deck extraction.
 - Page 23, embedded image 446: Greg Strangis portrait. No other team portraits are included.
 - Page 25: game, film and television covers extracted into `public/assets/team/`. These are presented as team members' previous project credits, not as studio releases or partnerships.
 - Pages 23–25: core team names, roles, Greg's biography, contributor count and production approach.

@@ -245,8 +245,27 @@
   font-size: var(--text-body-sm);
   line-height: 1.5;
 }
-.signal-footer__bottom > :first-child {
-  margin-right: auto;
+.signal-footer__bottom > :last-child {
+  margin-left: auto;
+}
+/* Website authorship: the quietest line on the page. It stays a step under the
+   studio signature above it, so only the name carries link weight. */
+.signal-site-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+}
+.signal-site-credit__link {
+  color: var(--frost);
+  border-bottom: 1px solid var(--border-subtle);
+  transition:
+    color 200ms ease,
+    border-color 200ms ease;
+}
+.signal-site-credit__link:hover {
+  color: var(--brass);
+  border-bottom-color: var(--brass);
 }
 .signal-footer__bottom > span {
   font-size: var(--font-system-compact);
@@ -339,6 +358,9 @@
   }
 }
 @media (max-width: 600px) {
+  .signal-footer__bottom > :last-child {
+    margin-left: 0;
+  }
   .signal-stage {
     min-height: auto;
   }

@@ -164,6 +164,17 @@ export function FinalSignalSection() {
           </div>
           <div className="signal-footer__bottom">
             <p>{content.credits}</p>
+            <p className="signal-site-credit">
+              {content.siteCredit.prefix}{' '}
+              <a
+                href={content.siteCredit.url}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="signal-site-credit__link focus-ring"
+              >
+                {content.siteCredit.name}
+              </a>
+            </p>
             <SignalAccessibility />
           </div>
         </div>

@@ -315,20 +315,15 @@ float glassRelief(vec2 uv, float rain) {
   return dot(glassHeight(uv, rain), GLASS_RELIEF);
 }
 
-/** El plano del segundo corte: asentamiento y Ormora en un solo muestreo. */
+/** Water refracts the altar (A) into the Ormora (B). */
 vec3 stormPlate(vec2 uv, float shipAmount) {
-  // Las dos guardas dependen solo de uniforms, así que ningún fragmento se
-  // separa del resto: fuera del segundo corte el barco no se llega a leer, y
-  // en la cola del capítulo tampoco se lee ya el asentamiento.
   if (shipAmount > 0.999) {
-    return samplePlate(uTextureC, uv, uAspectC, uFocalC, uPanC, uZoomC);
+    return samplePlate(uTextureB, uv, uAspectB, uFocalB, uPanB, uZoomB);
   }
-
-  vec3 village = samplePlate(uTextureB, uv, uAspectB, uFocalB, uPanB, uZoomB);
-  if (shipAmount < 0.001) return village;
-
-  vec3 ship = samplePlate(uTextureC, uv, uAspectC, uFocalC, uPanC, uZoomC);
-  return mix(village, ship, shipAmount);
+  vec3 altar = samplePlate(uTextureA, uv, uAspectA, uFocalA, uPanA, uZoomA);
+  if (shipAmount < 0.001) return altar;
+  vec3 ship = samplePlate(uTextureB, uv, uAspectB, uFocalB, uPanB, uZoomB);
+  return mix(altar, ship, shipAmount);
 }
 
 /**
@@ -384,7 +379,7 @@ void main() {
     (vUv.y + vUv.x * 0.075) * 21.0
   ));
 
-  // La máscara A → B queda corregida: 0 siempre es Driftwood y 1 el pueblo.
+  // La máscara del segundo corte: 0 es Ormora y 1 es Driftwood.
   // El campo se deforma en la dirección del viento y el corte se esconde bajo
   // el punto de máxima densidad del whiteout.
   float transitionField = fbm(vec2(
@@ -408,16 +403,13 @@ void main() {
   vec2 plateUv = vUv - refraction * (1.35 - uSceneMix);
   vec3 color = stormPlate(plateUv, uShipMix);
 
-  if (uSceneMix < 0.998) {
-    vec3 colorA = samplePlate(
-      uTextureA,
-      vUv + refraction * (0.35 + uSceneMix),
-      uAspectA,
-      uFocalA,
-      uPanA,
-      uZoomA
+  // The second transition reveals Driftwood (C) through the fog.
+  if (uSceneMix > 0.002) {
+    vec3 driftwood = samplePlate(
+      uTextureC, vUv + refraction * 0.35,
+      uAspectC, uFocalC, uPanC, uZoomC
     );
-    color = mix(colorA, color, sceneMask);
+    color = mix(color, driftwood, sceneMask);
   }
 
   // Una niebla baja y oscura integra las fotografías sin teñirlas de forma

@@ -45,8 +45,9 @@ export function ProductionSection() {
               <em>obsession.</em>
             </h2>
             <p className="team-teaser__copy">
-              18 contributors. A history in games and film. One unsettling world
-              brought to life by Strange Creature Factory Ltd.
+              Over a decade of shared work across Games and Film. One clear
+              vision, brought to life across 7 countries by Strange Creature
+              Factory Ltd.
             </p>
             <Link className="team-portal focus-ring" href="/team-production">
               <span className="team-portal__label">

@@ -85,11 +85,21 @@ function InstagramMark({ className }: MarkProps) {
   );
 }
 
+function YouTubeMark({ className }: MarkProps) {
+  return (
+    <svg {...common} viewBox="0 0 24 24" className={className}>
+      <rect x="2.5" y="5.5" width="19" height="13" rx="4" />
+      <path d="m10 9 5 3-5 3Z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 const marks: Record<ContactChannelId, (props: MarkProps) => ReactElement> = {
   steam: SteamMark,
   linkedin: LinkedInMark,
   x: XMark,
   instagram: InstagramMark,
+  youtube: YouTubeMark,
 };
 
 export function SocialMark({

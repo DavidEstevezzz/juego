@@ -50,48 +50,20 @@ function envelope(
   );
 }
 
-/**
- * Estado visual del capítulo en un punto del recorrido.
- *
- * Hay dos cortes y ninguno es un fundido a secas: cada uno tiene su propia
- * materia.
- *
- * - Primer corte (0.31–0.53). `whiteout` sube, se mantiene y baja; su meseta
- *   es lo que oculta el cambio de `sceneMix`, de Driftwood al asentamiento.
- * - Segundo corte (0.60–0.99). El temporal alcanza la lente: `rain` es el agua
- *   que se agarra al cristal y `squall` la racha corta que la barre. El cambio
- *   a la Ormora (`shipMix`) vive dentro de esa racha, y `lensMix` va por
- *   delante —las gotas enseñan el barco antes que el propio plano, porque cada
- *   una es una lente—.
- * - Los tres `dolly` son avances de cámara lentos y continuos, uno por plano.
- * - `exitShadow` prepara la entrada al capítulo 03.
- */
+/** Gods → water → Ormora → fog → Driftwood. Shared by WebGL and CSS. */
 export function sampleWorld(progress: number) {
   const p = clamp01(progress);
-
   return {
     progress: p,
-    whiteout: envelope(p, [0.31, 0.42], [0.44, 0.53]),
-    // El cruce vive dentro de la meseta 0.42–0.44, donde la niebla es opaca.
-    sceneMix: smoothRamp(p, 0.4, 0.48),
-
-    // El agua tarda en llegar y tarda en escurrirse: 0.15 de recorrido para
-    // mojar el cristal y 0.11 para dejarlo casi limpio. Un sobre más corto
-    // convierte el temporal en un parpadeo y se pierde el relieve de las gotas.
-    rain: envelope(p, [0.6, 0.75], [0.88, 0.99]),
-    // La racha: el golpe de espuma que tapa el corte. A diferencia del primero,
-    // este cruce es un fundido liso y no una disolución por umbral, así que
-    // tiene que caber entero dentro de la racha —de punta a punta, no solo por
-    // el centro—: cualquier tramo que asome fuera es una doble exposición.
-    squall: envelope(p, [0.71, 0.79], [0.85, 0.92]),
-    shipMix: smoothRamp(p, 0.775, 0.855),
-    // Adelanta al plano en ~0.07: cuando el cristal aún enseña el asentamiento,
-    // dentro de cada gota ya se ve la silueta del barco.
-    lensMix: smoothRamp(p, 0.655, 0.79),
-
+    whiteout: envelope(p, [0.7, 0.78], [0.82, 0.89]),
+    sceneMix: smoothRamp(p, 0.76, 0.84),
+    rain: envelope(p, [0.3, 0.39], [0.49, 0.59]),
+    squall: envelope(p, [0.35, 0.4], [0.48, 0.54]),
+    shipMix: smoothRamp(p, 0.4, 0.48),
+    lensMix: smoothRamp(p, 0.33, 0.42),
     firstDolly: smoothRamp(p, 0.08, 0.38),
-    secondDolly: smoothRamp(p, 0.5, 0.9),
-    shipDolly: smoothRamp(p, 0.76, 1),
-    exitShadow: smoothRamp(p, 0.9, 1),
+    secondDolly: smoothRamp(p, 0.76, 1),
+    shipDolly: smoothRamp(p, 0.39, 0.72),
+    exitShadow: smoothRamp(p, 0.94, 1),
   };
 }

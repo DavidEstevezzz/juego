@@ -5,7 +5,6 @@ import { ArrowUp, MoveUpRight } from 'lucide-react';
 import {
   chapterCountLabel,
   chapterMap,
-  chapters,
   finalSignalContent,
 } from '@/content/chapters';
 import { siteContent } from '@/content/site-content';
@@ -163,21 +162,8 @@ export function FinalSignalSection() {
               <ArrowUp size={18} aria-hidden="true" />
             </a>
           </div>
-          <nav aria-label={content.chapterNavLabel} className="signal-chapters">
-            {chapters.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                className="signal-label focus-ring"
-              >
-                <span aria-hidden="true">{item.index}</span>
-                {item.navLabel}
-              </a>
-            ))}
-          </nav>
           <div className="signal-footer__bottom">
             <p>{content.credits}</p>
-            <span>{content.privacyPending}</span>
             <SignalAccessibility />
           </div>
         </div>

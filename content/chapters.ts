@@ -26,7 +26,7 @@ export const chapters: readonly ExperienceChapter[] = [
     id: 'world',
     index: '02',
     navLabel: 'The World',
-    title: 'The World: Driftwood Bay & the Ormora',
+    title: 'The World: Old Gods, the Ormora & Driftwood Bay',
     summary:
       'The era, the ice and the ship: the rules of the world Draga is trapped in.',
   },
@@ -110,23 +110,21 @@ export const chapterMap = Object.fromEntries(
  */
 export const worldChapterContent = {
   deckLabel: 'Deck 02',
-  premise:
-    'Driftwood Bay sits at the edge of the known world. The year is 1909, and the old gods are very much alive.',
   observations: [
     {
       index: '01',
-      label: 'Isolation',
-      text: 'The storm closes every route behind you. What remains open leads further out, never back.',
+      label: 'The Old Gods',
+      text: 'The year is 1909. Beyond the reach of the known world, the old gods are very much alive.',
     },
     {
       index: '02',
-      label: 'Weather',
-      text: 'The wind does not decorate this place. It hides it, redraws it, and decides how far you are allowed to see.',
+      label: 'The Ormora',
+      text: 'A colossal whaling steamship waits in the ice, taken by a doomsday cult and something older than the cult itself.',
     },
     {
       index: '03',
-      label: 'The Ormora',
-      text: 'Out in the ice waits a colossal whaling steamship, taken by a doomsday cult and by something older than the cult itself.',
+      label: 'Driftwood Bay',
+      text: 'At the edge of the known world, Draga crosses a frozen settlement swallowed by wind and fog.',
     },
   ],
 } as const;
@@ -142,36 +140,36 @@ export const gameplayChapterContent = {
   deckLabel: 'Deck 03',
   category: 'Gameplay',
   heading: 'The gameplay promise',
-  evidenceLabel: 'In-game captures · Original UI visible',
+  evidenceLabel: 'Original in-game captures',
   interactionLabel: 'Select a pillar',
   inputLabel: 'Pointer · keyboard · touch',
   pillars: [
     {
-      id: 'explore',
+      id: 'absorb',
       index: '01',
-      title: 'Explore',
-      directive: 'Read the space',
+      title: 'Absorb',
+      directive: 'Take what remains',
       description:
-        'Steel corridors, flooded holds and compartments that no longer hold their shape. Read each room before you commit to it.',
-      media: 'corridor',
-    },
-    {
-      id: 'endure',
-      index: '02',
-      title: 'Endure',
-      directive: 'Withstand the pressure',
-      description:
-        'Cold, darkness and a crew that keeps getting smaller. Every deck you clear takes something you do not get back.',
-      media: 'frozenDeck',
+        'Draga absorbs the dead. Flesh gives way to something ancient, and the boundary between man and vessel begins to disappear.',
+      media: 'absorb',
     },
     {
       id: 'confront',
-      index: '03',
+      index: '02',
       title: 'Confront',
       directive: 'No distance left',
       description:
-        'Survival here is not about keeping your distance. It is about winning the fight when there is none left: timing, position, aggression.',
-      media: 'atrium',
+        'Face the horrors aboard the Ormora in brutal close-quarters combat. Timing, position and aggression are all that stand between you and the next vessel.',
+      media: 'confront',
+    },
+    {
+      id: 'explore',
+      index: '03',
+      title: 'Explore',
+      directive: 'Go deeper',
+      description:
+        'Climb through towering timber interiors and descend into the ship’s dark compartments. Every passage reveals another trace of what the Ormora has become.',
+      media: 'explore',
     },
   ],
 } as const;
@@ -190,7 +188,6 @@ export const dragaChapterContent = {
     'A hardened sailor and career thief who has spent his life following Caleb’s orders without question. Not a hero: a survivor, a loyalist, a man whose moral code was built for a simpler world. As the ship takes his crew one by one and an ancient god takes root in his body, Draga has to choose between the man he was and the thing he is becoming.' as
       | string
       | null,
-  pendingBiography: 'Biography pending approval.',
   imageCaption: 'Original game portrait',
   gameTitle: 'Black Tides: Draga’s Wake',
 } as const;
@@ -234,9 +231,8 @@ export const productionChapterContent = {
   title: ['Before the', 'dark takes shape.'],
   introduction:
     'First, a space. Then the weight of its surfaces, the trace of a life, the light that makes you hesitate. A world becomes believable one decision at a time.',
-  draftLabel: 'Editorial copy · Draft for review',
   comparison: {
-    label: 'Study 01 / The storage compartment',
+    label: 'Study 01 / The Ormora corridor',
     title: 'From structure to atmosphere',
     instruction: 'Move across the scene. Let the finished world linger.',
     staticInstruction:
@@ -246,12 +242,12 @@ export const productionChapterContent = {
       'One comparison image could not load. The available view remains below.',
     modes: {
       explore: 'Explore',
-      blockout: 'Blockout',
-      final: 'Finished scene',
+      blockout: 'Before',
+      final: 'After',
     },
-    provenance: 'AI-recreated blockout / Original in-game capture',
+    provenance: 'Original development captures · Before / After',
     disclaimer:
-      'Illustrative comparison. The blockout is a provisional AI recreation, not a development archive; some geometry differs. Authentic paired captures will replace it.',
+      'Two stages of the same environment, aligned around Draga to reveal the evolution of the ship.',
   },
   notes: [
     {
@@ -277,10 +273,6 @@ export const productionChapterContent = {
     label: 'The people behind the world',
     name: 'Strange Creature Factory Ltd',
     text: 'A closer look at Black Tides: Draga’s Wake starts here. For a conversation about the project, meet the studio behind it.',
-    facts: [
-      { label: 'Production stage', value: 'Pending studio approval' },
-      { label: 'Target platforms', value: 'Pending studio approval' },
-    ],
   },
 } as const;
 
@@ -296,10 +288,8 @@ export const finalSignalContent = {
   studioLabel: 'A game by',
   studioName: 'Strange Creature Factory Ltd',
   backToTop: 'Return to the surface',
-  chapterNavLabel: 'Revisit a chapter',
   endLabel: 'End of transmission',
   credits: 'Black Tides: Draga’s Wake · Strange Creature Factory Ltd',
-  privacyPending: 'Privacy policy · Pending studio approval',
   accessibility: {
     trigger: 'Accessibility',
     title: 'Your pace. Your way.',

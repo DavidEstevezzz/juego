@@ -22,7 +22,10 @@ await test('every channel points somewhere real and reachable', () => {
     for (const field of ['name', 'handle', 'description'])
       assert.ok(channel[field]?.trim().length, `${channel.id}.${field}`);
   }
-  assert.deepEqual([...ids], ['steam', 'linkedin', 'x', 'instagram']);
+  assert.deepEqual(
+    [...ids],
+    ['steam', 'linkedin', 'x', 'instagram', 'youtube'],
+  );
 });
 
 await test('the studio address is a single usable mailto target', () => {

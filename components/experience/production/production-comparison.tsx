@@ -17,18 +17,27 @@ import {
 } from '@/lib/experience/motion-preferences';
 import type { ResponsiveImage } from '@/types/experience';
 
+import {
+  productionFrame,
+  productionWindows,
+  sourceWindowStyle,
+  type SourceWindow,
+} from '@/lib/experience/production-framing';
+
 const content = productionChapterContent.comparison;
 type Mode = keyof typeof content.modes;
 
 function SceneImage({
   image,
   imageRef,
+  crop,
   onLoad,
   onError,
   className,
 }: {
   image: ResponsiveImage;
   imageRef?: Ref<HTMLImageElement>;
+  crop: SourceWindow;
   onLoad: () => void;
   onError: () => void;
   className: string;
@@ -42,11 +51,12 @@ function SceneImage({
       />
       <img
         ref={imageRef}
+        style={sourceWindowStyle(crop)}
         src={image.webp.large}
         srcSet={`${image.webp.small} 960w, ${image.webp.large} 1920w`}
         sizes="(min-width: 1800px) 1680px, 100vw"
         width={1920}
-        height={996}
+        height={1080}
         alt={image.alt}
         loading="lazy"
         decoding="async"
@@ -148,6 +158,7 @@ export function ProductionComparison() {
       finished.current,
       1100,
       () => setCanvasFailed(true),
+      productionWindows.after,
     );
   }, [mode, canExplore, ready, finalDecoded]);
 
@@ -191,19 +202,24 @@ export function ProductionComparison() {
         ref={surface}
         id="production-scene"
         className="production-scene"
+        style={{
+          aspectRatio: `${productionFrame.width} / ${productionFrame.height}`,
+        }}
         data-mode={mode}
         data-base-failed={baseFailed || undefined}
         aria-describedby="production-comparison-help"
       >
         <SceneImage
-          image={media.images.productionBlockout}
+          image={media.images.productionBefore}
+          crop={productionWindows.before}
           imageRef={blockout}
           className="production-scene__base"
           onLoad={() => setBaseReady(true)}
           onError={() => setBaseFailed(true)}
         />
         <SceneImage
-          image={media.images.storage}
+          image={media.images.productionAfter}
+          crop={productionWindows.after}
           imageRef={finished}
           className="production-scene__final"
           onLoad={() => setFinalReady(true)}
@@ -235,7 +251,7 @@ export function ProductionComparison() {
       <p className="production-disclaimer">{content.disclaimer}</p>
       <noscript>
         <p className="production-disclaimer">
-          <a href={media.images.storage.webp.large}>
+          <a href={media.images.productionAfter.webp.large}>
             View the original game capture
           </a>
         </p>

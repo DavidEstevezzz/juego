@@ -142,3 +142,34 @@
   max-width: clamp(280px, calc((100svh - 260px) * 0.8), 560px);
   justify-self: center;
 }
+
+.draga-static-portrait {
+  min-width: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 560px;
+  justify-self: center;
+}
+.draga-static-portrait picture {
+  position: relative;
+  display: block;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #080c0c;
+}
+.draga-static-portrait img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.draga-static-portrait figcaption {
+  margin-top: 1rem;
+  color: var(--brass);
+  font: 0.7rem/1.5 var(--font-system);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}

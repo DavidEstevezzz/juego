@@ -349,6 +349,10 @@
   list-style: none;
 }
 
+.contact-card__channels li:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
 .contact-card__channels a {
   position: relative;
   display: grid;

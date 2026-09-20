@@ -47,7 +47,7 @@ export const voiceOfDraga = {
     'A voice the players already know.',
     'A character they have never met.',
   ],
-  portraitCaption: 'Draga / Voice: Dominik Diamond',
+  portraitCaption: 'Dominik Diamond / The voice of Draga',
 };
 
 /**

@@ -29,24 +29,7 @@ const observationCountLabel = String(content.observations.length).padStart(
   '0',
 );
 
-/**
- * Capítulo 02 — Driftwood.
- *
- * La tormenta funciona como montaje, no como decoración: la primera imagen se
- * abre dentro del negro, una masa de niebla oculta el cambio de plano y el
- * asentamiento aparece al retirarse. El segundo corte no repite la fórmula: el
- * temporal alcanza la lente y el agua se agarra al cristal, de modo que la
- * Ormora se ve primero refractada dentro de las gotas y solo después en el
- * plano. El progreso narrativo es reversible y se comparte con el shader; no
- * hay partículas DOM ni listeners por elemento.
- *
- * Todo el capítulo se mueve con un único reloj: un `playhead` que vive dentro
- * de la propia timeline con `scrub`. Las variables CSS, el shader y los tweens
- * leen exactamente el mismo valor amortiguado, así que ninguna capa adelanta a
- * las demás. Antes las variables se escribían desde `ScrollTrigger.onUpdate`,
- * que entrega la posición cruda del scroll: la niebla y el fundido entre planos
- * seguían los escalones de la rueda mientras las persianas llegaban con retraso.
- */
+/** Gods, then Ormora through water, then Driftwood through fog. */
 export function WorldSection() {
   const root = useRef<HTMLElement>(null);
   const reducedMotion = useExperienceStore((state) => state.reducedMotion);
@@ -72,8 +55,6 @@ export function WorldSection() {
       );
       const seam = scope.querySelector<HTMLElement>('[data-world-seam]');
       const meta = scope.querySelector<HTMLElement>('[data-world-meta]');
-      const lockup = scope.querySelector<HTMLElement>('[data-world-lockup]');
-      const premise = scope.querySelector<HTMLElement>('[data-world-premise]');
       const outro = scope.querySelector<HTMLElement>('[data-world-outro]');
       const notes = Array.from(
         scope.querySelectorAll<HTMLElement>('[data-world-note]'),
@@ -93,13 +74,11 @@ export function WorldSection() {
 
       // Se declara la composición antes del primer frame: si el navegador
       // decide promocionar la capa a mitad del fundido, ese frame se ve.
-      const layers = [meta, lockup, premise, outro, ...notes].filter(
+      const layers = [meta, outro, ...notes].filter(
         (element): element is HTMLElement => element !== null,
       );
       gsap.set(layers, { willChange: 'transform, opacity' });
       gsap.set(meta, { autoAlpha: 0, y: -10 });
-      gsap.set(lockup, { autoAlpha: 0, y: 28 });
-      gsap.set(premise, { autoAlpha: 0, y: 20 });
       gsap.set(notes, { autoAlpha: 0, y: 24 });
       gsap.set(outro, { autoAlpha: 0 });
       gsap.set(seam, { scaleX: 0.08, transformOrigin: 'center center' });
@@ -154,22 +133,12 @@ export function WorldSection() {
         .to(seam, { autoAlpha: 0, duration: 4, ease: 'power2.out' }, 9)
         .to(meta, { autoAlpha: 1, y: 0, duration: 5 }, 8)
 
-        // 02 — El nombre ocupa el encuadre; el material sigue siendo protagonista.
-        // La salida cae dentro de la subida de la tormenta (0.31–0.42): el texto
-        // no se desvanece sobre la imagen limpia, se lo lleva la niebla.
-        .to(lockup, { autoAlpha: 1, y: 0, duration: 8 }, 13)
-        .to(premise, { autoAlpha: 1, y: 0, duration: 7 }, 20)
-        .to(lockup, { autoAlpha: 0, y: -22, duration: 6 }, 32)
-        .to(premise, { autoAlpha: 0, y: -14, duration: 5 }, 33)
-
-        // 03 — Con la tormenta ya retirada (0.53), las reglas del lugar aparecen
-        // una a una: entrada de 6, lectura de 6 y salida de 4, sin cruzarse.
-        // Las tres comparten caja, así que solaparlas superponía dos textos.
-        .to(notes[0], { autoAlpha: 1, y: 0, duration: 6 }, 54)
-        .to(notes[0], { autoAlpha: 0, y: -18, duration: 4 }, 66)
-        .to(notes[1], { autoAlpha: 1, y: 0, duration: 6 }, 70)
-        .to(notes[1], { autoAlpha: 0, y: -18, duration: 4 }, 82)
-        .to(notes[2], { autoAlpha: 1, y: 0, duration: 6 }, 86)
+        // Each caption accompanies its own image, in the same lower-right slot.
+        .to(notes[0], { autoAlpha: 1, y: 0, duration: 6 }, 13)
+        .to(notes[0], { autoAlpha: 0, y: -18, duration: 5 }, 32)
+        .to(notes[1], { autoAlpha: 1, y: 0, duration: 4 }, 49)
+        .to(notes[1], { autoAlpha: 0, y: -18, duration: 3 }, 69)
+        .to(notes[2], { autoAlpha: 1, y: 0, duration: 5 }, 86)
 
         // 04 — La tercera observación conserva su lectura completa (92–96) antes
         // de que una sombra ascendente se la lleve y deje preparada la entrada
@@ -193,23 +162,12 @@ export function WorldSection() {
         data-webgl={webglMode || undefined}
         className="world-stage"
       >
-        {/* El fallback solo se monta cuando WebGL no dibuja las mismas imágenes. */}
-        {!webglMode && (
-          <div className="world-media" aria-hidden="true">
-            <WorldPicture image={media.images.world} />
-            <WorldPicture image={media.images.village} />
-          </div>
-        )}
-
-        {/*
-          El barco y el agua también salen del shader cuando este dibuja: si
-          se montaran siempre, el fallback taparía con una imagen plana el
-          plano que la capa WebGL está revelando bajo las gotas.
-        */}
         {!webglMode && (
           <>
-            <div className="world-ship" aria-hidden="true">
+            <div className="world-media" aria-hidden="true">
+              <WorldPicture image={media.images.gods} />
               <WorldPicture image={media.images.ormora} />
+              <WorldPicture image={media.images.world} />
             </div>
             <div aria-hidden="true" className="world-glass" />
           </>
@@ -238,17 +196,7 @@ export function WorldSection() {
           </span>
         </div>
 
-        <div data-world-lockup className="world-lockup">
-          <p className="world-kicker">The world</p>
-          <h2 id="world-title" className="world-title">
-            <span className="sr-only">The world: </span>
-            Driftwood Bay
-          </h2>
-        </div>
-
-        <p data-world-premise className="world-premise">
-          {content.premise}
-        </p>
+        <h2 id="world-title" className="sr-only">The World</h2>
 
         <ol className="world-observations">
           {content.observations.map((observation) => (

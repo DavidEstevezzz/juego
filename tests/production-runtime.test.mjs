@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { registerHooks } from 'node:module';
+import { productionWindows } from '../lib/experience/production-framing.ts';
 import {
   interpolateTrail,
   sampleTrailMovement,
@@ -105,12 +106,14 @@ await test('runtime is demand-driven, pauses, respects motion and cleans up afte
   };
   const intersections = [],
     resizes = [];
+  const imageDraws = [];
   class Context {
     globalAlpha = 1;
     globalCompositeOperation = 'source-over';
     clearRect() {}
     fillRect() {}
-    drawImage() {
+    drawImage(...args) {
+      imageDraws.push(args);
       draws++;
     }
     createRadialGradient() {
@@ -190,8 +193,19 @@ await test('runtime is demand-driven, pauses, respects motion and cleans up afte
     };
     const canvas = new Canvas();
     let failures = 0;
+    // A responsive image's naturalWidth can be density-corrected. Crop with
+    // destination geometry, just like CSS, rather than source-pixel dimensions.
+    const finalImage = { naturalWidth: 1120, naturalHeight: 612 };
+    const crop = productionWindows.after;
     const mount = () =>
-      createProductionReveal(surface, canvas, {}, 1600, () => failures++);
+      createProductionReveal(
+        surface,
+        canvas,
+        finalImage,
+        1600,
+        () => failures++,
+        crop,
+      );
     const frame = (step = 16.7) => {
       now += step;
       const callbacks = [...frames.values()];
@@ -223,6 +237,18 @@ await test('runtime is demand-driven, pauses, respects motion and cleans up afte
     move();
     frame();
     assert.ok(draws > 0);
+    const imageDraw = imageDraws.find(([image]) => image === finalImage);
+    assert.deepEqual(
+      imageDraw,
+      [
+        finalImage,
+        (-crop.x / crop.width) * canvas.width,
+        (-crop.y / crop.height) * canvas.height,
+        canvas.width / crop.width,
+        canvas.height / crop.height,
+      ],
+      'pointer reveal uses the same normalized frame as the DOM image',
+    );
     assert.equal(frames.size, 1, 'one outstanding RAF, not one per input');
     for (let i = 0; i < 250; i++) frame();
     assert.equal(frames.size, 0, 'fully idle when stationary trail expires');

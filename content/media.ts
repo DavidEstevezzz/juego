@@ -35,10 +35,50 @@ export const media = {
     teaser: '/assets/media/video/teaser-1080p.mp4',
   },
   images: {
+    gods: image(
+      'gods-altar',
+      'A candlelit altar to the old gods inside a weathered wooden shrine.',
+      [0.5, 0.5],
+    ),
+    absorb: image(
+      'gameplay-absorb',
+      'Draga absorbs a corpse, his arm overtaken by violet tendrils.',
+      [0.38, 0.5],
+    ),
+    confront: image(
+      'gameplay-confront',
+      'Draga confronts a transformed crew member at close quarters.',
+      [0.5, 0.5],
+    ),
+    explore: image(
+      'gameplay-explore',
+      'Draga explores the towering timber interior of the Ormora.',
+      [0.4, 0.5],
+    ),
+    dragaHero: image(
+      'draga-main-hero',
+      'Draga stands in the doorway of the Ormora.',
+      [0.42, 0.48],
+    ),
+    dominik: image(
+      'dominik-diamond',
+      'Dominik Diamond, the voice of Draga.',
+      [0.5, 0.5],
+    ),
+    productionBefore: image(
+      'production-before',
+      'Original development capture: Draga in an early version of the ship corridor.',
+      [0.5, 0.5],
+    ),
+    productionAfter: image(
+      'production-after',
+      'Original development capture: Draga in the detailed, atmospheric ship corridor.',
+      [0.5, 0.5],
+    ),
     ormora: image(
-      'ormora-cinematic',
-      'AI recreation of the Ormora from the 2026 deck: a black whaling steamship looming through fog and fractured polar ice.',
-      [0.62, 0.55],
+      'ormora-original',
+      'The Ormora looms through a storm above a frozen shore.',
+      [0.5, 0.45],
     ),
     storage: image(
       'submarine-storage',
@@ -50,18 +90,6 @@ export const media = {
       'Original game capture: Draga stands in a lantern-lit cabin.',
       [0.5, 0.5],
     ),
-    productionBlockout: {
-      avif: {
-        small: '/assets/production/storage-blockout-v1-960.avif',
-        large: '/assets/production/storage-blockout-v1-1920.avif',
-      },
-      webp: {
-        small: '/assets/production/storage-blockout-v1-960.webp',
-        large: '/assets/production/storage-blockout-v1-1920.webp',
-      },
-      alt: 'AI-recreated blockout of the storage compartment: grey clay surfaces and fine wireframe edges. Not an original development capture.',
-      focal: [0.5, 0.5],
-    },
     world: image(
       'driftwood-outskirts',
       'Draga moves through a frozen settlement battered by the wind.',
@@ -97,9 +125,9 @@ export const media = {
       'Izzy watches a ritual scene lit by candles.',
     ),
     growth: image(
-      'organic-growth',
-      'Draga faces an immense organic mass inside the ship.',
-      [0.66, 0.52],
+      'man-in-wall',
+      'Draga faces a man embedded in the living walls of the ship.',
+      [0.5, 0.5],
     ),
     blubberRoom: image(
       'blubber-room',

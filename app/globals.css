@@ -318,10 +318,13 @@ body {
 }
 
 .world-media picture:first-child {
-  opacity: calc(1 - var(--world-scene-mix));
+  opacity: 1;
 }
 
-.world-media picture + picture {
+.world-media picture:nth-child(2) {
+  opacity: var(--world-ship-mix);
+}
+.world-media picture:nth-child(3) {
   opacity: var(--world-scene-mix);
 }
 
@@ -395,7 +398,8 @@ body {
 }
 
 /*
- * Segundo corte — la Ormora bajo el agua.
+ * Legado del plano independiente de la Ormora; las tres imágenes ahora
+ * comparten world-media.
  *
  * El plano del barco entra por debajo del cristal batido, no por encima: es la
  * racha la que tapa el cambio, igual que la ventisca tapaba el primero.

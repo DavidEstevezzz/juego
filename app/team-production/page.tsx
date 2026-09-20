@@ -4,13 +4,7 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { CreditCarousel } from '@/components/experience/production/credit-carousel';
 import { contactContent } from '@/content/contact';
 import { media } from '@/content/media';
-import {
-  team,
-  gameCredits,
-  screenCredits,
-  voiceOfDraga,
-  creditRollTail,
-} from '@/content/team';
+import { gameCredits, screenCredits, voiceOfDraga } from '@/content/team';
 import { ProductionComparison } from '@/components/experience/production/production-comparison';
 
 export const metadata: Metadata = {
@@ -40,8 +34,8 @@ export default function TeamProductionPage() {
             <img
               src={media.images.cabin.webp.large}
               alt=""
-              width={1920}
-              height={1049}
+              width={701}
+              height={770}
               fetchPriority="high"
             />
           </div>
@@ -119,8 +113,8 @@ export default function TeamProductionPage() {
           <figure className="team-founder__portrait">
             {/* oxlint-disable-next-line next/no-img-element */}
             <img
-              src={media.images.draga.webp.large}
-              alt={media.images.draga.alt}
+              src={media.images.dominik.webp.small}
+              alt={media.images.dominik.alt}
               width={1920}
               height={1049}
               loading="lazy"
@@ -142,54 +136,11 @@ export default function TeamProductionPage() {
             </p>
           </div>
         </section>
-        <section className="team-roster" aria-labelledby="roster-title">
-          <div className="team-section-heading">
-            <p className="production-label">03 / The people</p>
-            <h2 id="roster-title">
-              Many disciplines.
-              <br />
-              <em>One world.</em>
-            </h2>
-          </div>
-          <p className="team-section-copy">
-            18 contributors across art, gameplay, animation, lighting,
-            cinematics and technical production.
-          </p>
-          {/*
-            Rollo de créditos: los nombres pasan como al final de una película,
-            presentes pero sin reclamar el foco. Sin animación —o sin JS— la
-            lista se lee entera, quieta, y la copia duplicada se oculta.
-          */}
-          <div className="team-roll">
-            <div className="team-roll__viewport">
-              <ul className="team-roll__track">
-                {team.map((person) => (
-                  <li key={person.name}>
-                    <span className="team-roll__name">{person.name}</span>
-                    <span className="production-label">{person.role}</span>
-                  </li>
-                ))}
-                <li className="team-roll__tail">
-                  <span className="production-label">{creditRollTail}</span>
-                </li>
-              </ul>
-              <ul className="team-roll__track" aria-hidden="true">
-                {team.map((person) => (
-                  <li key={person.name}>
-                    <span className="team-roll__name">{person.name}</span>
-                    <span className="production-label">{person.role}</span>
-                  </li>
-                ))}
-                <li className="team-roll__tail">
-                  <span className="production-label">{creditRollTail}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
         <section className="team-credits" aria-labelledby="credits-title">
           <div className="team-section-heading">
-            <p className="production-label">04 / Previous work</p>
+            <p className="production-label">
+              03 / Many disciplines. One world.
+            </p>
             <h2 id="credits-title">
               You’ve seen
               <br />
@@ -197,8 +148,9 @@ export default function TeamProductionPage() {
             </h2>
           </div>
           <p className="team-section-copy">
-            Selected projects from our team members’ previous careers in games,
-            film and television.
+            The core team has worked together for over a decade across Games and
+            Film, one clear vision and goal in mind located across 7 different
+            countries.
           </p>
           <CreditCarousel
             title="Games, film & television"
@@ -207,7 +159,7 @@ export default function TeamProductionPage() {
         </section>
         <section className="team-production" aria-labelledby="craft-title">
           <div className="team-section-heading">
-            <p className="production-label">05 / Production</p>
+            <p className="production-label">04 / Production</p>
             <h2 id="craft-title">From vision to vessel.</h2>
           </div>
           <div className="team-method">
@@ -231,7 +183,7 @@ export default function TeamProductionPage() {
               <h3>The next stage</h3>
               <p>
                 The vertical slice is the next major deliverable. Funding is
-                intended to expand combat and AI programming, performance
+                intended to expand combat and enemy behaviour programming, performance
                 capture, animation, sound design and optimization. The
                 production schedule depends on the funding path.
               </p>

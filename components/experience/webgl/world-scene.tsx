@@ -14,21 +14,21 @@ import {
 
 /** Texturas del capítulo, en orden narrativo. Referencia estable. */
 const SOURCES = [
-  media.images.world.webp.large,
-  media.images.village.webp.large,
+  media.images.gods.webp.large,
   media.images.ormora.webp.large,
+  media.images.world.webp.large,
 ] as const;
 
 const SOURCES_SMALL = [
-  media.images.world.webp.small,
-  media.images.village.webp.small,
+  media.images.gods.webp.small,
   media.images.ormora.webp.small,
+  media.images.world.webp.small,
 ] as const;
 
 const FOCALS = [
-  media.images.world.focal,
-  media.images.village.focal,
+  media.images.gods.focal,
   media.images.ormora.focal,
+  media.images.world.focal,
 ] as const;
 
 const FOG_COLOR = '#0b1715';
@@ -137,20 +137,20 @@ export function WorldScene() {
       uniforms.uDetail.value = graphicsTier === 'a' ? 1 : 0;
 
       uniforms.uZoomA.value = 1.015 + firstDolly * 0.06;
-      uniforms.uZoomB.value = 1.02 + secondDolly * 0.055;
+      uniforms.uZoomB.value = 1.075 - shipDolly * 0.05;
       // El barco entra cerrado, bajo el agua, y el encuadre se abre a medida
       // que el cristal se limpia: el plano se revela con la lente, no después.
-      uniforms.uZoomC.value = 1.075 - shipDolly * 0.05;
+      uniforms.uZoomC.value = 1.02 + secondDolly * 0.055;
       uniforms.uPanA.value.set(
         (portrait ? -0.038 : -0.018) + firstDolly * (portrait ? 0.045 : 0.03),
         portrait ? 0.012 : 0,
       );
       uniforms.uPanB.value.set(
-        (portrait ? 0.018 : 0.01) - secondDolly * (portrait ? 0.025 : 0.018),
+        (portrait ? 0.018 : 0.01) - shipDolly * (portrait ? 0.025 : 0.018),
         portrait ? 0.012 : 0,
       );
       uniforms.uPanC.value.set(
-        (portrait ? 0.03 : 0.016) - shipDolly * (portrait ? 0.03 : 0.02),
+        (portrait ? 0.03 : 0.016) - secondDolly * (portrait ? 0.03 : 0.02),
         portrait ? 0.016 : 0.004,
       );
 

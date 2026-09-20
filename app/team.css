@@ -124,8 +124,7 @@
 /*
  * La voz de Draga se presenta como el fundador —mismo retrato, misma
  * tipografía— pero espejada, para que la página no repita el mismo encuadre
- * dos veces seguidas. El retrato es el propio personaje: quien pone la voz no
- * tiene fotografía cedida por el estudio.
+ * dos veces seguidas. El estudio ha facilitado el retrato de Dominik.
  */
 .team-founder--voice {
   grid-template-columns: 1.1fr 0.8fr 0.15fr;
@@ -142,8 +141,15 @@
   content: 'SCF / 02';
 }
 .team-founder--voice .team-founder__portrait img {
-  object-position: 34% 36%;
-  filter: grayscale(0.55) contrast(1.05);
+  object-position: center bottom;
+  object-fit: contain;
+  background: radial-gradient(
+    ellipse at 55% 45%,
+    #354039,
+    #111916 65%,
+    #050a07
+  );
+  filter: saturate(0.65) contrast(1.03);
 }
 .team-founder__portrait {
   position: relative;

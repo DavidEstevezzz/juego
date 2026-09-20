@@ -11,6 +11,8 @@ import {
   type TrailStamp,
 } from './production-trail';
 
+import type { SourceWindow } from './production-framing';
+
 /** Local 2D enhancement; no extra WebGL context, global scroll driver or React frames. */
 export function createProductionReveal(
   surface: HTMLElement,
@@ -18,6 +20,7 @@ export function createProductionReveal(
   finalImage: HTMLImageElement,
   maxWidth: number,
   onFailure: () => void,
+  crop: SourceWindow = { x: 0, y: 0, width: 1, height: 1 },
 ): () => void {
   const context = canvas.getContext('2d');
   const mask = document.createElement('canvas');
@@ -128,7 +131,13 @@ export function createProductionReveal(
     if (stamps.length) {
       try {
         context!.globalCompositeOperation = 'source-over';
-        context!.drawImage(finalImage, 0, 0, canvas.width, canvas.height);
+        context!.drawImage(
+          finalImage,
+          (-crop.x / crop.width) * canvas.width,
+          (-crop.y / crop.height) * canvas.height,
+          canvas.width / crop.width,
+          canvas.height / crop.height,
+        );
         context!.globalCompositeOperation = 'destination-in';
         context!.drawImage(mask, 0, 0, canvas.width, canvas.height);
         context!.globalCompositeOperation = 'source-over';

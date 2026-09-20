@@ -16,9 +16,9 @@ const chapter = chapterMap.gameplay;
 const content = gameplayChapterContent;
 
 const gameplayMedia = {
-  corridor: { image: media.images.corridor, width: 1920, height: 1049 },
-  frozenDeck: { image: media.images.frozenDeck, width: 1920, height: 1049 },
-  atrium: { image: media.images.atrium, width: 1920, height: 1080 },
+  absorb: { image: media.images.absorb, width: 2472, height: 1211 },
+  confront: { image: media.images.confront, width: 2215, height: 1246 },
+  explore: { image: media.images.explore, width: 2513, height: 1265 },
 } as const;
 
 type PointerPosition = { x: number; y: number };

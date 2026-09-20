@@ -59,14 +59,14 @@ await test('each cut stays buried under its own weather', () => {
   for (let i = 0; i <= 2000; i++) {
     const frame = sampleWorld(i / 2000);
 
-    // El primer corte ocurre bajo la meseta de la ventisca. El cruce asoma por
+    // El segundo corte ocurre bajo la meseta de la ventisca. El cruce asoma por
     // la cola —su último quinto cae ya con la nieve retirándose, cuando la
     // máscara está tan cerca del final que el resto no se distingue—, así que
     // el margen se mide sobre el tramo en el que todavía queda cruce que ver.
     const crossing = frame.sceneMix > 0.02 && frame.sceneMix < 0.8;
     if (crossing) assert.ok(frame.whiteout > 0.9, `whiteout at ${i}`);
 
-    // El segundo, dentro de la racha, y con el agua ya en su meseta. Aquí el
+    // El primero, dentro de la racha, y con el agua ya en su meseta. Aquí el
     // cruce sí es un fundido liso, así que el margen se mide en sus extremos.
     const boarding = frame.shipMix > 0 && frame.shipMix < 1;
     if (boarding) {
@@ -87,4 +87,16 @@ await test('each cut stays buried under its own weather', () => {
 
 await test('the timeline length the section writes against is the sampled one', () => {
   assert.equal(WORLD_TIMELINE_LENGTH, 100);
+});
+
+await test('water reaches Ormora before fog reveals Driftwood', () => {
+  const ship = sampleWorld(0.6);
+  assert.equal(ship.shipMix, 1);
+  assert.equal(ship.sceneMix, 0);
+  assert.equal(ship.rain, 0);
+  assert.equal(ship.whiteout, 0);
+  const fog = sampleWorld(0.8);
+  assert.equal(fog.whiteout, 1);
+  assert.equal(fog.rain, 0);
+  assert.ok(fog.sceneMix > 0 && fog.sceneMix < 1);
 });

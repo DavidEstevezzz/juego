@@ -17,7 +17,12 @@
  * a dónde escribir y quién hay al otro lado, nada más.
  */
 
-export type ContactChannelId = 'steam' | 'linkedin' | 'x' | 'instagram';
+export type ContactChannelId =
+  | 'steam'
+  | 'linkedin'
+  | 'x'
+  | 'instagram'
+  | 'youtube';
 
 export type ContactChannel = {
   id: ContactChannelId;
@@ -62,6 +67,13 @@ export const contactChannels: readonly ContactChannel[] = [
     url: 'https://www.instagram.com/strangecreaturefactory/',
     description: 'Studio account on Instagram',
   },
+  {
+    id: 'youtube',
+    name: 'YouTube',
+    handle: '@StrangeCreatureFactory_Ltd',
+    url: 'https://www.youtube.com/@StrangeCreatureFactory_Ltd',
+    description: 'Studio channel on YouTube',
+  },
 ] as const;
 
 export const contactContent = {
@@ -74,7 +86,7 @@ export const contactContent = {
   introduction:
     'Strange Creature Factory is a small studio: the people who make Black Tides read this inbox themselves.',
   emailLabel: 'Write to the studio',
-  email: 'gregorystrangis@strangecreaturefactory.ca',
+  email: 'strangecreaturefactory@gmail.com',
   copyLabel: 'Copy address',
   copiedLabel: 'Address copied',
   copyFailedLabel: 'Copy it by hand',

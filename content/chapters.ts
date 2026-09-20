@@ -290,6 +290,15 @@ export const finalSignalContent = {
   backToTop: 'Return to the surface',
   endLabel: 'End of transmission',
   credits: 'Black Tides: Draga’s Wake · Strange Creature Factory Ltd',
+  /**
+   * Website authorship. It sits one step below the studio signature above:
+   * the studio made the game, this line only credits the site around it.
+   */
+  siteCredit: {
+    prefix: 'Designed & built by',
+    name: 'David Estévez',
+    url: 'https://estevezmartinez.es',
+  },
   accessibility: {
     trigger: 'Accessibility',
     title: 'Your pace. Your way.',

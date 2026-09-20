@@ -3,6 +3,7 @@ import path from 'node:path';
 // Place the supplied originals here before regenerating web derivatives.
 const source = process.argv[2] ?? 'source-assets/website-update';
 const items = [
+  ['BelugaGrab.png', 'beluga-grab'],
   ['GodsImageWebsite.png', 'gods-altar'],
   ['ormora.png', 'ormora-original'],
   ['ABSORB.png', 'gameplay-absorb'],

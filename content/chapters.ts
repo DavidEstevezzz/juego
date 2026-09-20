@@ -211,8 +211,8 @@ export const infectionChapterContent = {
       label: 'Overtaken',
       description: 'Living matter takes the compartment.',
       media: 'blubberRoom',
-      width: 1920,
-      height: 1049,
+      width: 3843,
+      height: 2063,
     },
     {
       id: 'presence',

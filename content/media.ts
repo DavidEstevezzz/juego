@@ -130,8 +130,8 @@ export const media = {
       [0.5, 0.5],
     ),
     blubberRoom: image(
-      'blubber-room',
-      'A ship compartment overtaken by red organic tissue.',
+      'beluga-grab',
+      'Draga struggles in the grasp of a monstrous vessel aboard the Ormora.',
       [0.58, 0.5],
     ),
     vessel: image(
